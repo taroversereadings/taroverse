@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "name": "Aria Moon",
+    "image": "images/readers/aria.jpg",
+    "calendly": "https://calendly.com/your-tarot-session"
+  },
+  {
+    "id": 2,
+    "name": "Kiran Sage",
+    "image": "images/readers/kiran.jpg",
+    "calendly": "https://calendly.com/your-tarot-session"
+  },
+  {
+    "id": 3,
+    "name": "Sana Vale",
+    "image": "images/readers/sana.jpg",
+    "calendly": "https://calendly.com/your-tarot-session"
+  },
+  {
+    "id": 4,
+    "name": "Deepak Mystic",
+    "image": "images/readers/aria.jpg",
+    "calendly": "https://calendly.com/your-tarot-session"
+  },
+  {
+    "id": 5,
+    "name": "Priya Starlight",
+    "image": "images/readers/kiran.jpg",
+    "calendly": "https://calendly.com/your-tarot-session"
+  },
+  {
+    "id": 6,
+    "name": "Ravi Cosmic",
+    "image": "images/readers/sana.jpg",
+    "calendly": "https://calendly.com/your-tarot-session"
+  },
+  {
+    "id": 7,
+    "name": "Maya Intuition",
+    "image": "images/readers/aria.jpg",
+    "calendly": "https://calendly.com/your-tarot-session"
+  },
+  {
+    "id": 8,
+    "name": "Aditya Wisdom",
+    "image": "images/readers/kiran.jpg",
+    "calendly": "https://calendly.com/your-tarot-session"
+  },
+  {
+    "id": 9,
+    "name": "Neha Aurora",
+    "image": "images/readers/sana.jpg",
+    "calendly": "https://calendly.com/your-tarot-session"
+  },
+  {
+    "id": 10,
+    "name": "Rohan Clarity",
+    "image": "images/readers/aria.jpg",
+    "calendly": "https://calendly.com/your-tarot-session"
+  },
+  {
+    "id": 11,
+    "name": "Vanessa Ethereal",
+    "image": "images/readers/kiran.jpg",
+    "calendly": "https://calendly.com/your-tarot-session"
+  },
+  {
+    "id": 12,
+    "name": "Sasha Echo",
+    "image": "images/readers/sana.jpg",
+    "calendly": "https://calendly.com/your-tarot-session"
+  }
+]
