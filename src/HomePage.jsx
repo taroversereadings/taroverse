@@ -4,6 +4,7 @@ import SEO from './SEO';
 
 const servicePricing = {
   single: {
+    id: 'single',
     label: 'Single Card Insight',
     amount: 199,
     duration: '15 mins',
@@ -11,6 +12,7 @@ const servicePricing = {
     calendly: 'https://calendly.com/shivangiarora424/tarot-reading?month=2026-06'
   },
   three: {
+    id: 'three',
     label: 'Three-Card Spread',
     amount: 599,
     duration: '30 mins',
@@ -18,6 +20,7 @@ const servicePricing = {
     calendly: 'https://calendly.com/shivangiarora424/new-meeting?month=2026-06'
   },
   deep: {
+    id: 'deep',
     label: 'Deep Insight Session',
     amount: 1499,
     duration: '60 mins',
@@ -45,6 +48,260 @@ const sections = [
   { id: 'schedule', label: 'Schedule' }
 ];
 
+const currencyRates = {
+  INR: 1,
+  USD: 0.012,
+  EUR: 0.011,
+  GBP: 0.009,
+  AED: 0.044,
+  AUD: 0.017,
+  CAD: 0.016,
+  SGD: 0.017,
+  CHF: 0.011,
+  JPY: 1.7,
+  ARS: 1.8,
+  BYN: 0.046,
+  CLP: 9.5,
+  CRC: 7.5,
+  ZAR: 0.21,
+  PHP: 0.76,
+  NGN: 7.9,
+  KES: 1.6,
+  JMD: 1.9,
+  TTD: 0.08,
+  BBD: 0.02,
+  BZD: 0.02
+};
+
+const localeCurrencyMap = {
+  US: 'USD',
+  CA: 'CAD',
+  GB: 'GBP',
+  AU: 'AUD',
+  NZ: 'NZD',
+  IN: 'INR',
+  IE: 'EUR',
+  ZA: 'ZAR',
+  NG: 'NGN',
+  KE: 'KES',
+  PH: 'PHP',
+  MT: 'EUR',
+  CY: 'EUR',
+  JM: 'JMD',
+  TT: 'TTD',
+  BB: 'BBD',
+  BZ: 'BZD',
+  DE: 'EUR',
+  FR: 'EUR',
+  ES: 'EUR',
+  IT: 'EUR',
+  NL: 'EUR',
+  BE: 'EUR',
+  AT: 'EUR',
+  FI: 'EUR',
+  CH: 'CHF',
+  JP: 'JPY',
+  SG: 'SGD',
+  AE: 'AED',
+  SA: 'AED',
+  RU: 'RUB',
+  BY: 'BYN',
+  AR: 'ARS',
+  CL: 'CLP',
+  CR: 'CRC',
+  CN: 'CNY'
+};
+
+const fixedPriceOverrides = {
+  USD: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  EUR: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  GBP: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  CAD: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  AUD: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  NZD: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  SGD: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  CHF: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  AED: {
+    single: 200,
+    three: 400,
+    deep: 600
+  },
+  ZAR: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  ARS: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  BYN: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  CLP: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  CRC: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  JMD: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  TTD: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  BBD: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  BZD: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  RUB: {
+    single: 100,
+    three: 200,
+    deep: 300
+  },
+  CNY: {
+    single: 100,
+    three: 200,
+    deep: 300
+  }
+};
+
+const timezoneCurrencyMap = {
+  'Asia/Kolkata': 'INR',
+  'Asia/Calcutta': 'INR',
+  'Asia/Dubai': 'AED',
+  'Asia/Sharjah': 'AED',
+  'Europe/London': 'GBP',
+  'Europe/Dublin': 'EUR',
+  'Europe/Paris': 'EUR',
+  'Europe/Berlin': 'EUR',
+  'Europe/Brussels': 'EUR',
+  'Europe/Vienna': 'EUR',
+  'Europe/Helsinki': 'EUR',
+  'Europe/Minsk': 'BYN',
+  'Europe/Moscow': 'RUB',
+  'America/Toronto': 'CAD',
+  'America/Vancouver': 'CAD',
+  'America/Argentina/Buenos_Aires': 'ARS',
+  'America/Santiago': 'CLP',
+  'America/Costa_Rica': 'CRC',
+  'America/Jamaica': 'JMD',
+  'America/Port_of_Spain': 'TTD',
+  'America/Barbados': 'BBD',
+  'America/Belize': 'BZD',
+  'Africa/Johannesburg': 'ZAR',
+  'Africa/Nairobi': 'KES',
+  'Asia/Manila': 'PHP',
+  'Asia/Shanghai': 'CNY',
+  'Asia/Chongqing': 'CNY',
+  'Asia/Harbin': 'CNY',
+  'Asia/Urumqi': 'CNY',
+  'Australia/Sydney': 'AUD',
+  'Australia/Melbourne': 'AUD',
+  'Australia/Perth': 'AUD',
+  'Pacific/Auckland': 'NZD'
+};
+
+function getCurrencyCode(locale, timeZone) {
+  if (!locale && !timeZone) return 'INR';
+  const parts = (locale || '').split(/[-_]/);
+  const country = parts[1]?.toUpperCase() || parts[0]?.toUpperCase();
+  const timeZoneCurrency = timeZone && timezoneCurrencyMap[timeZone];
+  if (timeZoneCurrency) return timeZoneCurrency;
+  const localeCurrency = localeCurrencyMap[country];
+  if (localeCurrency) return localeCurrency;
+  return 'INR';
+}
+
+const currencyMinorUnits = {
+  BIF: 1,
+  CLP: 1,
+  DJF: 1,
+  GNF: 1,
+  JPY: 1,
+  KMF: 1,
+  KRW: 1,
+  MGA: 1,
+  PYG: 1,
+  RWF: 1,
+  UGX: 1,
+  VND: 1,
+  VUV: 1,
+  XAF: 1,
+  XOF: 1,
+  XPF: 1
+};
+
+function getCurrencyMinorUnit(currencyCode) {
+  return currencyMinorUnits[currencyCode] ?? 100;
+}
+
+function getDisplayAmount(serviceId, amountInr, currencyCode) {
+  if (fixedPriceOverrides[currencyCode] && fixedPriceOverrides[currencyCode][serviceId] != null) {
+    return fixedPriceOverrides[currencyCode][serviceId];
+  }
+
+  const rate = currencyRates[currencyCode] ?? 1;
+  return amountInr * rate;
+}
+
+function formatLocalPrice(amountInr, currencyCode, locale, serviceId) {
+  const converted = getDisplayAmount(serviceId, amountInr, currencyCode);
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currencyCode
+  }).format(converted);
+}
+
 function HomePage() {
   const [selectedService, setSelectedService] = useState('single');
   const [paymentStatus, setPaymentStatus] = useState({
@@ -52,6 +309,8 @@ function HomePage() {
     type: 'info'
   });
   const [paymentCompleted, setPaymentCompleted] = useState(false);
+  const [userCurrency, setUserCurrency] = useState('INR');
+  const [userLocale, setUserLocale] = useState('en-IN');
 
   const service = useMemo(() => servicePricing[selectedService], [selectedService]);
   const bookingUrl = useMemo(() => service.calendly, [service]);
@@ -69,6 +328,13 @@ function HomePage() {
       }
     }
   }, [paymentCompleted, bookingUrl]);
+
+  useEffect(() => {
+    const locale = navigator.language || 'en-IN';
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    setUserLocale(locale);
+    setUserCurrency(getCurrencyCode(locale, timeZone));
+  }, []);
 
   useEffect(() => {
     const animatedElements = document.querySelectorAll('.animate-slideUp, .animate-fadeIn, .animate-zoomIn');
@@ -94,12 +360,16 @@ function HomePage() {
     updatePaymentStatus('Creating Razorpay order... please wait.', 'info');
 
     try {
+      const displayAmount = getDisplayAmount(service.id, service.amount, userCurrency);
+      const minorUnit = getCurrencyMinorUnit(userCurrency);
+      const orderAmount = Math.round(displayAmount * minorUnit);
+
       const response = await fetch(RAZORPAY_ORDER_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: service.amount * 100,
-          currency: 'INR',
+          amount: orderAmount,
+          currency: userCurrency,
           receipt: `taro-${Date.now()}`,
           notes: {
             service: service.label,
@@ -188,7 +458,7 @@ function HomePage() {
       </nav>
 
       <main>
-        <section id="first100" className="special-offer py-5">
+        {/* <section id="first100" className="special-offer py-5">
           <div className="container text-center">
             <div className="row justify-content-center">
               <div className="col-lg-10">
@@ -199,7 +469,7 @@ function HomePage() {
                     {Object.values(servicePricing).map((serviceItem) => (
                       <div className="offer-card p-3 rounded-3 text-center" key={serviceItem.label}>
                         <div className="offer-title">{serviceItem.label}</div>
-                        <div className="offer-price">₹{serviceItem.amount}</div>
+                        <div className="offer-price">{formatLocalPrice(serviceItem.amount, userCurrency, userLocale, serviceItem.id)}</div>
                         <div className="offer-duration">{serviceItem.duration}</div>
                       </div>
                     ))}
@@ -211,7 +481,7 @@ function HomePage() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         <section className="section section-light" id="about">
           <div className="container">
@@ -265,7 +535,7 @@ function HomePage() {
                     <h3>{serviceItem.label}</h3>
                     <p>{serviceItem.amount === 199 ? 'Receive a clear yes, no, or “not yet” answer to one specific question.' : serviceItem.amount === 599 ? 'Gain clarity by exploring the past, present, and likely path ahead.' : 'A personalized tarot session to explore recurring patterns, relationships, and life purpose.'}</p>
                     <div className="pricing-badge mt-auto" style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                      <p className="mb-1" style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)' }}><strong>₹{serviceItem.amount}</strong> • {serviceItem.duration}</p>
+                      <p className="mb-1" style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)' }}><strong>{formatLocalPrice(serviceItem.amount, userCurrency, userLocale, serviceItem.id)}</strong> • {serviceItem.duration}</p>
                     </div>
                   </div>
                 </div>
@@ -313,7 +583,7 @@ function HomePage() {
 
                   <div className="d-flex justify-content-between mb-2">
                     <span>Amount</span>
-                    <strong>₹{service.amount.toLocaleString('en-IN')}</strong>
+                    <strong>{formatLocalPrice(service.amount, userCurrency, userLocale, service.id)}</strong>
                   </div>
                   <div className="d-flex justify-content-between mb-3">
                     <span>Includes</span>
@@ -327,10 +597,10 @@ function HomePage() {
 
                 <div className="calendly-widget rounded-4 shadow-lg overflow-hidden">
                   <div className="text-white mb-3">{paymentCompleted ? 'Your booking widget is ready. Please choose a slot below.' : '🔒 Complete payment above to unlock booking. Select a service and pay to see available slots.'}</div>
-                  <div className="calendly-inline-widget" id="calendlyInlineWidget" style={{ minWidth: '320px', height: '650px' }}>
+                  <div className="calendly-inline-widget" id="calendlyInlineWidget" style={{ minWidth: '320px' }}>
                     {!paymentCompleted && (
-                      <div className="p-4 text-center text-white">
-                        <p style={{ fontSize: '1.1rem', color: '#ddd' }}>🔒 Booking widget will appear after payment</p>
+                      <div className="p-4 text-center text-white" style={{ minHeight: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <p style={{ fontSize: '1.1rem', color: '#ddd', margin: 0 }}>🔒 Booking widget will appear after payment</p>
                       </div>
                     )}
                   </div>
@@ -377,10 +647,17 @@ function HomePage() {
           { icon: 'fab fa-instagram', href: 'https://www.instagram.com/taroverse.readings' },
           { icon: 'fab fa-linkedin-in', href: 'https://www.linkedin.com/company/taroverse-readings' },
           { icon: 'fab fa-facebook-f', href: 'https://www.facebook.com/taroverse.readings' },
+          { icon: 'x', href: 'https://x.com/taroverse5' },
           { icon: 'fab fa-youtube', href: 'https://www.youtube.com/@taroverse' }
         ].map((item) => (
-          <a key={item.href} className={`social-icon ${item.icon.split(' ')[1].replace('fa-', '')}`} href={item.href} target="_blank" rel="noopener noreferrer" aria-label={item.icon}>
-            <i className={item.icon} />
+          <a key={item.href} className={`social-icon ${item.icon === 'x' ? 'x-twitter' : item.icon.split(' ')[1].replace('fa-', '')}`} href={item.href} target="_blank" rel="noopener noreferrer" aria-label={item.icon === 'x' ? 'X' : item.icon}>
+            {item.icon === 'x' ? (
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M18.9 2H22l-6.8 7.8L23.3 22h-5.7l-4.5-5.9L7.7 22H4.6l7.2-8.2L.7 2h5.8l4.1 5.4L18.9 2Zm-1 18h1.1L6.2 4H5L17.9 20Z" fill="currentColor" />
+              </svg>
+            ) : (
+              <i className={item.icon} />
+            )}
           </a>
         ))}
       </div>
@@ -391,12 +668,19 @@ function HomePage() {
           <div className="footer-social d-flex justify-content-center align-items-center gap-3 mb-2">
             {[
               { icon: 'fab fa-instagram', href: 'https://www.instagram.com/taroverse.readings' },
-              { icon: 'fab fa-linkedin-in', href: 'https://www.linkedin.com/company/taroverse-readings' },
+              { icon: 'fab fa-linkedin-in', href: 'https://www.linkedin.com/company/taroverse-readings/' },
               { icon: 'fab fa-facebook-f', href: 'https://www.facebook.com/taroverse.readings' },
+              { icon: 'x', href: 'https://x.com/taroverse5' },
               { icon: 'fab fa-youtube', href: 'https://www.youtube.com/@taroverse' }
             ].map((item) => (
-              <a key={item.href} className={`social-icon ${item.icon.split(' ')[1].replace('fa-', '')}`} href={item.href} target="_blank" rel="noopener noreferrer" aria-label={item.icon}>
-                <i className={item.icon + ' fa-lg'} />
+              <a key={item.href} className={`social-icon ${item.icon === 'x' ? 'x-twitter' : item.icon.split(' ')[1].replace('fa-', '')}`} href={item.href} target="_blank" rel="noopener noreferrer" aria-label={item.icon === 'x' ? 'X' : item.icon}>
+                {item.icon === 'x' ? (
+                  <svg viewBox="0 0 24 24" aria-hidden="true" className="fa-lg">
+                    <path d="M18.9 2H22l-6.8 7.8L23.3 22h-5.7l-4.5-5.9L7.7 22H4.6l7.2-8.2L.7 2h5.8l4.1 5.4L18.9 2Zm-1 18h1.1L6.2 4H5L17.9 20Z" fill="currentColor" />
+                  </svg>
+                ) : (
+                  <i className={item.icon + ' fa-lg'} />
+                )}
               </a>
             ))}
           </div>

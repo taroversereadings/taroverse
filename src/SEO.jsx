@@ -65,8 +65,9 @@ export default function SEO({ title, description, canonicalPath = '/', ogImage =
       logo: `${window.location.origin}/images/logo.jpeg`,
       sameAs: [
         'https://www.instagram.com/taroverse.readings',
-        'https://www.linkedin.com/company/taroverse-readings',
+        'https://www.linkedin.com/company/taroverse-readings/',
         'https://www.facebook.com/taroverse.readings',
+        'https://x.com/taroverse5',
         'https://www.youtube.com/@taroverse'
       ],
       areaServed: 'IN',

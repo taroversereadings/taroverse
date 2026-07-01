@@ -89,8 +89,9 @@ function Privacy() {
           <p className="mb-1">TaroVerse Readings • <Link to="/privacy" className="text-muted">Privacy</Link> • <Link to="/terms" className="text-muted">Terms</Link></p>
           <div className="footer-social d-flex justify-content-center align-items-center gap-3 mb-2">
             <a className="social-icon instagram" href="https://www.instagram.com/taroverse.readings" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fab fa-instagram fa-lg" /></a>
-            <a className="social-icon linkedin" href="https://www.linkedin.com/company/taroverse-readings" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i className="fab fa-linkedin-in fa-lg" /></a>
+            <a className="social-icon linkedin" href="https://www.linkedin.com/company/taroverse-readings/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i className="fab fa-linkedin-in fa-lg" /></a>
             <a className="social-icon facebook" href="https://www.facebook.com/taroverse.readings" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i className="fab fa-facebook-f fa-lg" /></a>
+            <a className="social-icon x-twitter" href="https://x.com/taroverse5" target="_blank" rel="noopener noreferrer" aria-label="X"><svg viewBox="0 0 24 24" aria-hidden="true" className="fa-lg"><path d="M18.9 2H22l-6.8 7.8L23.3 22h-5.7l-4.5-5.9L7.7 22H4.6l7.2-8.2L.7 2h5.8l4.1 5.4L18.9 2Zm-1 18h1.1L6.2 4H5L17.9 20Z" fill="currentColor" /></svg></a>
             <a className="social-icon youtube" href="https://www.youtube.com/@taroverse" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i className="fab fa-youtube fa-lg" /></a>
           </div>
           <p className="mb-1 small">No refunds once payment is completed. Email <a href="mailto:taroverse.readings@gmail.com" className="text-muted">taroverse.readings@gmail.com</a> if you face any payment issue.</p>
