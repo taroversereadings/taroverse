@@ -449,7 +449,7 @@ function HomePage() {
       <header className="hero-section text-white text-center d-flex align-items-center justify-content-center" id="home">
         <div className="overlay" />
         <div className="container position-relative hero-content">
-          <p className="eyebrow">Soulful guidance • Calm clarity • Trusted readings</p>
+          <p className="eyebrow">oulful guidance • Calm clarity • Trusted readings</p>
           <h1 className="display-4 fw-bold">TaroVerse Readings</h1>
           <p className="lead mx-auto mt-3">Discover your path with gentle tarot insight, sacred symbols, and a peaceful vibe designed to soothe your spirit.</p>
           <div className="hero-buttons mt-4">
