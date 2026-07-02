@@ -457,9 +457,9 @@ function HomePage() {
             <a href="#schedule" className="btn btn-outline-light btn-lg">Book a Reading</a>
           </div>
           <div className="hero-image-grid d-none d-lg-flex">
-            <img src={hero1Url} alt="Tarot spread" decoding="async" />
-            <img src={hero2Url} alt="Mystic cards" decoding="async" />
-            <img src={hero3Url} alt="Crystal tarot ritual" decoding="async" />
+            <img src={hero1Url} alt="Tarot spread" decoding="async" loading="eager" fetchPriority="high" />
+            <img src={hero2Url} alt="Mystic cards" decoding="async" loading="eager" fetchPriority="high" />
+            <img src={hero3Url} alt="Crystal tarot ritual" decoding="async" loading="eager" fetchPriority="high" />
           </div>
         </div>
       </header>
@@ -467,7 +467,7 @@ function HomePage() {
       <nav className="navbar navbar-expand-lg navbar-dark sticky-top py-3 shadow-sm" id="mainNav">
         <div className="container">
           <a className="navbar-brand d-flex align-items-center fw-semibold" href="#home">
-            <img src={logoUrl} alt="TaroVerse Readings" className="nav-logo me-2" />
+            <img src={logoUrl} alt="TaroVerse Readings" className="nav-logo me-2" decoding="async" loading="eager" fetchPriority="high" />
             <span>TaroVerse Readings</span>
           </a>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -537,7 +537,7 @@ function HomePage() {
               </div>
               <div className="col-lg-6">
                 <div className="image-frame rounded-4 overflow-hidden shadow-lg animate-fadeIn">
-                  <img src={aboutUrl} alt="Tarot cards and crystals" decoding="async" loading="lazy" />
+                  <img src={aboutUrl} alt="Tarot cards and crystals" decoding="async" loading="eager" fetchPriority="high" />
                 </div>
               </div>
             </div>
