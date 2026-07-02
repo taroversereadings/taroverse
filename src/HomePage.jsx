@@ -441,8 +441,8 @@ function HomePage() {
   return (
     <div className="app-root">
       <SEO
-        title="TaroVerse Readings — Tarot booking, live readings, and guided insight"
-        description="Book tarot readings, explore soul-care sessions, and unlock a calm booking experience with TaroVerse Readings. Secure checkout and guided tarot insights for seekers in India."
+        title="TaroVerse Readings | Online Tarot Readings & Tarot Booking in India"
+        description="Book online tarot readings in India with TaroVerse Readings. Discover calm, intuitive tarot sessions, guided insights, and easy booking for seekers."
         canonicalPath="/"
         ogImage="/images/hero1.jpg"
       />
