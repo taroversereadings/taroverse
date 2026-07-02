@@ -1,6 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SEO from './SEO';
+import hero1Url from '../public/images/hero1.jpg';
+import hero2Url from '../public/images/hero2.jpg';
+import hero3Url from '../public/images/hero3.jpg';
+import logoUrl from '../public/images/logo.jpeg';
+import aboutUrl from '../public/images/about.jpg';
+import service1Url from '../public/images/service1.jpg';
+import service2Url from '../public/images/service2.jpg';
+import service3Url from '../public/images/service3.jpg';
 
 const servicePricing = {
   single: {
@@ -318,6 +326,19 @@ function HomePage() {
     setPaymentStatus({ message, type });
   };
 
+  const handleNavLinkClick = () => {
+    if (typeof window === 'undefined' || window.innerWidth >= 992) return;
+
+    const navbarCollapse = document.getElementById('navbarNav');
+    const navbarToggler = document.querySelector('.navbar-toggler');
+
+    if (!navbarCollapse || !navbarToggler) return;
+
+    navbarCollapse.classList.remove('show');
+    navbarToggler.classList.add('collapsed');
+    navbarToggler.setAttribute('aria-expanded', 'false');
+  };
+
   useEffect(() => {
     if (paymentCompleted && window.Calendly && typeof window.Calendly.initInlineWidget === 'function') {
       const widgetContainer = document.getElementById('calendlyInlineWidget');
@@ -409,9 +430,9 @@ function HomePage() {
             <a href="#schedule" className="btn btn-outline-light btn-lg">Book a Reading</a>
           </div>
           <div className="hero-image-grid d-none d-lg-flex">
-            <img src="/images/hero1.jpg" alt="Tarot spread" decoding="async" />
-            <img src="/images/hero2.jpg" alt="Mystic cards" decoding="async" />
-            <img src="/images/hero3.jpg" alt="Crystal tarot ritual" decoding="async" />
+            <img src={hero1Url} alt="Tarot spread" decoding="async" />
+            <img src={hero2Url} alt="Mystic cards" decoding="async" />
+            <img src={hero3Url} alt="Crystal tarot ritual" decoding="async" />
           </div>
         </div>
       </header>
@@ -419,17 +440,17 @@ function HomePage() {
       <nav className="navbar navbar-expand-lg navbar-dark sticky-top py-3 shadow-sm" id="mainNav">
         <div className="container">
           <a className="navbar-brand d-flex align-items-center fw-semibold" href="#home">
-            <img src="/images/logo.jpeg" alt="TaroVerse Readings" className="nav-logo me-2" />
+            <img src={logoUrl} alt="TaroVerse Readings" className="nav-logo me-2" />
             <span>TaroVerse Readings</span>
           </a>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="#navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
               {sections.map((section) => (
                 <li className="nav-item" key={section.id}>
-                  <a className="nav-link" href={`#${section.id}`}>{section.label}</a>
+                  <a className="nav-link" href={`#${section.id}`} onClick={handleNavLinkClick}>{section.label}</a>
                 </li>
               ))}
             </ul>
@@ -489,7 +510,7 @@ function HomePage() {
               </div>
               <div className="col-lg-6">
                 <div className="image-frame rounded-4 overflow-hidden shadow-lg animate-fadeIn">
-                  <img src="/images/about.jpg" alt="Tarot cards and crystals" decoding="async" loading="lazy" />
+                  <img src={aboutUrl} alt="Tarot cards and crystals" decoding="async" loading="lazy" />
                 </div>
               </div>
             </div>
@@ -511,7 +532,7 @@ function HomePage() {
               {Object.values(servicePricing).map((serviceItem) => (
                 <div className="col-md-6 col-lg-4" key={serviceItem.label}>
                   <div className="service-card rounded-4 p-4 h-100 shadow animate-zoomIn d-flex flex-column">
-                    <img src={`/images/service${serviceItem.amount === 199 ? '1' : serviceItem.amount === 599 ? '2' : '3'}.jpg`} alt={serviceItem.label} className="service-image rounded-4 mb-3" decoding="async" loading="lazy" />
+                    <img src={serviceItem.amount === 199 ? service1Url : serviceItem.amount === 599 ? service2Url : service3Url} alt={serviceItem.label} className="service-image rounded-4 mb-3" decoding="async" loading="lazy" />
                     <h3>{serviceItem.label}</h3>
                     <p>{serviceItem.amount === 199 ? 'Receive a clear yes, no, or “not yet” answer to one specific question.' : serviceItem.amount === 599 ? 'Gain clarity by exploring the past, present, and likely path ahead.' : 'A personalized tarot session to explore recurring patterns, relationships, and life purpose.'}</p>
                     <div className="pricing-badge mt-auto" style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
