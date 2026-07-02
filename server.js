@@ -1,12 +1,19 @@
-const express = require('express');
-const fetch = require('node-fetch');
-const path = require('path');
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+import Razorpay from 'razorpay';
+
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || '';
-const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || '';
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public'), {
@@ -19,70 +26,30 @@ app.use(express.static(path.join(__dirname, 'public'), {
   }
 }));
 
-app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
-  const signature = req.headers['stripe-signature'];
-
-  if (!STRIPE_WEBHOOK_SECRET) {
-    return res.status(500).json({ error: 'Stripe webhook secret is not configured.' });
-  }
-
-  let event;
-
+app.post('/create-order', async (req, res) => {
   try {
-    const stripe = require('stripe');
-    const Stripe = stripe(STRIPE_SECRET_KEY);
-    event = Stripe.webhooks.constructEvent(req.body, signature, STRIPE_WEBHOOK_SECRET);
-  } catch (error) {
-    return res.status(400).send(`Webhook Error: ${error.message}`);
-  }
+    const { amount, currency = 'INR', service, duration, receipt } = req.body;
 
-  if (event.type === 'checkout.session.completed') {
-    const session = event.data.object;
-    console.log('Stripe checkout completed:', session.id);
-  }
-
-  res.json({ received: true });
-});
-
-app.post('/create-checkout-session', async (req, res) => {
-  try {
-    const { amount, currency, service, duration, successUrl, cancelUrl } = req.body;
-    if (!amount || !currency || !successUrl || !cancelUrl) {
-      return res.status(400).json({ error: 'Missing required checkout fields.' });
+    if (!amount || !RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
+      return res.status(500).json({ error: 'Razorpay credentials are not configured.' });
     }
 
-    if (!STRIPE_SECRET_KEY) {
-      return res.status(500).json({ error: 'Stripe secret key is not configured.' });
-    }
-
-    const body = new URLSearchParams({
-      mode: 'payment',
-      success_url: successUrl,
-      cancel_url: cancelUrl,
-      'line_items[0][price_data][currency]': String(currency).toLowerCase(),
-      'line_items[0][price_data][product_data][name]': `TaroVerse ${service || 'Reading'}`,
-      'line_items[0][price_data][unit_amount]': String(amount),
-      'line_items[0][quantity]': '1',
-      'metadata[service]': service || '',
-      'metadata[duration]': duration || ''
-    }).toString();
-
-    const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Bearer ${STRIPE_SECRET_KEY}`
-      },
-      body
+    const razorpay = new Razorpay({
+      key_id: RAZORPAY_KEY_ID,
+      key_secret: RAZORPAY_KEY_SECRET
     });
 
-    if (!response.ok) {
-      const errorBody = await response.text();
-      return res.status(response.status).json({ error: errorBody });
-    }
+    const order = await razorpay.orders.create({
+      amount: Number(amount),
+      currency: String(currency).toUpperCase(),
+      receipt: receipt || `taroverse-${Date.now()}`,
+      notes: {
+        service: service || '',
+        duration: duration || ''
+      }
+    });
 
-    const session = await response.json();
-    res.json({ id: session.id, url: session.url });
+    res.json({ keyId: RAZORPAY_KEY_ID, order });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

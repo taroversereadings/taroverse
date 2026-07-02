@@ -37,7 +37,7 @@ const servicePricing = {
   }
 };
 
-const STRIPE_CHECKOUT_ENDPOINT = import.meta.env.VITE_STRIPE_CHECKOUT_ENDPOINT || '/create-checkout-session';
+const RAZORPAY_ORDER_ENDPOINT = import.meta.env.VITE_RAZORPAY_ORDER_ENDPOINT || '/create-order';
 
 const testimonials = [
   { text: 'The reading felt so comforting and clear. I left with new confidence and a beautiful sense of calm.', author: 'Ananya, Mumbai' },
@@ -375,37 +375,64 @@ function HomePage() {
       return;
     }
 
-    updatePaymentStatus('Creating Stripe checkout session... please wait.', 'info');
+    updatePaymentStatus('Creating Razorpay order... please wait.', 'info');
 
     try {
-      const displayAmount = getDisplayAmount(service.id, service.amount, userCurrency);
-      const minorUnit = getCurrencyMinorUnit(userCurrency);
-      const orderAmount = Math.round(displayAmount * minorUnit);
-
-      const response = await fetch(STRIPE_CHECKOUT_ENDPOINT, {
+      const orderAmount = Math.round(service.amount * 100);
+      const response = await fetch(RAZORPAY_ORDER_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: orderAmount,
-          currency: userCurrency,
+          currency: 'INR',
           service: service.label,
           duration: service.duration,
-          successUrl: `${window.location.origin}${window.location.pathname}?payment=success`,
-          cancelUrl: `${window.location.origin}${window.location.pathname}`
+          receipt: `taroverse-${service.id}-${Date.now()}`
         })
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(errorText || 'Unable to create Stripe checkout session right now.');
+        throw new Error(errorText || 'Unable to create a Razorpay order right now.');
       }
 
       const checkout = await response.json();
-      if (!checkout?.url) {
-        throw new Error('Stripe checkout session did not return a payment URL.');
+      if (!checkout?.order?.id || !checkout?.keyId) {
+        throw new Error('Razorpay order did not return the required payment details.');
       }
 
-      window.location.assign(checkout.url);
+      if (!window.Razorpay) {
+        throw new Error('Razorpay script is not available right now.');
+      }
+
+      const options = {
+        key: checkout.keyId,
+        amount: checkout.order.amount,
+        currency: checkout.order.currency,
+        name: 'TaroVerse Readings',
+        description: `${service.label} • ${service.duration}`,
+        order_id: checkout.order.id,
+        handler: () => {
+          setPaymentCompleted(true);
+          updatePaymentStatus('Payment confirmed. Your booking window is now unlocked.', 'success');
+        },
+        prefill: {
+          name: '',
+          email: '',
+          contact: ''
+        },
+        theme: {
+          color: '#e9d5b3'
+        },
+        modal: {
+          ondismiss: () => {
+            updatePaymentStatus('Payment was not completed. Please try again.', 'info');
+          }
+        }
+      };
+
+      const razorpayInstance = new window.Razorpay(options);
+      razorpayInstance.open();
     } catch (error) {
       updatePaymentStatus(error.message || 'Payment failed. Please try again.', 'error');
     }
@@ -572,7 +599,7 @@ function HomePage() {
                       <h3 className="h5 mb-1">Secure your slot</h3>
                       <p className="mb-0 text-white-50">Pay before your Calendly booking is unlocked.</p>
                     </div>
-                    <span className="payment-pill">Stripe</span>
+                    <span className="payment-pill">Razorpay</span>
                   </div>
 
                   <label className="form-label" htmlFor="booking-service">Choose a session</label>
