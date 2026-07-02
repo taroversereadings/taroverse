@@ -1,57 +1,59 @@
 :root {
-  --deep-space: #11131a;
-  --moon-glow: #e8d7ff;
-  --soft-cream: #f7efe6;
-  --petal-pink: #f3d3ff;
-  --sage: #c0d8d8;
-  --text-light: #f7f4f0;
-  --text-dark: #1f2230;
+  --deep-space: #1c143d;
+  --moon-glow: #eadeff;
+  --soft-cream: #f8f2e7;
+  --petal-pink: #f4d6ff;
+  --sage: #c4d8d8;
+  --text-light: #f9f5ee;
+  --text-dark: #28243d;
+  --accent-gold: #f6d59d;
+  --accent-magic: #a468dd;
 }
 
-$bg-body-top: rgba(241, 225, 255, 0.22);
-$bg-body-end-1: #0f1624;
-$bg-body-end-2: #120f1f;
-$bg-body-end-3: #1b1b35;
-$hero-bg-gradient: linear-gradient(135deg, rgba(100, 42, 145, 0.45), rgba(21, 38, 66, 0.95));
+$bg-body-top: rgba(240, 225, 255, 0.24);
+$bg-body-end-1: #231840;
+$bg-body-end-2: #1d1a46;
+$bg-body-end-3: #191c42;
+$hero-bg-gradient: linear-gradient(135deg, rgba(153, 82, 201, 0.45), rgba(29, 21, 66, 0.88));
 $hero-bg-image: url('/images/hero-bg.jpg') center center / cover no-repeat fixed;
-$hero-overlay-top: rgba(255, 255, 255, 0.14);
-$hero-overlay-bottom: rgba(0, 0, 0, 0.18);
-$hero-overlay-dark: rgba(5, 7, 20, 0.88);
-$section-light-bg: rgba(255, 250, 245, 0.03);
-$section-dark-bg: rgba(17, 20, 34, 0.95);
-$section-label-color: #f0c17d;
+$hero-overlay-top: rgba(255, 247, 233, 0.16);
+$hero-overlay-bottom: rgba(24, 20, 52, 0.26);
+$hero-overlay-dark: rgba(10, 10, 28, 0.78);
+$section-light-bg: rgba(245, 236, 255, 0.08);
+$section-dark-bg: rgba(29, 25, 58, 0.9);
+$section-label-color: #f6d59d;
 $section-radius: 1.5rem;
-$offer-banner-bg: linear-gradient(135deg, #7a2e2e 0%, #41234a 55%, #071029 100%);
-$offer-card-bg: #000000;
-$offer-card-border: rgba(255, 255, 255, 0.06);
-$offer-card-shadow: rgba(7, 10, 20, 0.6);
-$offer-card-hover-shadow: rgba(0, 0, 0, 0.48);
-$offer-banner-hover-shadow: rgba(7, 10, 20, 0.72);
-$offer-card-highlight-bg: linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
-$card-bg: rgba(255, 255, 255, 0.04);
-$card-border: rgba(255, 255, 255, 0.08);
-$panel-border: rgba(255, 255, 255, 0.14);
-$panel-border-soft: rgba(255, 255, 255, 0.12);
-$panel-border-xlight: rgba(255, 255, 255, 0.06);
-$panel-shadow: rgba(0, 0, 0, 0.18);
-$muted-white-strong: rgba(255, 255, 255, 0.92);
-$muted-white: rgba(255, 255, 255, 0.94);
-$muted-white-light: rgba(255, 255, 255, 0.9);
-$muted-white-subtle: rgba(255, 255, 255, 0.85);
+$offer-banner-bg: linear-gradient(135deg, #6d4b97 0%, #2f1f56 55%, #101b3f 100%);
+$offer-card-bg: rgba(27, 18, 51, 0.76);
+$offer-card-border: rgba(246, 213, 157, 0.16);
+$offer-card-shadow: rgba(23, 17, 58, 0.4);
+$offer-card-hover-shadow: rgba(20, 15, 52, 0.45);
+$offer-banner-hover-shadow: rgba(22, 16, 55, 0.6);
+$offer-card-highlight-bg: linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+$card-bg: rgba(255, 255, 255, 0.05);
+$card-border: rgba(246, 213, 157, 0.14);
+$panel-border: rgba(246, 213, 157, 0.18);
+$panel-border-soft: rgba(246, 213, 157, 0.12);
+$panel-border-xlight: rgba(246, 213, 157, 0.08);
+$panel-shadow: rgba(20, 14, 50, 0.22);
+$muted-white-strong: rgba(249, 245, 238, 0.94);
+$muted-white: rgba(249, 245, 238, 0.9);
+$muted-white-light: rgba(249, 245, 238, 0.82);
+$muted-white-subtle: rgba(249, 245, 238, 0.74);
 $white: #ffffff;
-$text-muted-90: rgba(247, 244, 240, 0.9);
-$text-muted-82: rgba(247, 244, 240, 0.82);
+$text-muted-90: rgba(249, 245, 238, 0.9);
+$text-muted-82: rgba(249, 245, 238, 0.82);
 $hero-btn-min-width: 180px;
-$btn-primary-bg: linear-gradient(135deg, #e2b86f, #c38a3f);
-$btn-primary-shadow: rgba(195, 138, 63, 0.18);
-$footer-bg: rgba(10, 12, 24, 0.98);
-$social-bg: rgba(255, 255, 255, 0.08);
-$social-sidebar-bg: rgba(24, 22, 23, 0.88);
+$btn-primary-bg: linear-gradient(135deg, #f6d59d, #c58d52);
+$btn-primary-shadow: rgba(197, 138, 63, 0.18);
+$footer-bg: rgba(19, 15, 42, 0.95);
+$social-bg: rgba(255, 255, 255, 0.1);
+$social-sidebar-bg: rgba(30, 22, 52, 0.88);
 $facebook-bg: #1877F2;
 $linkedin-bg: #0A66C2;
 $youtube-bg: #FF0000;
-$calendly-widget-bg: #0b1222;
-$calendly-inline-bg: rgba(255, 255, 255, 0.05);
+$calendly-widget-bg: rgba(18, 14, 42, 0.95);
+$calendly-inline-bg: rgba(255, 255, 255, 0.08);
 $section-padding: 5rem 0;
 $mobile-section-padding: 3.5rem 0;
 $font-primary: 'Inter', sans-serif;
@@ -72,40 +74,22 @@ html {
 body {
   margin: 0;
   font-family: $font-primary;
-  color: var(--text-dark);
+  color: var(--text-light);
   background: radial-gradient(circle at top, $bg-body-top, transparent 35%),
     linear-gradient(180deg, $bg-body-end-1 0%, $bg-body-end-2 42%, $bg-body-end-3 100%);
 }
 
-img {
-  max-width: 100%;
-  display: block;
-}
-
 .navbar {
-  background: rgba(10, 12, 24, 0.92);
+  background: rgba(22, 15, 38, 0.92);
   backdrop-filter: blur(12px);
-}
-
-.navbar-brand {
-  font-family: 'Cormorant Garamond', serif;
-  letter-spacing: 0.08em;
 }
 
 .nav-logo {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  border:white 1px solid;
+  border: rgba(246, 213, 157, 0.35) 1px solid;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
-}
-
-.navbar-brand span {
-  font-size: 1.05rem;
-}
-
-.nav-link {
-  color: rgba(255, 255, 255, 0.85) !important;
 }
 
 .hero-section {
@@ -121,22 +105,57 @@ img {
     linear-gradient(180deg, $hero-overlay-bottom, $hero-overlay-dark);
 }
 
-.divine-numbers {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
+.special-offer .offer-card {
+  min-width: 160px;
+  max-width: 260px;
+  background: $offer-card-bg;
+  border: 1px solid $offer-card-border;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1rem;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.content-card,
+.process-card,
+.service-card,
+.step-box,
+.testimonial-card,
+.image-frame {
+  display: flex;
+  flex-direction: column;
+  background: $card-bg;
+  border: 1px solid $card-border;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.navbar-brand {
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: 0.08em;
+}
+
+.nav-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: rgba(246, 213, 157, 0.35) 1px solid;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+.navbar-brand span {
+  font-size: 1.05rem;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.95) !important;
 }
 
 .divine-number {
-  position: absolute;
-  left: var(--x);
-  top: var(--y);
-  font-family: serif;
-  font-size: clamp(2rem, 4vw, 4.5rem);
-  color: rgba(255, 239, 197, 0.18);
-  text-shadow: 0 0 18px rgba(255, 239, 197, 0.18);
-  transform: translate(-50%, -50%) scale(1);
   animation: floatNumber 8s ease-in-out infinite;
   animation-delay: var(--delay);
 }
