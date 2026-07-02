@@ -29,8 +29,7 @@ const servicePricing = {
   }
 };
 
-const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || '';
-const RAZORPAY_ORDER_ENDPOINT = import.meta.env.VITE_RAZORPAY_ORDER_ENDPOINT || '/create-order';
+const STRIPE_CHECKOUT_ENDPOINT = import.meta.env.VITE_STRIPE_CHECKOUT_ENDPOINT || '/create-checkout-session';
 
 const testimonials = [
   { text: 'The reading felt so comforting and clear. I left with new confidence and a beautiful sense of calm.', author: 'Ananya, Mumbai' },
@@ -337,6 +336,14 @@ function HomePage() {
   }, []);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+      setPaymentCompleted(true);
+      updatePaymentStatus('Payment confirmed. Your booking window is now unlocked.', 'success');
+    }
+  }, []);
+
+  useEffect(() => {
     const animatedElements = document.querySelectorAll('.animate-slideUp, .animate-fadeIn, .animate-zoomIn');
     animatedElements.forEach((el) => el.classList.add('in-view'));
   }, []);
@@ -347,64 +354,37 @@ function HomePage() {
       return;
     }
 
-    if (!RAZORPAY_KEY_ID) {
-      updatePaymentStatus('Razorpay key is not configured. Set VITE_RAZORPAY_KEY_ID in .env and restart the app.', 'error');
-      return;
-    }
-
-    if (!window.Razorpay) {
-      updatePaymentStatus('Razorpay checkout is not available in this browser. Please try again later.', 'error');
-      return;
-    }
-
-    updatePaymentStatus('Creating Razorpay order... please wait.', 'info');
+    updatePaymentStatus('Creating Stripe checkout session... please wait.', 'info');
 
     try {
       const displayAmount = getDisplayAmount(service.id, service.amount, userCurrency);
       const minorUnit = getCurrencyMinorUnit(userCurrency);
       const orderAmount = Math.round(displayAmount * minorUnit);
 
-      const response = await fetch(RAZORPAY_ORDER_ENDPOINT, {
+      const response = await fetch(STRIPE_CHECKOUT_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: orderAmount,
           currency: userCurrency,
-          receipt: `taro-${Date.now()}`,
-          notes: {
-            service: service.label,
-            duration: service.duration
-          }
+          service: service.label,
+          duration: service.duration,
+          successUrl: `${window.location.origin}${window.location.pathname}?payment=success`,
+          cancelUrl: `${window.location.origin}${window.location.pathname}`
         })
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(errorText || 'Unable to create Razorpay order right now.');
+        throw new Error(errorText || 'Unable to create Stripe checkout session right now.');
       }
 
-      const order = await response.json();
-      const options = {
-        key: RAZORPAY_KEY_ID,
-        amount: order.amount,
-        currency: order.currency || 'INR',
-        order_id: order.id,
-        name: 'TaroVerse Readings',
-        description: `${service.label} booking`,
-        handler: () => {
-          setPaymentCompleted(true);
-          updatePaymentStatus(`Payment confirmed for ${service.label}. Your booking window is now unlocked.`, 'success');
-        },
-        prefill: {
-          name: '',
-          email: '',
-          contact: ''
-        },
-        theme: { color: '#c38a3f' }
-      };
+      const checkout = await response.json();
+      if (!checkout?.url) {
+        throw new Error('Stripe checkout session did not return a payment URL.');
+      }
 
-      const rzp = new window.Razorpay(options);
-      rzp.open();
+      window.location.assign(checkout.url);
     } catch (error) {
       updatePaymentStatus(error.message || 'Payment failed. Please try again.', 'error');
     }
@@ -571,7 +551,7 @@ function HomePage() {
                       <h3 className="h5 mb-1">Secure your slot</h3>
                       <p className="mb-0 text-white-50">Pay before your Calendly booking is unlocked.</p>
                     </div>
-                    <span className="payment-pill">Razorpay</span>
+                    <span className="payment-pill">Stripe</span>
                   </div>
 
                   <label className="form-label" htmlFor="booking-service">Choose a session</label>
