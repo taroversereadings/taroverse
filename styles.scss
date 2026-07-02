@@ -156,6 +156,14 @@ img {
 }
 
 .divine-number {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  font-family: serif;
+  font-size: clamp(2rem, 4vw, 4.5rem);
+  color: rgba(255, 239, 197, 0.18);
+  text-shadow: 0 0 18px rgba(255, 239, 197, 0.18);
+  transform: translate(-50%, -50%) scale(1);
   animation: floatNumber 8s ease-in-out infinite;
   animation-delay: var(--delay);
 }
