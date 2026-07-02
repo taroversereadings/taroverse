@@ -613,9 +613,9 @@ function HomePage() {
                     <span>Amount</span>
                     <strong>{formatLocalPrice(service.amount, userCurrency, userLocale, service.id)}</strong>
                   </div>
-                  <div className="d-flex justify-content-between mb-3">
-                    <span>Includes</span>
-                    <span>{service.duration} • {service.description}</span>
+                  <div className="booking-meta-row mb-3">
+                    <span className="booking-meta-label">Includes</span>
+                    <span className="booking-meta-value">{service.duration} • {service.description}</span>
                   </div>
 
                   <button type="button" className="btn btn-primary w-100" onClick={handlePayment}>Pay & unlock booking</button>

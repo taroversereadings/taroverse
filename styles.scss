@@ -258,6 +258,38 @@ img {
   background: $calendly-inline-bg;
 }
 
+.booking-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.booking-meta-label {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  flex-shrink: 0;
+}
+
+.booking-meta-value {
+  text-align: right;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.45;
+}
+
+@media (max-width: 576px) {
+  .booking-meta-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .booking-meta-value {
+    text-align: left;
+  }
+}
+
 .section-label {
   display: inline-block;
   text-transform: uppercase;
