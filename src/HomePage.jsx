@@ -369,6 +369,14 @@ function HomePage() {
     animatedElements.forEach((el) => el.classList.add('in-view'));
   }, []);
 
+  const handleServiceCardClick = (serviceId) => {
+    setSelectedService(serviceId);
+    const scheduleSection = document.getElementById('schedule');
+    if (scheduleSection) {
+      scheduleSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const handlePayment = async () => {
     if (!bookingUrl) {
       updatePaymentStatus('Booking URL is not configured. Please choose a service.', 'error');
@@ -558,7 +566,18 @@ function HomePage() {
             <div className="row g-4">
               {Object.values(servicePricing).map((serviceItem) => (
                 <div className="col-md-6 col-lg-4" key={serviceItem.label}>
-                  <div className="service-card rounded-4 p-4 h-100 shadow animate-zoomIn d-flex flex-column">
+                  <div
+                    className="service-card rounded-4 p-4 h-100 shadow animate-zoomIn d-flex flex-column"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => handleServiceCardClick(serviceItem.id)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        handleServiceCardClick(serviceItem.id);
+                      }
+                    }}
+                  >
                     <img src={serviceItem.amount === 199 ? service1Url : serviceItem.amount === 599 ? service2Url : service3Url} alt={serviceItem.label} className="service-image rounded-4 mb-3" decoding="async" loading="lazy" />
                     <h3>{serviceItem.label}</h3>
                     <p>{serviceItem.amount === 199 ? 'Receive a clear yes, no, or “not yet” answer to one specific question.' : serviceItem.amount === 599 ? 'Gain clarity by exploring the past, present, and likely path ahead.' : 'A personalized tarot session to explore recurring patterns, relationships, and life purpose.'}</p>
