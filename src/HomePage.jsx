@@ -38,6 +38,7 @@ const servicePricing = {
 };
 
 const RAZORPAY_ORDER_ENDPOINT = import.meta.env.VITE_RAZORPAY_ORDER_ENDPOINT || '/create-order';
+const RECORD_PAYMENT_ENDPOINT = import.meta.env.VITE_RECORD_PAYMENT_ENDPOINT || '/record-payment';
 
 const testimonials = [
   { text: 'The reading felt so comforting and clear. I left with new confidence and a beautiful sense of calm.', author: 'Ananya, Mumbai' },
@@ -318,6 +319,7 @@ function HomePage() {
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [userCurrency, setUserCurrency] = useState('INR');
   const [userLocale, setUserLocale] = useState('en-IN');
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const service = useMemo(() => servicePricing[selectedService], [selectedService]);
   const bookingUrl = useMemo(() => service.calendly, [service]);
@@ -358,6 +360,18 @@ function HomePage() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const adminParam = params.get('admin');
+
+    if (adminParam === 'true') {
+      localStorage.setItem('taroverseAdmin', 'true');
+      setIsAdmin(true);
+    } else if (adminParam === 'false' || adminParam === 'logout') {
+      localStorage.removeItem('taroverseAdmin');
+      setIsAdmin(false);
+    } else {
+      setIsAdmin(localStorage.getItem('taroverseAdmin') === 'true');
+    }
+
     if (params.get('payment') === 'success') {
       setPaymentCompleted(true);
       updatePaymentStatus('Payment confirmed. Your booking window is now unlocked.', 'success');
@@ -375,6 +389,17 @@ function HomePage() {
     if (scheduleSection) {
       scheduleSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const handleExportPayments = () => {
+    const month = new Date().toISOString().slice(0, 7);
+    const exportUrl = `/export-payments?month=${month}`;
+    const anchor = document.createElement('a');
+    anchor.href = exportUrl;
+    anchor.style.display = 'none';
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
   };
 
   const handlePayment = async () => {
@@ -413,6 +438,26 @@ function HomePage() {
         throw new Error('Razorpay script is not available right now.');
       }
 
+      const recordPayment = async (paymentResponse) => {
+        try {
+          await fetch(RECORD_PAYMENT_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              paymentId: paymentResponse.razorpay_payment_id,
+              orderId: paymentResponse.razorpay_order_id,
+              service: service.label,
+              duration: service.duration,
+              amount: service.amount,
+              currency: 'INR',
+              receipt: checkout.order.receipt || ''
+            })
+          });
+        } catch (recordError) {
+          console.error('Failed to record payment:', recordError);
+        }
+      };
+
       const options = {
         key: checkout.keyId,
         amount: checkout.order.amount,
@@ -420,9 +465,10 @@ function HomePage() {
         name: 'TaroVerse Readings',
         description: `${service.label} • ${service.duration}`,
         order_id: checkout.order.id,
-        handler: () => {
+        handler: (response) => {
           setPaymentCompleted(true);
           updatePaymentStatus('Payment confirmed. Your booking window is now unlocked.', 'success');
+          recordPayment(response);
         },
         prefill: {
           name: '',
@@ -638,6 +684,11 @@ function HomePage() {
                   </div>
 
                   <button type="button" className="btn btn-primary w-100" onClick={handlePayment}>Pay & unlock booking</button>
+                  {isAdmin && (
+                    <button type="button" className="btn btn-outline-light w-100 mt-3" onClick={handleExportPayments}>
+                      Download current month report
+                    </button>
+                  )}
                   <div className={`payment-status mt-3 ${paymentStatus.type}`}>{paymentStatus.message}</div>
                   <p className="text-white-50 small mt-3 mb-0">No refunds once payment is completed. If you face any payment issue, email <a href="mailto:taroverse.readings@gmail.com" className="text-white">taroverse.readings@gmail.com</a>.</p>
                 </div>

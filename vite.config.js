@@ -9,7 +9,9 @@ export default defineConfig({
       'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
     },
     proxy: {
-      '/create-order': 'http://localhost:3000'
+      '/create-order': 'http://localhost:3000',
+      '/record-payment': 'http://localhost:3000',
+      '/export-payments': 'http://localhost:3000'
     }
   }
 });
