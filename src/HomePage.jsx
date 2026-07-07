@@ -774,9 +774,9 @@ function HomePage() {
                         }
                       }}
                     >
-                      <img src={serviceItem.amount === 199 ? service1Url : serviceItem.amount === 599 ? service2Url : service3Url} alt={serviceItem.label} className="service-image rounded-4 mb-3" decoding="async" loading="lazy" />
+                      <img src={serviceItem.id === 'single' ? service1Url : serviceItem.id === 'three' ? service2Url : service3Url} alt={serviceItem.label} className="service-image rounded-4 mb-3" decoding="async" loading="lazy" />
                       <h3>{serviceItem.label}</h3>
-                      <p>{serviceItem.amount === 199 ? 'Receive a clear yes, no, or “not yet” answer to one specific question.' : serviceItem.amount === 599 ? 'Gain clarity by exploring the past, present, and likely path ahead.' : 'A personalized tarot session to explore recurring patterns, relationships, and life purpose.'}</p>
+                      <p>{serviceItem.id === 'single' ? 'Receive a clear yes, no, or “not yet” answer to one specific question.' : serviceItem.id === 'three' ? 'Gain clarity by exploring the past, present, and likely path ahead.' : 'A personalized tarot session to explore recurring patterns, relationships, and life purpose.'}</p>
                       <div className="pricing-badge mt-auto" style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
                         <p className="mb-1" style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)' }}><strong>{formatLocalPrice(serviceItem.amount, userCurrency, userLocale, serviceItem.id)}</strong> • {serviceItem.duration}</p>
                       </div>
