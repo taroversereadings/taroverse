@@ -99,7 +99,6 @@ const currencyRates = {
   BYN: 0.046,
   CLP: 9.5,
   CRC: 7.5,
-  ZAR: 0.21,
   PHP: 0.76,
   NGN: 7.9,
   KES: 1.6,
@@ -117,7 +116,6 @@ const localeCurrencyMap = {
   NZ: 'NZD',
   IN: 'INR',
   IE: 'EUR',
-  ZA: 'ZAR',
   NG: 'NGN',
   KE: 'KES',
   PH: 'PHP',
@@ -150,164 +148,156 @@ const localeCurrencyMap = {
 
 const fixedPriceOverrides = {
   USD: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   EUR: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   GBP: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   CAD: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   AUD: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   NZD: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   SGD: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   CHF: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   AED: {
-    single: 200,
-    three: 400,
-    deep: 600,
-    love: 400,
-    career: 400,
-    money:500,
-  },
-  ZAR: {
     single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    three: 150,
+    deep: 175,
+    love: 200,
+    career: 200,
+    money: 200,
   },
   ARS: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   BYN: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   CLP: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   CRC: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   JMD: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   TTD: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   BBD: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   BZD: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   RUB: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   },
   CNY: {
-    single: 100,
-    three: 200,
-    deep: 300,
-    love: 400,
-    career: 400,
-    money:500,
+    single: 25,
+    three: 50,
+    deep: 75,
+    love: 100,
+    career: 100,
+    money: 100,
   }
 };
 
@@ -334,7 +324,6 @@ const timezoneCurrencyMap = {
   'America/Port_of_Spain': 'TTD',
   'America/Barbados': 'BBD',
   'America/Belize': 'BZD',
-  'Africa/Johannesburg': 'ZAR',
   'Africa/Nairobi': 'KES',
   'Asia/Manila': 'PHP',
   'Asia/Shanghai': 'CNY',
@@ -786,7 +775,7 @@ function HomePage() {
             </div>
           </div>
         </section>
-          <section className="section section-dark text-white" id="manifestations">
+        <section className="section section-dark text-white" id="manifestations">
           <div className="container">
             <div className="text-center mb-5">
               <span className="section-label">Manifestations</span>
@@ -821,7 +810,7 @@ function HomePage() {
           </div>
         </section>
 
-        
+
         <section className="section" id="schedule">
           <div className="container">
             <div className="row align-items-start">
@@ -868,27 +857,27 @@ function HomePage() {
                     </div>
                   )}
 
-                    <div className="d-flex justify-content-between mb-2">
-                      <span>Amount</span>
-                      <strong>{formatLocalPrice(service.amount, userCurrency, userLocale, service.id)}</strong>
-                    </div>
-                    <div className="booking-meta-row mb-3">
-                      <span className="booking-meta-label">Includes</span>
-                      <span className="booking-meta-value">{service.duration} • {service.description}</span>
-                    </div>
+                  <div className="d-flex justify-content-between mb-2">
+                    <span>Amount</span>
+                    <strong>{formatLocalPrice(service.amount, userCurrency, userLocale, service.id)}</strong>
+                  </div>
+                  <div className="booking-meta-row mb-3">
+                    <span className="booking-meta-label">Includes</span>
+                    <span className="booking-meta-value">{service.duration} • {service.description}</span>
+                  </div>
 
-                    <button type="button" className="btn btn-primary w-100" onClick={handlePayment}>
-                      {service.portal ? 'Pay to unlock portal' : 'Pay & unlock booking'}
+                  <button type="button" className="btn btn-primary w-100" onClick={handlePayment}>
+                    {service.portal ? 'Pay to unlock portal' : 'Pay & unlock booking'}
+                  </button>
+                  {isAdmin && (
+                    <button type="button" className="btn btn-outline-light w-100 mt-3" onClick={handleExportPayments}>
+                      Download current month report
                     </button>
-                      {isAdmin && (
-                      <button type="button" className="btn btn-outline-light w-100 mt-3" onClick={handleExportPayments}>
-                        Download current month report
-                      </button>
-                    )}
-                    {service.portal && portalAccess.includes(service.id) && (
-                      <a href={`/portal?video=${service.id}`} className="btn btn-outline-light w-100 mt-3">Go to your manifestation portal</a>
-                    )}
-                    <div className={`payment-status mt-3 ${paymentStatus.type}`}>{paymentStatus.message}</div>
+                  )}
+                  {service.portal && portalAccess.includes(service.id) && (
+                    <a href={`/portal?video=${service.id}`} className="btn btn-outline-light w-100 mt-3">Go to your manifestation portal</a>
+                  )}
+                  <div className={`payment-status mt-3 ${paymentStatus.type}`}>{paymentStatus.message}</div>
                   <p className="text-white-50 small mt-3 mb-0">No refunds once payment is completed. If you face any payment issue, email <a href="mailto:taroverse.readings@gmail.com" className="text-white">taroverse.readings@gmail.com</a>.</p>
                 </div>
 
@@ -924,7 +913,7 @@ function HomePage() {
           </div>
         </section>
 
-      
+
 
         <section className="section section-dark text-white" id="testimonials">
           <div className="container">

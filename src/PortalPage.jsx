@@ -29,6 +29,13 @@ function PortalPage() {
   const [passwordInput, setPasswordInput] = useState('');
   const [loginError, setLoginError] = useState('');
   const [validated, setValidated] = useState(false);
+  const [activeChapters, setActiveChapters] = useState(() => {
+    const init = { love: 'intro', career: 'intro', money: 'intro' };
+    const q = searchParams.get('chapter');
+    const v = searchParams.get('video') || 'love';
+    if (q) init[v] = q;
+    return init;
+  });
 
   function getDeviceId() {
     try {
@@ -114,6 +121,8 @@ function PortalPage() {
     validateUser();
   }, [searchParams]);
 
+  
+
   const activeVideoId = searchParams.get('video') || portalUser?.serviceId;
   const activeVideo = portalVideos[activeVideoId] || portalVideos.love;
   const isTestMode = searchParams.get('test') === 'true';
@@ -125,7 +134,55 @@ function PortalPage() {
     : portalUser?.serviceId === 'money'
       ? 'Money Manifestation'
       : 'Love Spell Manifestation';
-  const debugFallbackVideo = 'https://www.youtube.com/watch?v=Cb6wuzOurPc&list=RDCb6wuzOurPc&start_radio=1';
+  const debugFallbackVideo = 'https://www.youtube.com/embed/Cb6wuzOurPc';
+
+  // debug: log key portal state to help diagnose welcome-panel visibility
+  const _paramVideo = searchParams.get('video');
+  useEffect(() => {
+    try {
+      // eslint-disable-next-line no-console
+      console.debug('[PortalPage debug]', {
+        validated,
+        portalService: portalUser?.serviceId,
+        paramVideo: _paramVideo,
+        activeVideoId
+      });
+    } catch (e) {}
+  }, [validated, portalUser, _paramVideo, activeVideoId]);
+
+  const loveChapters = [
+    { id: 'intro', title: 'Instructions', content: `Hi honey, welcome to the Love Spell.\n\nYou didn't find this method by accident. This method found you. The universe saw you had desires that you wanted to manifest and it brought this method to you so you could claim it. You are here for a reason.\n\nBefore we begin, I'd like to walk you through the method and how it works. This method is a powerful combination of spell work, affirmations, hypnosis, the Law of Assumption and ritual.` },
+    { id: 'ritual', title: 'The Ritual', content: 'A gentle guided ritual to open and settle. Light a candle, breathe deeply, and follow the imagery in the video.' },
+    { id: 'affirmations', title: 'Affirmations', content: 'Affirmations to repeat after the session: I am worthy of love. I attract kind, loving relationships.' },
+    { id: 'journaling', title: 'Journaling', content: 'Short prompts to reflect on after the practice and small actions to integrate the energy.' }
+  ];
+
+  const careerChapters = [
+    { id: 'intro', title: 'Instructions', content: 'Welcome to the Career Manifestation portal. This section explains the practice and how to get the most from the ritual.' },
+    { id: 'ritual', title: 'The Ritual', content: 'A focused career ritual: grounding, intention-setting, and visualization to open new pathways.' },
+    { id: 'affirmations', title: 'Affirmations', content: 'Affirmations: I am ready for aligned opportunities. I step forward with clarity.' },
+    { id: 'journaling', title: 'Journaling', content: 'Reflection prompts to integrate clarity and next steps after the session.' }
+  ];
+
+  const moneyChapters = [
+    { id: 'intro', title: 'Instructions', content: 'Welcome to the Abundance portal. Learn how to create a grounded money mindset and steady receiving.' },
+    { id: 'ritual', title: 'The Ritual', content: 'A calm guided ritual to open your relationship with money — gentle breathwork and intentions.' },
+    { id: 'affirmations', title: 'Affirmations', content: 'Affirmations: I welcome steady abundance. I am worthy of wealth that supports my life.' },
+    { id: 'journaling', title: 'Journaling', content: 'Simple prompts to notice shifts and take practical next steps after the practice.' }
+  ];
+
+  const isCareer = activeVideoId === 'career';
+
+  // helper to read/set the active chapter for the current variant
+  const activeChapter = activeChapters[activeVariant] || 'intro';
+  function updateActiveChapter(chId) {
+    setActiveChapters((prev) => ({ ...prev, [activeVariant]: chId }));
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set('chapter', chId);
+      window.history.replaceState({}, '', url);
+    } catch (e) {}
+  }
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -299,74 +356,316 @@ function PortalPage() {
             <p className="lead">Validating your portal access…</p>
           </div>
         ) : validated ? (
-          <div className="portal-content-stack">
-            <div className={`portal-info-panel rounded-4 p-4 shadow-sm ${isLove ? 'love-info-panel' : isMoney ? 'money-info-panel' : 'career-info-panel'}`}>
-              <div className="portal-panel-badge">{isMoney ? '💸 Abundance access' : 'Your sacred access'}</div>
-              <h2>{isLove ? 'Welcome back, love' : isMoney ? 'Welcome back to abundance' : 'Welcome back to success'}</h2>
-              <p>{isLove ? 'Keep these details close for your next return to this soft, guided space.' : isMoney ? 'Keep these details close for your next return to a grounded abundance practice.' : 'Keep these details close for your next return to this calm, guided space.'}</p>
-              <ul className="list-unstyled portal-credentials">
-                <li><strong>Service:</strong> {serviceLabel}</li>
-                <li><strong>Payment ID:</strong> {portalUser?.paymentId}</li>
-              </ul>
-              <p className="mt-4 small portal-note">This portal is bound to your device for one-device access so your experience stays intimate and secure.</p>
-            </div>
-
-            <div className={`portal-ritual-card rounded-4 p-4 ${isLove ? 'love-ritual' : isMoney ? 'money-ritual' : 'career-ritual'}`}>
-              <div className="ritual-badge">{isLove ? '🌷 Soft landing' : isMoney ? '💸 Wealth mindset' : '✨ Calm focus'}</div>
-              <div className="d-flex justify-content-between align-items-start gap-3">
-                <div>
-                  <h3 className="h5 mb-2">{isLove ? 'A gentle love ritual' : isMoney ? 'A grounded abundance ritual' : 'A grounded career ritual'}</h3>
-                  <p className="mb-3 small">Settle in, soften your shoulders, and let this moment feel sacred. A few small steps can help you arrive with warmth and clarity.</p>
-                </div>
-                <span className="ritual-heart" aria-hidden="true">{isLove ? '♡' : isMoney ? '☼' : '✦'}</span>
-              </div>
-              <div className="ritual-steps">
-                <div className="ritual-step">Light a candle or dim the room to create a tender atmosphere.</div>
-                <div className="ritual-step">Take three slow breaths and gently release anything that feels heavy.</div>
-                <div className="ritual-step">Repeat softly: "I welcome what is meant for me with grace."</div>
-              </div>
-            </div>
-
-            <div className={`video-frame rounded-4 overflow-hidden shadow-lg ${isLove ? 'love-video' : isMoney ? 'money-video' : 'career-video'}`} style={{ minHeight: 200, background: isLove ? 'linear-gradient(135deg,#fff5f8,#ffeaf0)' : isMoney ? 'linear-gradient(135deg,#fff9e8,#fdf1cc)' : 'linear-gradient(135deg,#f4f8ff,#e9f0ff)' }}>
-              <iframe
-                title={activeVideo.title}
-                width="100%"
-                height="500"
-                src={isTestMode ? debugFallbackVideo : activeVideo.videoUrl}
-                frameBorder="0"
-                style={{ border: isLove ? '2px solid rgba(255,255,255,0.18)' : '2px solid rgba(255,255,255,0.12)', background: isLove ? 'transparent' : 'transparent' }}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-              <div className="mt-2 text-center">
-                <a href={isTestMode ? debugFallbackVideo : activeVideo.videoUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline-light">Open video in new tab</a>
-              </div>
-            </div>
-
-            <div className={`portal-support-grid row g-3 ${isLove ? 'love-extras' : isMoney ? 'money-extras' : 'career-extras'}`}>
-              <div className="col-md-6">
-                <div className="portal-mini-card p-3 rounded-3">
-                  <h4 className="h6">{isLove ? 'Affirmations' : isMoney ? 'Abundance Affirmations' : 'Career Intentions'}</h4>
-                  <p className="small">{isLove ? 'Play these aloud or whisper them to yourself after the session.' : isMoney ? 'Choose one phrase to carry with you as you welcome steady prosperity.' : 'Choose one intention to carry into your next step with calm confidence.'}</p>
-                  <ul className="small mb-0">
-                    <li>{isLove ? '— I deserve loving, kind relationships.' : isMoney ? '— I am worthy of steady, joyful abundance.' : '— I am aligned with opportunities that suit me.'}</li>
-                    <li>{isLove ? '— I attract warmth and mutual respect.' : isMoney ? '— Money flows to me with ease and gratitude.' : '— I move forward with clarity and ease.'}</li>
+          (() => {
+            if (isLove) {
+              return (
+                <div className="row g-4 portal-course">
+              <aside className="col-lg-4 d-none d-lg-block">
+                <div className="portal-course-sidebar rounded-4 p-3">
+                  <div className="course-title mb-3">The Love Spell</div>
+                  <ul className="list-unstyled chapter-list">
+                    {loveChapters.map((ch) => (
+                      <li
+                        key={ch.id}
+                        className={`chapter-item ${activeChapter === ch.id ? 'active' : ''}`}
+                        onClick={() => updateActiveChapter(ch.id)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => { if (e.key === 'Enter') updateActiveChapter(ch.id); }}
+                      >
+                        <div className="chapter-title">{ch.title}</div>
+                      </li>
+                    ))}
                   </ul>
                 </div>
-              </div>
-              <div className="col-md-6">
-                <div className="portal-mini-card p-3 rounded-3">
-                  <h4 className="h6">{isLove ? 'Journaling Prompts' : isMoney ? 'Wealth Reflection Prompts' : 'Reflection Prompts'}</h4>
-                  <p className="small">{isLove ? 'Reflect briefly after the session.' : isMoney ? 'Pause and notice where your relationship with money is softening.' : 'Pause for a moment and notice what feels most alive.'}</p>
-                  <ul className="small mb-0">
-                    <li>{isLove ? '• What felt most resonant?' : isMoney ? '• Where do I feel most open to receiving?' : '• What opportunity feels most supported right now?'}</li>
-                    <li>{isLove ? '• One small action I can take this week to invite connection.' : isMoney ? '• One generous action I can take this week.' : '• One grounded step I can take this week.'}</li>
-                  </ul>
+              </aside>
+
+              <div className="col-12 col-lg-8">
+                {(isLove && activeChapter === 'intro' && validated && portalUser?.serviceId && searchParams.get('video') && portalUser.serviceId === searchParams.get('video') && activeVariant === portalUser.serviceId) && (
+                  <div className={`portal-info-panel rounded-4 p-4 shadow-sm love-info-panel mb-3`}>
+                    <div className="portal-panel-badge">Your sacred access</div>
+                    <h2>Welcome back, love</h2>
+                    <p>Keep these details close for your next return to this soft, guided space.</p>
+                    <ul className="list-unstyled portal-credentials">
+                      <li><strong>Service:</strong> Love Spell Manifestation</li>
+                      <li><strong>Payment ID:</strong> {portalUser?.paymentId}</li>
+                    </ul>
+                  </div>
+                )}
+
+                {(() => {
+                  const current = loveChapters.find(c => c.id === activeChapter) || loveChapters[0];
+                  // intro: show instructions only
+                  if (current.id === 'intro') {
+                    return (
+                      <div className="chapter-content rounded-4 p-4 mb-3">
+                        <h3 className="h5 mb-2">{current.title}</h3>
+                        <div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div>
+                      </div>
+                    );
+                  }
+
+                  // ritual: show video (and brief intro)
+                  if (current.id === 'ritual') {
+                    return (
+                      <>
+                        <div className="chapter-content rounded-4 p-4 mb-3">
+                          <h3 className="h5 mb-2">{current.title}</h3>
+                          <div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div>
+                        </div>
+                        <div className="video-frame rounded-4 overflow-hidden shadow-lg love-video mb-3" style={{ minHeight: 200 }}>
+                          <iframe
+                            title={`${activeVideo.title} — ${current.id}`}
+                            width="100%"
+                            height="480"
+                            src={isTestMode ? debugFallbackVideo : activeVideo.videoUrl}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        </div>
+                      </>
+                    );
+                  }
+
+                  // affirmations: show manifest/support grid
+                  if (current.id === 'affirmations') {
+                    return (
+                      <div className="portal-support-grid row g-3 love-extras mb-3">
+                        <div className="col-md-6">
+                          <div className="portal-mini-card p-3 rounded-3">
+                            <h4 className="h6">Affirmations</h4>
+                            <p className="small">Play these aloud or whisper them to yourself after the session.</p>
+                            <ul className="small mb-0">
+                              <li>— I deserve loving, kind relationships.</li>
+                              <li>— I attract warmth and mutual respect.</li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="col-md-6">
+                          <div className="portal-mini-card p-3 rounded-3">
+                            <h4 className="h6">Journaling Prompts</h4>
+                            <p className="small">Reflect briefly after the session.</p>
+                            <ul className="small mb-0">
+                              <li>• What felt most resonant?</li>
+                              <li>• One small action I can take this week to invite connection.</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // journaling or any other chapter: show content
+                  return (
+                    <div className="chapter-content rounded-4 p-4 mb-3">
+                      <h3 className="h5 mb-2">{current.title}</h3>
+                      <div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div>
+                    </div>
+                  );
+                })()}
+
+                <div className="d-flex gap-2">
+                  {(() => {
+                    const idx = loveChapters.findIndex(c => c.id === activeChapter);
+                    return (
+                      <>
+                        <button className="btn btn-outline-light" disabled={idx <= 0} onClick={() => updateActiveChapter(loveChapters[Math.max(0, idx - 1)].id)}>Previous</button>
+                        <button className="btn btn-light ms-auto" disabled={idx >= loveChapters.length - 1} onClick={() => updateActiveChapter(loveChapters[Math.min(loveChapters.length - 1, idx + 1)].id)}>Next</button>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
-            </div>
+                </div>
+              );
+            }
 
-          </div>
+            if (isCareer) {
+              return (
+                <div className="row g-4 portal-course">
+                  <aside className="col-lg-4 d-none d-lg-block">
+                    <div className="portal-course-sidebar rounded-4 p-3">
+                      <div className="course-title mb-3">Career Path</div>
+                      <ul className="list-unstyled chapter-list">
+                        {careerChapters.map((ch) => (
+                          <li key={ch.id} className={`chapter-item ${activeChapter === ch.id ? 'active' : ''}`} onClick={() => updateActiveChapter(ch.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter') updateActiveChapter(ch.id); }}>
+                            <div className="chapter-title">{ch.title}</div>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </aside>
+
+                  <div className="col-12 col-lg-8">
+                    {(isCareer && activeChapter === 'intro' && validated && portalUser?.serviceId && searchParams.get('video') && portalUser.serviceId === searchParams.get('video') && activeVariant === portalUser.serviceId) && (
+                      <div className="portal-info-panel rounded-4 p-4 shadow-sm career-info-panel mb-3">
+                        <div className="portal-panel-badge">Your sacred access</div>
+                        <h2>Welcome back to your career practice</h2>
+                        <p>Keep these details close for your next return to this guided space.</p>
+                        <ul className="list-unstyled portal-credentials">
+                          <li><strong>Service:</strong> Career Manifestation</li>
+                          <li><strong>Payment ID:</strong> {portalUser?.paymentId}</li>
+                        </ul>
+                      </div>
+                    )}
+
+                    {(() => {
+                      const current = careerChapters.find(c => c.id === activeChapter) || careerChapters[0];
+                      if (current.id === 'intro') {
+                        return (<div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>);
+                      }
+                      if (current.id === 'ritual') {
+                        return (<>
+                          <div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>
+                          <div className="video-frame rounded-4 overflow-hidden shadow-lg career-video mb-3" style={{ minHeight: 200 }}>
+                            <iframe title={`${activeVideo.title} — ${current.id}`} width="100%" height="480" src={isTestMode ? debugFallbackVideo : activeVideo.videoUrl} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                          </div>
+                        </>);
+                      }
+                      if (current.id === 'affirmations') {
+                        return (<div className="portal-support-grid row g-3 career-extras mb-3"><div className="col-md-6"><div className="portal-mini-card p-3 rounded-3"><h4 className="h6">Career Intentions</h4><p className="small">Choose one intention to carry into your next step with calm confidence.</p><ul className="small mb-0"><li>— I am aligned with opportunities that suit me.</li><li>— I move forward with clarity and ease.</li></ul></div></div><div className="col-md-6"><div className="portal-mini-card p-3 rounded-3"><h4 className="h6">Reflection Prompts</h4><p className="small">Pause for a moment and notice what feels most alive.</p><ul className="small mb-0"><li>• What opportunity feels most supported right now?</li><li>• One grounded step I can take this week.</li></ul></div></div></div>);
+                      }
+                      return (<div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>);
+                    })()}
+
+                    <div className="d-flex gap-2">
+                      {(() => { const idx = careerChapters.findIndex(c => c.id === activeChapter); return (<><button className="btn btn-outline-light" disabled={idx <= 0} onClick={() => updateActiveChapter(careerChapters[Math.max(0, idx - 1)].id)}>Previous</button><button className="btn btn-light ms-auto" disabled={idx >= careerChapters.length - 1} onClick={() => updateActiveChapter(careerChapters[Math.min(careerChapters.length - 1, idx + 1)].id)}>Next</button></>); })()}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            if (isMoney) {
+              return (
+                <div className="row g-4 portal-course">
+                  <aside className="col-lg-4 d-none d-lg-block">
+                    <div className="portal-course-sidebar rounded-4 p-3">
+                      <div className="course-title mb-3">Abundance Path</div>
+                      <ul className="list-unstyled chapter-list">
+                        {moneyChapters.map((ch) => (
+                          <li key={ch.id} className={`chapter-item ${activeChapter === ch.id ? 'active' : ''}`} onClick={() => updateActiveChapter(ch.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter') updateActiveChapter(ch.id); }}>
+                            <div className="chapter-title">{ch.title}</div>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </aside>
+
+                  <div className="col-12 col-lg-8">
+                    {(isMoney && activeChapter === 'intro' && validated && portalUser?.serviceId && searchParams.get('video') && portalUser.serviceId === searchParams.get('video') && activeVariant === portalUser.serviceId) && (
+                      <div className="portal-info-panel rounded-4 p-4 shadow-sm money-info-panel mb-3">
+                        <div className="portal-panel-badge">💸 Abundance access</div>
+                        <h2>Welcome back to abundance</h2>
+                        <p>Keep these details close for your next return to this grounded space.</p>
+                        <ul className="list-unstyled portal-credentials">
+                          <li><strong>Service:</strong> Money Manifestation</li>
+                          <li><strong>Payment ID:</strong> {portalUser?.paymentId}</li>
+                        </ul>
+                      </div>
+                    )}
+
+                    {(() => {
+                      const current = moneyChapters.find(c => c.id === activeChapter) || moneyChapters[0];
+                      if (current.id === 'intro') {
+                        return (<div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>);
+                      }
+                      if (current.id === 'ritual') {
+                        return (<>
+                          <div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>
+                          <div className="video-frame rounded-4 overflow-hidden shadow-lg money-video mb-3" style={{ minHeight: 200 }}>
+                            <iframe title={`${activeVideo.title} — ${current.id}`} width="100%" height="480" src={isTestMode ? debugFallbackVideo : activeVideo.videoUrl} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                          </div>
+                        </>);
+                      }
+                      if (current.id === 'affirmations') {
+                        return (<div className="portal-support-grid row g-3 money-extras mb-3"><div className="col-md-6"><div className="portal-mini-card p-3 rounded-3"><h4 className="h6">Abundance Affirmations</h4><p className="small">Choose one phrase to carry with you as you welcome steady prosperity.</p><ul className="small mb-0"><li>— I am worthy of steady, joyful abundance.</li><li>— Money flows to me with ease and gratitude.</li></ul></div></div><div className="col-md-6"><div className="portal-mini-card p-3 rounded-3"><h4 className="h6">Wealth Reflection Prompts</h4><p className="small">Pause and notice where your relationship with money is softening.</p><ul className="small mb-0"><li>• Where do I feel most open to receiving?</li><li>• One generous action I can take this week.</li></ul></div></div></div>);
+                      }
+                      return (<div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>);
+                    })()}
+
+                    <div className="d-flex gap-2">
+                      {(() => { const idx = moneyChapters.findIndex(c => c.id === activeChapter); return (<><button className="btn btn-outline-light" disabled={idx <= 0} onClick={() => updateActiveChapter(moneyChapters[Math.max(0, idx - 1)].id)}>Previous</button><button className="btn btn-light ms-auto" disabled={idx >= moneyChapters.length - 1} onClick={() => updateActiveChapter(moneyChapters[Math.min(moneyChapters.length - 1, idx + 1)].id)}>Next</button></>); })()}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            // fallback: existing combined flow for non-portal videos
+            return (
+              <div className="portal-content-stack">
+                {((isMoney || isCareer) && validated && portalUser?.serviceId && searchParams.get('video') && portalUser.serviceId === searchParams.get('video') && activeVariant === portalUser.serviceId) && (
+                  <div className={`portal-info-panel rounded-4 p-4 shadow-sm ${isMoney ? 'money-info-panel' : 'career-info-panel'}`}>
+                    <div className="portal-panel-badge">{isMoney ? '💸 Abundance access' : 'Your sacred access'}</div>
+                    <h2>{isMoney ? 'Welcome back to abundance' : 'Welcome back to success'}</h2>
+                    <p>{isMoney ? 'Keep these details close for your next return to a grounded abundance practice.' : 'Keep these details close for your next return to this calm, guided space.'}</p>
+                    <ul className="list-unstyled portal-credentials">
+                      <li><strong>Service:</strong> {serviceLabel}</li>
+                      <li><strong>Payment ID:</strong> {portalUser?.paymentId}</li>
+                    </ul>
+                    <p className="mt-4 small portal-note">This portal is bound to your device for one-device access so your experience stays intimate and secure.</p>
+                  </div>
+                )}
+
+                <div className={`portal-ritual-card rounded-4 p-4 ${isMoney ? 'money-ritual' : 'career-ritual'}`}>
+                  <div className="ritual-badge">{isMoney ? '💸 Wealth mindset' : '✨ Calm focus'}</div>
+                  <div className="d-flex justify-content-between align-items-start gap-3">
+                    <div>
+                      <h3 className="h5 mb-2">{isMoney ? 'A grounded abundance ritual' : 'A grounded career ritual'}</h3>
+                      <p className="mb-3 small">Settle in, soften your shoulders, and let this moment feel sacred. A few small steps can help you arrive with warmth and clarity.</p>
+                    </div>
+                    <span className="ritual-heart" aria-hidden="true">{isMoney ? '☼' : '✦'}</span>
+                  </div>
+                  <div className="ritual-steps">
+                    <div className="ritual-step">Light a candle or dim the room to create a tender atmosphere.</div>
+                    <div className="ritual-step">Take three slow breaths and gently release anything that feels heavy.</div>
+                    <div className="ritual-step">Repeat softly: "I welcome what is meant for me with grace."</div>
+                  </div>
+                </div>
+
+                <div className={`video-frame rounded-4 overflow-hidden shadow-lg ${isMoney ? 'money-video' : 'career-video'}`} style={{ minHeight: 200, background: isMoney ? 'linear-gradient(135deg,#fff9e8,#fdf1cc)' : 'linear-gradient(135deg,#f4f8ff,#e9f0ff)' }}>
+                  <iframe
+                    title={activeVideo.title}
+                    width="100%"
+                    height="500"
+                    src={isTestMode ? debugFallbackVideo : activeVideo.videoUrl}
+                    frameBorder="0"
+                    style={{ border: isMoney ? '2px solid rgba(255,255,255,0.12)' : '2px solid rgba(255,255,255,0.12)', background: 'transparent' }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                  <div className="mt-2 text-center">
+                    <a href={isTestMode ? debugFallbackVideo : activeVideo.videoUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline-light">Open video in new tab</a>
+                  </div>
+                </div>
+
+                <div className={`portal-support-grid row g-3 ${isMoney ? 'money-extras' : 'career-extras'}`}>
+                  <div className="col-md-6">
+                    <div className="portal-mini-card p-3 rounded-3">
+                      <h4 className="h6">{isMoney ? 'Abundance Affirmations' : 'Career Intentions'}</h4>
+                      <p className="small">{isMoney ? 'Choose one phrase to carry with you as you welcome steady prosperity.' : 'Choose one intention to carry into your next step with calm confidence.'}</p>
+                      <ul className="small mb-0">
+                        <li>{isMoney ? '— I am worthy of steady, joyful abundance.' : '— I am aligned with opportunities that suit me.'}</li>
+                        <li>{isMoney ? '— Money flows to me with ease and gratitude.' : '— I move forward with clarity and ease.'}</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="portal-mini-card p-3 rounded-3">
+                      <h4 className="h6">{isMoney ? 'Wealth Reflection Prompts' : 'Reflection Prompts'}</h4>
+                      <p className="small">{isMoney ? 'Pause and notice where your relationship with money is softening.' : 'Pause for a moment and notice what feels most alive.'}</p>
+                      <ul className="small mb-0">
+                        <li>{isMoney ? '• Where do I feel most open to receiving?' : '• What opportunity feels most supported right now?'}</li>
+                        <li>{isMoney ? '• One generous action I can take this week.' : '• One grounded step I can take this week.'}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()
         ) : (
           <div className="portal-content-stack">
             <div className="login-card-panel rounded-4 p-4 shadow-sm">
