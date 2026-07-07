@@ -20,7 +20,7 @@ $hero-overlay-top: rgba(255, 247, 233, 0.16);
 $hero-overlay-bottom: rgba(24, 20, 52, 0.26);
 $hero-overlay-dark: rgba(10, 10, 28, 0.78);
 $section-light-bg: rgba(245, 236, 255, 0.08);
-$section-dark-bg: rgba(29, 25, 58, 0.9);
+$section-dark-bg: rgb(78, 32, 81);
 $section-label-color: #c3974a;
 $section-radius: 1.5rem;
 $offer-banner-bg: linear-gradient(135deg, #6d4b97 0%, #2f1f56 55%, #101b3f 100%);
@@ -616,6 +616,10 @@ img {
   min-height: 220px;
   flex: 0 0 auto;
   scroll-snap-align: start;
+}
+
+.testimonial-card {
+  background: rgba(156, 104, 13, 0.49);
 }
 
 .testimonial-author {
