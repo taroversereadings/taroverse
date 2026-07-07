@@ -654,15 +654,15 @@ function HomePage() {
                   <p className="mt-3">Our readings blend intuition, tarot symbolism, and compassion. Each session is crafted to help you feel heard, grounded, and confident in your next step.</p>
                   <ul className="list-unstyled mt-4">
                     <li className="mb-4 d-flex gap-3">
-                      <i className="fas fa-sync-alt" style={{ fontSize: '1.8rem', color: '#e9d5b3', flexShrink: 0, marginTop: '0.2rem' }} />
+                      <i className="fas fa-sync-alt" style={{ fontSize: '1.8rem', color: '#c3974a', flexShrink: 0, marginTop: '0.2rem' }} />
                       <div><strong>Energy Exchange:</strong> Every tarot reading is a two-way exchange of energy, allowing intuitive messages to come through specifically for you.</div>
                     </li>
                     <li className="mb-4 d-flex gap-3">
-                      <i className="fas fa-sun" style={{ fontSize: '1.8rem', color: '#e9d5b3', flexShrink: 0, marginTop: '0.2rem' }} />
+                      <i className="fas fa-sun" style={{ fontSize: '1.8rem', color: '#c3974a', flexShrink: 0, marginTop: '0.2rem' }} />
                       <div><strong>Clarity Over Fear:</strong> Honest guidance that empowers your choices instead of creating dependency.</div>
                     </li>
                     <li className="d-flex gap-3">
-                      <i className="fas fa-heart" style={{ fontSize: '1.8rem', color: '#e9d5b3', flexShrink: 0, marginTop: '0.2rem' }} />
+                      <i className="fas fa-heart" style={{ fontSize: '1.8rem', color: '#c3974a', flexShrink: 0, marginTop: '0.2rem' }} />
                       <div><strong>Personal & Intuitive:</strong> Every session is unique because every person's energy, questions, and journey are different.</div>
                     </li>
                   </ul>
