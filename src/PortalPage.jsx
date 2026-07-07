@@ -112,6 +112,7 @@ function PortalPage() {
   const activeVideoId = searchParams.get('video') || portalUser?.serviceId;
   const activeVideo = portalVideos[activeVideoId] || portalVideos.love;
   const isTestMode = searchParams.get('test') === 'true';
+  const isLove = activeVideoId === 'love';
   const debugFallbackVideo = 'https://www.youtube.com/watch?v=Cb6wuzOurPc&list=RDCb6wuzOurPc&start_radio=1';
 
   async function handleLogin(e) {
@@ -140,17 +141,76 @@ function PortalPage() {
   }
 
   return (
-    <div className="app-root portal-page">
+    <div className={`app-root portal-page ${activeVideoId === 'love' ? 'love-active' : ''} ${activeVideoId === 'career' ? 'career-active' : ''}`}>
       <SEO
         title="Manifestation Portal | TaroVerse"
         description="Access your unlocked manifestation portal for love and career guidance. Re-enter with saved portal credentials anytime."
         canonicalPath="/portal"
       />
-      <header className="portal-header text-center text-white py-5">
+      <header className={`portal-header text-center py-5 ${activeVideoId === 'love' ? 'love-active' : ''} ${activeVideoId === 'career' ? 'career-active' : ''}`}>
         <div className="container">
           <span className="section-label">Manifestation Portal</span>
           <h1>{activeVideo.title}</h1>
           <p className="lead mx-auto mt-3" style={{ maxWidth: '720px' }}>{activeVideo.description}</p>
+          {/* Portal overlays */}
+          {activeVideoId === 'love' && (
+            <>
+              <div className="love-lines" aria-hidden="true" />
+              <div className="flower-shower" aria-hidden="true">
+                {Array.from({ length: 16 }).map((_, i) => (
+                  <span key={i} className={`flower f-${i}`}>🌸</span>
+                ))}
+              </div>
+              <div className="love-banner" aria-hidden="true">Love is all around ✨</div>
+            </>
+          )}
+          {activeVideoId === 'career' && (
+            <>
+              <div className="career-lines" aria-hidden="true" />
+              <div className="spark-shower" aria-hidden="true">
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <span key={i} className={`sparkle s-${i}`}>✨</span>
+                ))}
+              </div>
+              <div className="career-banner" aria-hidden="true">Your path is opening ✨</div>
+            </>
+          )}
+          {/* Decorative portal-specific graphics (visual only) */}
+          {activeVideoId === 'love' && (
+            <div className="portal-decor portal-decor-love" aria-hidden="true">
+              <svg className="love-flower" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                <g fill="none" stroke="none">
+                  <circle cx="60" cy="60" r="28" fill="#ffb3d9" opacity="0.85" />
+                  <g transform="translate(60,60)">
+                    <path className="petal p1" d="M0,-28 C10,-28 22,-20 28,-8 C18,-2 10,6 0,14 C-10,6 -18,-2 -28,-8 C-22,-20 -10,-28 0,-28" fill="#ff99cc" />
+                    <path className="petal p2" d="M0,-28 C10,-28 22,-20 28,-8 C18,-2 10,6 0,14 C-10,6 -18,-2 -28,-8 C-22,-20 -10,-28 0,-28" fill="#ffb3d9" transform="rotate(45)" />
+                    <path className="petal p3" d="M0,-28 C10,-28 22,-20 28,-8 C18,-2 10,6 0,14 C-10,6 -18,-2 -28,-8 C-22,-20 -10,-28 0,-28" fill="#ffc9e3" transform="rotate(90)" />
+                  </g>
+                </g>
+              </svg>
+              <div className="love-hearts" aria-hidden="true">
+                <span className="heart h1">❤</span>
+                <span className="heart h2">❤</span>
+                <span className="heart h3">❤</span>
+              </div>
+            </div>
+          )}
+          {activeVideoId === 'career' && (
+            <div className="portal-decor portal-decor-career" aria-hidden="true">
+              <svg className="career-crest" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                <rect x="12" y="18" width="96" height="84" rx="12" fill="#b3d9ff" opacity="0.9" />
+                <g transform="translate(60,60)">
+                  <path d="M-18,-6 h36 v18 h-36 z" fill="#7fb3ff" />
+                  <rect x="-6" y="-18" width="12" height="6" rx="2" fill="#5b94ff" />
+                </g>
+              </svg>
+              <div className="career-icons" aria-hidden="true">
+                <span className="briefcase">💼</span>
+                <span className="spark">✨</span>
+                <span className="spark s2">✨</span>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -160,58 +220,94 @@ function PortalPage() {
             <p className="lead">Validating your portal access…</p>
           </div>
         ) : validated ? (
-          <div className="row g-4">
-            <div className="col-lg-8">
-              <div className="video-frame rounded-4 overflow-hidden shadow-lg" style={{ minHeight: 200, background: '#000' }}>
-                <iframe
-                  title={activeVideo.title}
-                  width="100%"
-                  height="500"
-                  src={isTestMode ? debugFallbackVideo : activeVideo.videoUrl}
-                  frameBorder="0"
-                  style={{ border: '2px solid rgba(255,255,255,0.06)', background: '#000' }}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-                <div className="mt-2 text-center">
-                  <a href={isTestMode ? debugFallbackVideo : activeVideo.videoUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline-light">Open video in new tab</a>
+          <div className="portal-content-stack">
+            <div className={`portal-info-panel rounded-4 p-4 shadow-sm ${isLove ? 'love-info-panel' : 'career-info-panel'}`}>
+              <div className="portal-panel-badge">Your sacred access</div>
+              <h2>{isLove ? 'Welcome back, love' : 'Welcome back'}</h2>
+              <p>{isLove ? 'Keep these details close for your next return to this soft, guided space.' : 'Keep these details close for your next return to this calm, guided space.'}</p>
+              <ul className="list-unstyled portal-credentials">
+                <li><strong>Service:</strong> {portalUser?.serviceId === 'career' ? 'Career Manifestation' : 'Love Spell Manifestation'}</li>
+                <li><strong>Payment ID:</strong> {portalUser?.paymentId}</li>
+              </ul>
+              <p className="mt-4 small portal-note">This portal is bound to your device for one-device access so your experience stays intimate and secure.</p>
+            </div>
+
+            <div className={`portal-ritual-card rounded-4 p-4 ${isLove ? 'love-ritual' : 'career-ritual'}`}>
+              <div className="ritual-badge">{isLove ? '🌷 Soft landing' : '✨ Calm focus'}</div>
+              <div className="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                  <h3 className="h5 mb-2">{isLove ? 'A gentle love ritual' : 'A grounded career ritual'}</h3>
+                  <p className="mb-3 small">Settle in, soften your shoulders, and let this moment feel sacred. A few small steps can help you arrive with warmth and clarity.</p>
+                </div>
+                <span className="ritual-heart" aria-hidden="true">{isLove ? '♡' : '✦'}</span>
+              </div>
+              <div className="ritual-steps">
+                <div className="ritual-step">Light a candle or dim the room to create a tender atmosphere.</div>
+                <div className="ritual-step">Take three slow breaths and gently release anything that feels heavy.</div>
+                <div className="ritual-step">Repeat softly: "I welcome what is meant for me with grace."</div>
+              </div>
+            </div>
+
+            <div className={`video-frame rounded-4 overflow-hidden shadow-lg ${isLove ? 'love-video' : 'career-video'}`} style={{ minHeight: 200, background: isLove ? 'linear-gradient(135deg,#fff5f8,#ffeaf0)' : 'linear-gradient(135deg,#f4f8ff,#e9f0ff)' }}>
+              <iframe
+                title={activeVideo.title}
+                width="100%"
+                height="500"
+                src={isTestMode ? debugFallbackVideo : activeVideo.videoUrl}
+                frameBorder="0"
+                style={{ border: isLove ? '2px solid rgba(255,255,255,0.18)' : '2px solid rgba(255,255,255,0.12)', background: isLove ? 'transparent' : 'transparent' }}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+              <div className="mt-2 text-center">
+                <a href={isTestMode ? debugFallbackVideo : activeVideo.videoUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline-light">Open video in new tab</a>
+              </div>
+            </div>
+
+            <div className={`portal-support-grid row g-3 ${isLove ? 'love-extras' : 'career-extras'}`}>
+              <div className="col-md-6">
+                <div className="portal-mini-card p-3 rounded-3">
+                  <h4 className="h6">{isLove ? 'Affirmations' : 'Career Intentions'}</h4>
+                  <p className="small">{isLove ? 'Play these aloud or whisper them to yourself after the session.' : 'Choose one intention to carry into your next step with calm confidence.'}</p>
+                  <ul className="small mb-0">
+                    <li>{isLove ? '— I deserve loving, kind relationships.' : '— I am aligned with opportunities that suit me.'}</li>
+                    <li>{isLove ? '— I attract warmth and mutual respect.' : '— I move forward with clarity and ease.'}</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="portal-mini-card p-3 rounded-3">
+                  <h4 className="h6">{isLove ? 'Journaling Prompts' : 'Reflection Prompts'}</h4>
+                  <p className="small">{isLove ? 'Reflect briefly after the session.' : 'Pause for a moment and notice what feels most alive.'}</p>
+                  <ul className="small mb-0">
+                    <li>{isLove ? '• What felt most resonant?' : '• What opportunity feels most supported right now?'}</li>
+                    <li>{isLove ? '• One small action I can take this week to invite connection.' : '• One grounded step I can take this week.'}</li>
+                  </ul>
                 </div>
               </div>
             </div>
-            <div className="col-lg-4">
-              <div className="portal-info rounded-4 p-4 shadow-sm">
-                <h2>Welcome back</h2>
-                <p>Use the portal credentials below to re-enter anytime:</p>
-                <ul className="list-unstyled portal-credentials">
-                  <li><strong>Service:</strong> {portalUser?.serviceId === 'career' ? 'Career Manifestation' : 'Love Spell Manifestation'}</li>
-                  <li><strong>Payment ID:</strong> {portalUser?.paymentId}</li>
-                </ul>
-                <p className="mt-4 small text-muted">This portal is bound to your device for one-device access.</p>
-              </div>
-            </div>
+
           </div>
         ) : (
-          <div className="row g-4">
-            <div className="col-lg-6">
-              <div className="login-card rounded-4 p-4 shadow-sm">
-                <h2 className="h5">Portal Login</h2>
-                <p className="small text-muted">Enter the Payment ID and the password emailed to you.</p>
-                <form onSubmit={handleLogin} className="mt-3">
-                  <label className="form-label">Payment ID</label>
-                  <input className="form-control mb-3" value={paymentIdInput} onChange={(e) => setPaymentIdInput(e.target.value)} />
-                  <label className="form-label">Password</label>
-                  <input type="password" className="form-control mb-3" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} />
-                  {loginError && <div className="text-danger mb-3">{loginError}</div>}
-                  <button className="btn btn-primary">Enter Portal</button>
-                </form>
-              </div>
+          <div className="portal-content-stack">
+            <div className="login-card-panel rounded-4 p-4 shadow-sm">
+              <div className="portal-panel-badge">Welcome back</div>
+              <h2 className="h5">Portal Login</h2>
+              <p className="small">Enter the Payment ID and the password emailed to you to return to your guided space.</p>
+              <form onSubmit={handleLogin} className="mt-3">
+                <label className="form-label">Payment ID</label>
+                <input className="form-control mb-3" value={paymentIdInput} onChange={(e) => setPaymentIdInput(e.target.value)} />
+                <label className="form-label">Password</label>
+                <input type="password" className="form-control mb-3" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} />
+                {loginError && <div className="text-danger mb-3">{loginError}</div>}
+                <button className="btn portal-action-btn">Enter Portal</button>
+              </form>
             </div>
-            <div className="col-lg-6">
-              <div className="portal-info rounded-4 p-4 shadow-sm">
-                <h2>Need help?</h2>
-                <p>If you just purchased, check your email for the password. The portal binds to one device when you first log in.</p>
-                <Link to="/" className="btn btn-outline-primary mt-3">Back to Home</Link>
-              </div>
+            <div className="portal-info-panel rounded-4 p-4 shadow-sm">
+              <div className="portal-panel-badge">Need help?</div>
+              <h2>We are here for you</h2>
+              <p>If you just purchased, check your email for the password. The portal binds to one device when you first log in, keeping your experience personal and protected.</p>
+              <Link to="/" className="btn btn-outline-light mt-3">Back to Home</Link>
             </div>
           </div>
         )}

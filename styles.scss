@@ -77,6 +77,48 @@ body {
   color: var(--text-light);
   background: radial-gradient(circle at top, $bg-body-top, transparent 35%),
     linear-gradient(180deg, $bg-body-end-1 0%, $bg-body-end-2 42%, $bg-body-end-3 100%);
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body.portal-page {
+  background: none;
+}
+
+.portal-page {
+  min-height: 100vh;
+  background: transparent;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.portal-page.love-active {
+  background: linear-gradient(180deg, rgba(255, 242, 247, 0.98) 0%, rgba(255, 233, 240, 0.96) 100%);
+}
+
+.portal-page.career-active {
+  background: linear-gradient(180deg, rgba(239, 246, 255, 0.98) 0%, rgba(228, 238, 255, 0.96) 100%);
+}
+
+.portal-page .container {
+  position: relative;
+  z-index: 1;
+}
+
+.portal-page main {
+  padding-top: 2rem;
+}
+
+.portal-page .portal-content-stack,
+.portal-page .portal-info-panel,
+.portal-page .portal-ritual-card,
+.portal-page .video-frame,
+.portal-page .portal-mini-card,
+.portal-page .login-card-panel {
+  position: relative;
+  z-index: 1;
 }
 
 .navbar {
@@ -189,10 +231,475 @@ img {
   z-index: 2;
   padding: 4rem 0 8rem;
 }
+
+/* Portal decorations */
+.portal-header {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  width: 100%;
+  margin: 0;
+  padding: 3rem 0;
+  box-sizing: border-box;
+}
+/* ensure header text color respects portal variants */
+.portal-header { color: var(--text-light); }
+.portal-header .container {
+  position: relative;
+  z-index: 2;
+}
+.portal-header .container > :not(.love-lines):not(.flower-shower):not(.love-banner):not(.career-lines):not(.spark-shower):not(.career-banner):not(.portal-decor) {
+  position: relative;
+  z-index: 2;
+}
+.portal-decor {
+  pointer-events: none;
+  position: absolute;
+  right: 2rem;
+  top: 10px;
+  width: 180px;
+  height: 120px;
+  z-index: 0;
+}
+.portal-decor svg { width: 100%; height: 100%; display: block; }
+
+/* Love portal: floating petals and hearts */
+.portal-decor-love { transform: translateX(10px); }
+.portal-decor-love .petal { transform-origin: 60px 60px; animation: petal-rotate 6s linear infinite; }
+.portal-decor-love .petal.p2 { animation-delay: 0.8s; }
+.portal-decor-love .petal.p3 { animation-delay: 1.6s; }
+.portal-decor-love .love-hearts { position: absolute; left: 8px; top: 60px; display: flex; gap: 6px; }
+.portal-decor-love .heart { display: inline-block; font-size: 1rem; opacity: 0.9; transform-origin: center; animation: heart-float 3s ease-in-out infinite; }
+.portal-decor-love .heart.h2 { animation-delay: 0.35s; font-size:1.25rem; }
+.portal-decor-love .heart.h3 { animation-delay: 0.7s; font-size:0.9rem; }
+
+@keyframes petal-rotate {
+  0% { transform: rotate(0deg) translateZ(0); }
+  50% { transform: rotate(8deg) translateZ(0); }
+  100% { transform: rotate(0deg) translateZ(0); }
+}
+@keyframes heart-float {
+  0% { transform: translateY(0) scale(1); opacity: 0.85; }
+  50% { transform: translateY(-10px) scale(1.08); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 0.85; }
+}
+
+/* Career portal: briefcase and sparks */
+.portal-decor-career { transform: translateX(10px); }
+.portal-decor-career .career-icons { position: absolute; right: 8px; top: 58px; display:flex; gap:8px; }
+.portal-decor-career .career-crest { animation: crest-glow 3.2s ease-in-out infinite; }
+.portal-decor-career .briefcase { font-size: 1.25rem; animation: briefcase-bounce 2.8s ease-in-out infinite; }
+.portal-decor-career .spark { font-size: 0.85rem; color: #ffd; opacity: 0.95; animation: spark-twinkle 2s linear infinite; }
+.portal-decor-career .spark.s2 { animation-delay: 0.6s; font-size:1rem }
+
+@keyframes briefcase-bounce {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+@keyframes spark-twinkle {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+@keyframes crest-glow {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(255,255,255,0)); }
+  50% { transform: scale(1.04); filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); }
+}
+
+/* Portal header variants */
+.portal-header.love-active {
+  background: radial-gradient(ellipse at center, rgba(255, 223, 235, 0.92) 0%, rgba(255, 198, 220, 0.86) 40%, rgba(255, 233, 240, 0.7) 100%);
+  color: #5d1a35;
+  position: relative;
+  overflow: visible;
+}
+.portal-header.career-active {
+  background: radial-gradient(ellipse at center, rgba(234, 243, 255, 0.94) 0%, rgba(206, 223, 255, 0.88) 40%, rgba(241, 248, 255, 0.74) 100%);
+  color: #1d3a5c;
+  position: relative;
+  overflow: visible;
+}
+.portal-header.love-active .section-label { color: #b05a6a; }
+.portal-header.career-active .section-label { color: #5b7cb8; }
+.love-lines {
+  position: absolute;
+  left: -10%;
+  top: 0;
+  width: 120%;
+  height: 100%;
+  background-image: linear-gradient(transparent 60%, rgba(255,255,255,0.06) 60%), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 100% 28px, 40px 100%;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.love-banner,
+.career-banner {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem auto 0;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(107,18,48,0.08);
+  z-index: 2;
+  backdrop-filter: blur(6px);
+  -webkit-font-smoothing: antialiased;
+  opacity: 0.95;
+  width: fit-content;
+}
+.love-banner {
+  color: #6b1230;
+  background: rgba(255, 255, 255, 0.6);
+}
+.career-banner {
+  color: #274364;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.flower-shower,
+.spark-shower { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.flower-shower .flower {
+  position: absolute;
+  top: -8%;
+  font-size: 1.1rem;
+  opacity: 0.95;
+  transform-origin: center;
+  animation: flower-fall linear infinite;
+}
+.spark-shower .sparkle {
+  position: absolute;
+  top: -8%;
+  font-size: 1rem;
+  opacity: 0.95;
+  transform-origin: center;
+  animation: sparkle-fall linear infinite;
+}
+
+@keyframes flower-fall {
+  0% { transform: translateY(-10vh) rotate(0deg) scale(0.9); opacity: 0.95; }
+  50% { transform: translateY(40vh) rotate(160deg) scale(1.05); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(300deg) scale(0.95); opacity: 0.6; }
+}
+
+@keyframes sparkle-fall {
+  0% { transform: translateY(-10vh) rotate(0deg) scale(0.85); opacity: 0.2; }
+  50% { transform: translateY(40vh) rotate(180deg) scale(1.1); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(360deg) scale(0.95); opacity: 0.6; }
+}
+
+@keyframes ritualPulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .portal-header {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  .portal-header h1 {
+    font-size: clamp(2rem, 7vw, 2.8rem);
+    line-height: 1.07;
+  }
+
+  .portal-header .lead {
+    font-size: 1rem;
+    padding: 0 0.25rem;
+  }
+
+  .portal-decor {
+    width: 110px;
+    height: 80px;
+    right: 0.5rem;
+    top: 0.25rem;
+    opacity: 0.8;
+  }
+
+  .portal-decor-love .love-hearts {
+    left: 4px;
+    top: 46px;
+  }
+
+  .portal-decor-career .career-icons {
+    right: 2px;
+    top: 42px;
+  }
+
+  .love-banner,
+  .career-banner {
+    margin-top: 0.75rem;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.74rem;
+    max-width: calc(100% - 2rem);
+  }
+
+  .flower-shower .flower,
+  .spark-shower .sparkle {
+    opacity: 0.45;
+  }
+
+  .portal-content-stack {
+    gap: 1rem;
+  }
+
+  .portal-ritual-card,
+  .portal-info-panel,
+  .login-card-panel,
+  .portal-mini-card {
+    padding: 1rem !important;
+  }
+
+  .ritual-step {
+    font-size: 0.9rem;
+  }
+
+  .video-frame iframe {
+    height: 320px;
+  }
+}
+
+@media (max-width: 576px) {
+  .portal-header {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .portal-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .portal-header .section-label {
+    font-size: 0.8rem;
+  }
+
+  .portal-decor {
+    display: none;
+  }
+
+  .portal-page main {
+    padding-top: 1rem;
+  }
+
+  .portal-credentials li {
+    padding: 0.65rem 0.75rem;
+  }
+}
+
+/* Stagger different flowers with nth-child */
+.flower-shower .flower.f-0 { left: 5%; animation-duration: 8s; animation-delay: 0s; }
+.flower-shower .flower.f-1 { left: 12%; animation-duration: 9s; animation-delay: 0.4s; font-size:1.2rem }
+.flower-shower .flower.f-2 { left: 20%; animation-duration: 7.5s; animation-delay: 0.6s; }
+.flower-shower .flower.f-3 { left: 28%; animation-duration: 10s; animation-delay: 0.2s; }
+.flower-shower .flower.f-4 { left: 36%; animation-duration: 8.6s; animation-delay: 1s; }
+.flower-shower .flower.f-5 { left: 44%; animation-duration: 7.8s; animation-delay: 0.3s; }
+.flower-shower .flower.f-6 { left: 52%; animation-duration: 9.2s; animation-delay: 0.7s; }
+.flower-shower .flower.f-7 { left: 60%; animation-duration: 8.3s; animation-delay: 0.5s; }
+.flower-shower .flower.f-8 { left: 68%; animation-duration: 9.8s; animation-delay: 1.2s; }
+.flower-shower .flower.f-9 { left: 75%; animation-duration: 7.6s; animation-delay: 0.9s; }
+.flower-shower .flower.f-10 { left: 82%; animation-duration: 8.9s; animation-delay: 0.1s; }
+.flower-shower .flower.f-11 { left: 88%; animation-duration: 9.5s; animation-delay: 0.6s; }
+.flower-shower .flower.f-12 { left: 92%; animation-duration: 8.1s; animation-delay: 0.4s; }
+.flower-shower .flower.f-13 { left: 48%; animation-duration: 10.5s; animation-delay: 1.4s; }
+.flower-shower .flower.f-14 { left: 30%; animation-duration: 11s; animation-delay: 1.8s; }
+.flower-shower .flower.f-15 { left: 16%; animation-duration: 9.7s; animation-delay: 0.2s; }
+
+.spark-shower .sparkle.s-0 { left: 8%; animation-duration: 8.2s; animation-delay: 0s; }
+.spark-shower .sparkle.s-1 { left: 16%; animation-duration: 7.8s; animation-delay: 0.3s; font-size: 1.1rem; }
+.spark-shower .sparkle.s-2 { left: 24%; animation-duration: 9.4s; animation-delay: 0.5s; }
+.spark-shower .sparkle.s-3 { left: 32%; animation-duration: 8.6s; animation-delay: 0.1s; }
+.spark-shower .sparkle.s-4 { left: 40%; animation-duration: 7.2s; animation-delay: 0.8s; }
+.spark-shower .sparkle.s-5 { left: 48%; animation-duration: 9s; animation-delay: 0.2s; }
+.spark-shower .sparkle.s-6 { left: 56%; animation-duration: 8.4s; animation-delay: 0.6s; }
+.spark-shower .sparkle.s-7 { left: 64%; animation-duration: 10s; animation-delay: 0.4s; }
+.spark-shower .sparkle.s-8 { left: 72%; animation-duration: 7.6s; animation-delay: 0.9s; }
+.spark-shower .sparkle.s-9 { left: 80%; animation-duration: 8.8s; animation-delay: 0.7s; }
+.spark-shower .sparkle.s-10 { left: 88%; animation-duration: 9.6s; animation-delay: 0.3s; }
+.spark-shower .sparkle.s-11 { left: 94%; animation-duration: 8.1s; animation-delay: 0.5s; }
+
 .section {
   position: relative;
   scroll-margin-top: 90px;
 }
+
+/* Love portal: lighter, warm video area and extra content */
+.portal-content-stack {
+  display: grid;
+  gap: 1.25rem;
+}
+.portal-ritual-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(255, 247, 250, 0.95), rgba(255, 235, 242, 0.92));
+  border: 1px solid rgba(107, 18, 48, 0.08);
+  color: #3b1a23;
+  box-shadow: 0 16px 45px rgba(90, 37, 67, 0.08);
+}
+.portal-ritual-card::after {
+  content: '';
+  position: absolute;
+  inset: auto -10% -40% auto;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(255, 196, 209, 0.35), transparent 68%);
+  pointer-events: none;
+}
+.portal-ritual-card.love-ritual {
+  background: linear-gradient(135deg, rgba(255, 245, 250, 0.98), rgba(255, 233, 240, 0.94));
+}
+.portal-ritual-card.career-ritual {
+  background: linear-gradient(135deg, rgba(244, 248, 255, 0.98), rgba(227, 237, 255, 0.94));
+  color: #233454;
+  border-color: rgba(81, 106, 163, 0.12);
+  box-shadow: 0 16px 45px rgba(52, 80, 144, 0.1);
+}
+.ritual-badge,
+.portal-panel-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+  background: rgba(255, 255, 255, 0.72);
+  color: #8d4460;
+  border: 1px solid rgba(141, 68, 96, 0.12);
+}
+.ritual-heart {
+  font-size: 1.4rem;
+  color: #c56d85;
+  line-height: 1;
+  animation: ritualPulse 2.8s ease-in-out infinite;
+}
+.portal-ritual-card.career-ritual .ritual-heart {
+  color: #5b7cb8;
+}
+.ritual-steps {
+  display: grid;
+  gap: 0.55rem;
+}
+.ritual-step {
+  padding: 0.7rem 0.85rem;
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(107, 18, 48, 0.06);
+  font-size: 0.94rem;
+}
+.love-intro {
+  background: linear-gradient(180deg, rgba(255, 245, 250, 0.9), rgba(255, 236, 243, 0.85));
+  border: 1px solid rgba(107,18,48,0.06);
+  color: #3b1a23;
+}
+.love-video {
+  background: linear-gradient(135deg, rgba(255, 245, 250, 0.6), rgba(255, 233, 240, 0.6));
+}
+.career-video {
+  background: linear-gradient(135deg, rgba(244, 248, 255, 0.72), rgba(229, 238, 255, 0.72));
+}
+.love-card {
+  background: rgba(255, 250, 252, 0.7);
+  border: 1px solid rgba(107,18,48,0.06);
+  color: #3b1a23;
+}
+.portal-mini-card {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(107, 18, 48, 0.06);
+  color: #3b1a23;
+}
+.portal-info-panel,
+.login-card-panel {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(34, 24, 65, 0.95), rgba(52, 36, 86, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  box-shadow: 0 16px 45px rgba(14, 12, 31, 0.18);
+}
+.portal-info-panel::before,
+.login-card-panel::before {
+  content: '';
+  position: absolute;
+  inset: -40px auto auto -30px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 208, 225, 0.18), transparent 70%);
+  pointer-events: none;
+}
+.portal-info-panel h2,
+.login-card-panel h2 {
+  font-family: $font-display;
+  font-size: 1.5rem;
+  margin-bottom: 0.7rem;
+}
+.portal-info-panel.career-info-panel {
+  background: linear-gradient(135deg, rgba(31, 44, 76, 0.95), rgba(48, 66, 112, 0.9));
+}
+.portal-credentials {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+.portal-credentials li {
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.portal-note {
+  color: rgba(249, 245, 238, 0.75);
+}
+.portal-action-btn {
+  background: linear-gradient(135deg, #f9d5e5, #e6b8d1);
+  color: #55243d;
+  border: none;
+  font-weight: 600;
+}
+.portal-action-btn:hover {
+  color: #55243d;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(229, 184, 209, 0.25);
+}
+
+/* Make portal header and surrounding area more loving and remove dark overlays for love */
+.portal-header.love-active {
+  box-shadow: none;
+}
+
+/* Slight accent petals around the video */
+.video-frame.love-video::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle at 10% 10%, rgba(243, 210, 229, 0.12) 0px, transparent 40%), radial-gradient(circle at 90% 80%, rgba(255, 230, 240, 0.08) 0px, transparent 36%);
+  mix-blend-mode: screen;
+}
+
+.video-frame { position: relative; overflow: hidden; }
+.video-frame iframe { position: relative; z-index: 1; }
+.video-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.36), transparent 60%);
+}
+.video-frame.love-video::after { z-index: 2; background: linear-gradient(135deg, rgba(255,255,255,0.45), rgba(255,230,240,0.25)); opacity: 0.8; }
+.video-frame.career-video::after { z-index: 2; background: linear-gradient(135deg, rgba(255,255,255,0.28), rgba(214, 227, 255, 0.2)); opacity: 0.8; }
 
 .section .container {
   position: relative;
