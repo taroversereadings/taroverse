@@ -6,7 +6,7 @@
   --sage: #c4d8d8;
   --text-light: #f9f5ee;
   --text-dark: #28243d;
-  --accent-gold: #f6d59d;
+  --accent-gold: #c3974a;
   --accent-magic: #a468dd;
 }
 
@@ -21,20 +21,20 @@ $hero-overlay-bottom: rgba(24, 20, 52, 0.26);
 $hero-overlay-dark: rgba(10, 10, 28, 0.78);
 $section-light-bg: rgba(245, 236, 255, 0.08);
 $section-dark-bg: rgba(29, 25, 58, 0.9);
-$section-label-color: #f6d59d;
+$section-label-color: #c3974a;
 $section-radius: 1.5rem;
 $offer-banner-bg: linear-gradient(135deg, #6d4b97 0%, #2f1f56 55%, #101b3f 100%);
 $offer-card-bg: rgba(27, 18, 51, 0.76);
-$offer-card-border: rgba(246, 213, 157, 0.16);
+$offer-card-border: rgba(195, 151, 74, 0.16);
 $offer-card-shadow: rgba(23, 17, 58, 0.4);
 $offer-card-hover-shadow: rgba(20, 15, 52, 0.45);
 $offer-banner-hover-shadow: rgba(22, 16, 55, 0.6);
 $offer-card-highlight-bg: linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
 $card-bg: rgba(255, 255, 255, 0.05);
-$card-border: rgba(246, 213, 157, 0.14);
-$panel-border: rgba(246, 213, 157, 0.18);
-$panel-border-soft: rgba(246, 213, 157, 0.12);
-$panel-border-xlight: rgba(246, 213, 157, 0.08);
+$card-border: rgba(195, 151, 74, 0.14);
+$panel-border: rgba(195, 151, 74, 0.18);
+$panel-border-soft: rgba(195, 151, 74, 0.12);
+$panel-border-xlight: rgba(195, 151, 74, 0.08);
 $panel-shadow: rgba(20, 14, 50, 0.22);
 $muted-white-strong: rgba(249, 245, 238, 0.94);
 $muted-white: rgba(249, 245, 238, 0.9);
@@ -44,7 +44,7 @@ $white: #ffffff;
 $text-muted-90: rgba(249, 245, 238, 0.9);
 $text-muted-82: rgba(249, 245, 238, 0.82);
 $hero-btn-min-width: 180px;
-$btn-primary-bg: linear-gradient(135deg, #f6d59d, #c58d52);
+$btn-primary-bg: linear-gradient(135deg, #c3974a, #c58d52);
 $btn-primary-shadow: rgba(197, 138, 63, 0.18);
 $footer-bg: rgba(19, 15, 42, 0.95);
 $social-bg: rgba(255, 255, 255, 0.1);
@@ -88,7 +88,7 @@ body {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  border: rgba(246, 213, 157, 0.35) 1px solid;
+  border: rgba(195, 151, 74, 0.35) 1px solid;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
 
@@ -144,7 +144,7 @@ img {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  border: rgba(246, 213, 157, 0.35) 1px solid;
+  border: rgba(195, 151, 74, 0.35) 1px solid;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
 
@@ -327,27 +327,27 @@ img {
 }
 
 #about .section-label {
-  color: #f3b975;
+  color: $section-label-color;
 }
 
 #services .section-label {
-  color: #e7a55f;
+  color: $section-label-color;
 }
 
 #process .section-label {
-  color: #d58f4d;
+  color: $section-label-color;
 }
 
 #testimonials .section-label {
-  color: #c27a3c;
+  color: $section-label-color;
 }
 
 #schedule .section-label {
-  color: #b2692f;
+  color: $section-label-color;
 }
 
 #contact .section-label {
-  color: #945a27;
+  color: $section-label-color;
 }
 
 /* First 100 special offer banner: Rosewood → Midnight Blue (refined, premium) */
