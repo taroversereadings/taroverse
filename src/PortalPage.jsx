@@ -12,6 +12,11 @@ const portalVideos = {
     title: 'Career Manifestation Journey',
     description: 'Open the pathway to career clarity with a calming, confidence-building manifestation practice.',
     videoUrl: 'https://www.youtube.com/embed/LkK6bE-yUF4'
+  },
+  money: {
+    title: 'Money Manifestation Journey',
+    description: 'Step into a grounded abundance ritual with calm guidance, self-worth affirmations, and graceful money mindset support.',
+    videoUrl: 'https://www.youtube.com/embed/ScMzIvxBSi4'
   }
 };
 
@@ -113,6 +118,13 @@ function PortalPage() {
   const activeVideo = portalVideos[activeVideoId] || portalVideos.love;
   const isTestMode = searchParams.get('test') === 'true';
   const isLove = activeVideoId === 'love';
+  const isMoney = activeVideoId === 'money';
+  const activeVariant = isLove ? 'love' : isMoney ? 'money' : 'career';
+  const serviceLabel = portalUser?.serviceId === 'career'
+    ? 'Career Manifestation'
+    : portalUser?.serviceId === 'money'
+      ? 'Money Manifestation'
+      : 'Love Spell Manifestation';
   const debugFallbackVideo = 'https://www.youtube.com/watch?v=Cb6wuzOurPc&list=RDCb6wuzOurPc&start_radio=1';
 
   async function handleLogin(e) {
@@ -141,13 +153,54 @@ function PortalPage() {
   }
 
   return (
-    <div className={`app-root portal-page ${activeVideoId === 'love' ? 'love-active' : ''} ${activeVideoId === 'career' ? 'career-active' : ''}`}>
+    <div className={`app-root portal-page ${activeVariant === 'love' ? 'love-active' : ''} ${activeVariant === 'career' ? 'career-active' : ''} ${activeVariant === 'money' ? 'money-active' : ''}`}>
+      <div className={`portal-page-ambient ${activeVariant}`} aria-hidden="true">
+        {activeVariant === 'love' && (
+          <div className="ambient-particles ambient-flowers">
+            {Array.from({ length: 24 }).map((_, i) => (
+              <span
+                key={i}
+                className={`ambient-flower f-${i}`}
+                style={{ left: `${3 + (i % 12) * 8}%`, animationDelay: `${i * 0.14}s` }}
+              >
+                🌸
+              </span>
+            ))}
+          </div>
+        )}
+        {activeVariant === 'career' && (
+          <div className="ambient-particles ambient-sparkles">
+            {Array.from({ length: 20 }).map((_, i) => (
+              <span
+                key={i}
+                className={`ambient-sparkle s-${i}`}
+                style={{ left: `${4 + (i % 10) * 9}%`, animationDelay: `${i * 0.12}s` }}
+              >
+                ✨
+              </span>
+            ))}
+          </div>
+        )}
+        {activeVariant === 'money' && (
+          <div className="ambient-particles ambient-coins">
+            {Array.from({ length: 20 }).map((_, i) => (
+              <span
+                key={i}
+                className={`ambient-coin c-${i}`}
+                style={{ left: `${4 + (i % 10) * 9}%`, animationDelay: `${i * 0.13}s` }}
+              >
+                💰
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
       <SEO
         title="Manifestation Portal | TaroVerse"
         description="Access your unlocked manifestation portal for love and career guidance. Re-enter with saved portal credentials anytime."
         canonicalPath="/portal"
       />
-      <header className={`portal-header text-center py-5 ${activeVideoId === 'love' ? 'love-active' : ''} ${activeVideoId === 'career' ? 'career-active' : ''}`}>
+      <header className={`portal-header text-center py-5 ${activeVariant === 'love' ? 'love-active' : ''} ${activeVariant === 'career' ? 'career-active' : ''} ${activeVariant === 'money' ? 'money-active' : ''}`}>
         <div className="container">
           <span className="section-label">Manifestation Portal</span>
           <h1>{activeVideo.title}</h1>
@@ -173,6 +226,17 @@ function PortalPage() {
                 ))}
               </div>
               <div className="career-banner" aria-hidden="true">Your path is opening ✨</div>
+            </>
+          )}
+          {activeVideoId === 'money' && (
+            <>
+              <div className="money-lines" aria-hidden="true" />
+              <div className="gold-shower" aria-hidden="true">
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <span key={i} className={`coin c-${i}`}>💰</span>
+                ))}
+              </div>
+              <div className="money-banner" aria-hidden="true">Abundance is already moving ✨</div>
             </>
           )}
           {/* Decorative portal-specific graphics (visual only) */}
@@ -211,6 +275,21 @@ function PortalPage() {
               </div>
             </div>
           )}
+          {activeVideoId === 'money' && (
+            <div className="portal-decor portal-decor-money" aria-hidden="true">
+              <svg className="money-crest" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                <circle cx="60" cy="60" r="34" fill="#f7d98f" opacity="0.95" />
+                <circle cx="60" cy="60" r="24" fill="#fff3c7" opacity="0.9" />
+                <path d="M44 54h32" stroke="#b07a1f" strokeWidth="4" strokeLinecap="round" />
+                <path d="M50 44c0-8 7-14 14-14 6 0 10 4 10 10 0 7-6 10-14 12-8 2-10 6-10 12 0 4 3 8 8 8 5 0 9-3 10-8" stroke="#b07a1f" strokeWidth="4" strokeLinecap="round" fill="none" />
+              </svg>
+              <div className="money-icons" aria-hidden="true">
+                <span className="coin-icon">🪙</span>
+                <span className="spark">✨</span>
+                <span className="spark s2">✨</span>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -221,25 +300,25 @@ function PortalPage() {
           </div>
         ) : validated ? (
           <div className="portal-content-stack">
-            <div className={`portal-info-panel rounded-4 p-4 shadow-sm ${isLove ? 'love-info-panel' : 'career-info-panel'}`}>
-              <div className="portal-panel-badge">Your sacred access</div>
-              <h2>{isLove ? 'Welcome back, love' : 'Welcome back'}</h2>
-              <p>{isLove ? 'Keep these details close for your next return to this soft, guided space.' : 'Keep these details close for your next return to this calm, guided space.'}</p>
+            <div className={`portal-info-panel rounded-4 p-4 shadow-sm ${isLove ? 'love-info-panel' : isMoney ? 'money-info-panel' : 'career-info-panel'}`}>
+              <div className="portal-panel-badge">{isMoney ? '💸 Abundance access' : 'Your sacred access'}</div>
+              <h2>{isLove ? 'Welcome back, love' : isMoney ? 'Welcome back to abundance' : 'Welcome back'}</h2>
+              <p>{isLove ? 'Keep these details close for your next return to this soft, guided space.' : isMoney ? 'Keep these details close for your next return to a grounded abundance practice.' : 'Keep these details close for your next return to this calm, guided space.'}</p>
               <ul className="list-unstyled portal-credentials">
-                <li><strong>Service:</strong> {portalUser?.serviceId === 'career' ? 'Career Manifestation' : 'Love Spell Manifestation'}</li>
+                <li><strong>Service:</strong> {serviceLabel}</li>
                 <li><strong>Payment ID:</strong> {portalUser?.paymentId}</li>
               </ul>
               <p className="mt-4 small portal-note">This portal is bound to your device for one-device access so your experience stays intimate and secure.</p>
             </div>
 
-            <div className={`portal-ritual-card rounded-4 p-4 ${isLove ? 'love-ritual' : 'career-ritual'}`}>
-              <div className="ritual-badge">{isLove ? '🌷 Soft landing' : '✨ Calm focus'}</div>
+            <div className={`portal-ritual-card rounded-4 p-4 ${isLove ? 'love-ritual' : isMoney ? 'money-ritual' : 'career-ritual'}`}>
+              <div className="ritual-badge">{isLove ? '🌷 Soft landing' : isMoney ? '💸 Wealth mindset' : '✨ Calm focus'}</div>
               <div className="d-flex justify-content-between align-items-start gap-3">
                 <div>
-                  <h3 className="h5 mb-2">{isLove ? 'A gentle love ritual' : 'A grounded career ritual'}</h3>
+                  <h3 className="h5 mb-2">{isLove ? 'A gentle love ritual' : isMoney ? 'A grounded abundance ritual' : 'A grounded career ritual'}</h3>
                   <p className="mb-3 small">Settle in, soften your shoulders, and let this moment feel sacred. A few small steps can help you arrive with warmth and clarity.</p>
                 </div>
-                <span className="ritual-heart" aria-hidden="true">{isLove ? '♡' : '✦'}</span>
+                <span className="ritual-heart" aria-hidden="true">{isLove ? '♡' : isMoney ? '☼' : '✦'}</span>
               </div>
               <div className="ritual-steps">
                 <div className="ritual-step">Light a candle or dim the room to create a tender atmosphere.</div>
@@ -248,7 +327,7 @@ function PortalPage() {
               </div>
             </div>
 
-            <div className={`video-frame rounded-4 overflow-hidden shadow-lg ${isLove ? 'love-video' : 'career-video'}`} style={{ minHeight: 200, background: isLove ? 'linear-gradient(135deg,#fff5f8,#ffeaf0)' : 'linear-gradient(135deg,#f4f8ff,#e9f0ff)' }}>
+            <div className={`video-frame rounded-4 overflow-hidden shadow-lg ${isLove ? 'love-video' : isMoney ? 'money-video' : 'career-video'}`} style={{ minHeight: 200, background: isLove ? 'linear-gradient(135deg,#fff5f8,#ffeaf0)' : isMoney ? 'linear-gradient(135deg,#fff9e8,#fdf1cc)' : 'linear-gradient(135deg,#f4f8ff,#e9f0ff)' }}>
               <iframe
                 title={activeVideo.title}
                 width="100%"
@@ -264,24 +343,24 @@ function PortalPage() {
               </div>
             </div>
 
-            <div className={`portal-support-grid row g-3 ${isLove ? 'love-extras' : 'career-extras'}`}>
+            <div className={`portal-support-grid row g-3 ${isLove ? 'love-extras' : isMoney ? 'money-extras' : 'career-extras'}`}>
               <div className="col-md-6">
                 <div className="portal-mini-card p-3 rounded-3">
-                  <h4 className="h6">{isLove ? 'Affirmations' : 'Career Intentions'}</h4>
-                  <p className="small">{isLove ? 'Play these aloud or whisper them to yourself after the session.' : 'Choose one intention to carry into your next step with calm confidence.'}</p>
+                  <h4 className="h6">{isLove ? 'Affirmations' : isMoney ? 'Abundance Affirmations' : 'Career Intentions'}</h4>
+                  <p className="small">{isLove ? 'Play these aloud or whisper them to yourself after the session.' : isMoney ? 'Choose one phrase to carry with you as you welcome steady prosperity.' : 'Choose one intention to carry into your next step with calm confidence.'}</p>
                   <ul className="small mb-0">
-                    <li>{isLove ? '— I deserve loving, kind relationships.' : '— I am aligned with opportunities that suit me.'}</li>
-                    <li>{isLove ? '— I attract warmth and mutual respect.' : '— I move forward with clarity and ease.'}</li>
+                    <li>{isLove ? '— I deserve loving, kind relationships.' : isMoney ? '— I am worthy of steady, joyful abundance.' : '— I am aligned with opportunities that suit me.'}</li>
+                    <li>{isLove ? '— I attract warmth and mutual respect.' : isMoney ? '— Money flows to me with ease and gratitude.' : '— I move forward with clarity and ease.'}</li>
                   </ul>
                 </div>
               </div>
               <div className="col-md-6">
                 <div className="portal-mini-card p-3 rounded-3">
-                  <h4 className="h6">{isLove ? 'Journaling Prompts' : 'Reflection Prompts'}</h4>
-                  <p className="small">{isLove ? 'Reflect briefly after the session.' : 'Pause for a moment and notice what feels most alive.'}</p>
+                  <h4 className="h6">{isLove ? 'Journaling Prompts' : isMoney ? 'Wealth Reflection Prompts' : 'Reflection Prompts'}</h4>
+                  <p className="small">{isLove ? 'Reflect briefly after the session.' : isMoney ? 'Pause and notice where your relationship with money is softening.' : 'Pause for a moment and notice what feels most alive.'}</p>
                   <ul className="small mb-0">
-                    <li>{isLove ? '• What felt most resonant?' : '• What opportunity feels most supported right now?'}</li>
-                    <li>{isLove ? '• One small action I can take this week to invite connection.' : '• One grounded step I can take this week.'}</li>
+                    <li>{isLove ? '• What felt most resonant?' : isMoney ? '• Where do I feel most open to receiving?' : '• What opportunity feels most supported right now?'}</li>
+                    <li>{isLove ? '• One small action I can take this week to invite connection.' : isMoney ? '• One generous action I can take this week.' : '• One grounded step I can take this week.'}</li>
                   </ul>
                 </div>
               </div>

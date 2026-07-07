@@ -52,6 +52,15 @@ const servicePricing = {
     description: 'Unlock the Career Manifestation portal',
     calendly: '',
     portal: true
+  },
+  money: {
+    id: 'money',
+    label: 'Money Manifestation',
+    amount: 1999,
+    duration: 'Instant access',
+    description: 'Unlock the Money Manifestation portal',
+    calendly: '',
+    portal: true
   }
 };
 
@@ -143,102 +152,142 @@ const fixedPriceOverrides = {
   USD: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   EUR: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   GBP: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   CAD: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   AUD: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   NZD: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   SGD: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   CHF: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   AED: {
     single: 200,
     three: 400,
-    deep: 600
+    deep: 600,
+    love: 400,
+    career: 400
   },
   ZAR: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   ARS: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   BYN: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   CLP: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   CRC: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   JMD: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   TTD: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   BBD: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   BZD: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   RUB: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   },
   CNY: {
     single: 100,
     three: 200,
-    deep: 300
+    deep: 300,
+    love: 400,
+    career: 400
   }
 };
 
@@ -724,11 +773,11 @@ function HomePage() {
               <h2>Unlock Your Manifestation Portal</h2>
               <p className="mx-auto lead" style={{ maxWidth: '720px' }}>Choose a guided manifestation journey and pay once to unlock lifetime re-entry with your portal credentials.</p>
             </div>
-            <div className="row g-4">
+            <div className="row g-4 justify-content-center">
               {Object.values(servicePricing)
                 .filter((serviceItem) => serviceItem.portal)
                 .map((serviceItem) => (
-                  <div className="col-md-6" key={serviceItem.id}>
+                  <div className="col-lg-4 col-md-6" key={serviceItem.id}>
                     <div className="manifestation-card rounded-4 p-4 shadow animate-zoomIn h-100 d-flex flex-column">
                       <h3>{serviceItem.label}</h3>
                       <p>{serviceItem.description}</p>

@@ -80,7 +80,7 @@ app.post('/record-payment', async (req, res) => {
       return res.status(400).json({ error: 'Missing required payment data.' });
     }
 
-    const isPortalService = ['love', 'career'].includes(serviceId);
+    const isPortalService = ['love', 'career', 'money'].includes(serviceId);
     const portalUser = isPortalService
       ? {
           serviceId,

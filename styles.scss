@@ -92,6 +92,61 @@ body.portal-page {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  position: relative;
+}
+
+.portal-page-ambient {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.portal-page-ambient .ambient-particles {
+  position: absolute;
+  inset: 0;
+}
+
+.portal-page-ambient .ambient-flower,
+.portal-page-ambient .ambient-sparkle,
+.portal-page-ambient .ambient-coin {
+  position: absolute;
+  top: -8vh;
+  font-size: 1rem;
+  opacity: 0.95;
+  animation: ambient-fall linear infinite;
+  will-change: transform, opacity;
+}
+
+.portal-page-ambient.love .ambient-flower {
+  animation-duration: 8s;
+}
+
+.portal-page-ambient.career .ambient-sparkle {
+  animation-duration: 9s;
+}
+
+.portal-page-ambient.money .ambient-coin {
+  animation-duration: 9.5s;
+}
+
+@keyframes ambient-fall {
+  0% {
+    transform: translate3d(0, -10vh, 0) rotate(0deg) scale(0.85);
+    opacity: 0.15;
+  }
+  20% {
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate3d(0, 45vh, 0) rotate(180deg) scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 110vh, 0) rotate(360deg) scale(0.95);
+    opacity: 0.2;
+  }
 }
 
 .portal-page.love-active {
@@ -102,7 +157,13 @@ body.portal-page {
   background: linear-gradient(180deg, rgba(239, 246, 255, 0.98) 0%, rgba(228, 238, 255, 0.96) 100%);
 }
 
-.portal-page .container {
+.portal-page.money-active {
+  background: linear-gradient(180deg, rgba(255, 247, 222, 0.98) 0%, rgba(250, 240, 205, 0.96) 100%);
+}
+
+.portal-page .container,
+.portal-page header,
+.portal-page main {
   position: relative;
   z-index: 1;
 }
@@ -320,8 +381,15 @@ img {
   position: relative;
   overflow: visible;
 }
+.portal-header.money-active {
+  background: radial-gradient(ellipse at center, rgba(255, 248, 220, 0.96) 0%, rgba(250, 235, 177, 0.9) 40%, rgba(255, 248, 230, 0.76) 100%);
+  color: #5d4518;
+  position: relative;
+  overflow: visible;
+}
 .portal-header.love-active .section-label { color: #b05a6a; }
 .portal-header.career-active .section-label { color: #5b7cb8; }
+.portal-header.money-active .section-label { color: #a67a22; }
 .love-lines {
   position: absolute;
   left: -10%;
@@ -336,7 +404,8 @@ img {
 }
 
 .love-banner,
-.career-banner {
+.career-banner,
+.money-banner {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -365,9 +434,14 @@ img {
   color: #274364;
   background: rgba(255, 255, 255, 0.65);
 }
+.money-banner {
+  color: #6c4d14;
+  background: rgba(255, 255, 255, 0.65);
+}
 
 .flower-shower,
-.spark-shower { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.spark-shower,
+.gold-shower { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
 .flower-shower .flower {
   position: absolute;
   top: -8%;
@@ -384,6 +458,14 @@ img {
   transform-origin: center;
   animation: sparkle-fall linear infinite;
 }
+.gold-shower .coin {
+  position: absolute;
+  top: -8%;
+  font-size: 1rem;
+  opacity: 0.95;
+  transform-origin: center;
+  animation: coin-fall linear infinite;
+}
 
 @keyframes flower-fall {
   0% { transform: translateY(-10vh) rotate(0deg) scale(0.9); opacity: 0.95; }
@@ -394,6 +476,11 @@ img {
 @keyframes sparkle-fall {
   0% { transform: translateY(-10vh) rotate(0deg) scale(0.85); opacity: 0.2; }
   50% { transform: translateY(40vh) rotate(180deg) scale(1.1); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(360deg) scale(0.95); opacity: 0.6; }
+}
+@keyframes coin-fall {
+  0% { transform: translateY(-10vh) rotate(0deg) scale(0.85); opacity: 0.2; }
+  50% { transform: translateY(40vh) rotate(180deg) scale(1.08); opacity: 1; }
   100% { transform: translateY(100vh) rotate(360deg) scale(0.95); opacity: 0.6; }
 }
 
@@ -563,6 +650,12 @@ img {
   border-color: rgba(81, 106, 163, 0.12);
   box-shadow: 0 16px 45px rgba(52, 80, 144, 0.1);
 }
+.portal-ritual-card.money-ritual {
+  background: linear-gradient(135deg, rgba(255, 249, 231, 0.98), rgba(250, 238, 195, 0.94));
+  color: #5a4214;
+  border-color: rgba(160, 118, 29, 0.14);
+  box-shadow: 0 16px 45px rgba(122, 93, 24, 0.1);
+}
 .ritual-badge,
 .portal-panel-badge {
   display: inline-flex;
@@ -586,6 +679,9 @@ img {
 .portal-ritual-card.career-ritual .ritual-heart {
   color: #5b7cb8;
 }
+.portal-ritual-card.money-ritual .ritual-heart {
+  color: #a67a22;
+}
 .ritual-steps {
   display: grid;
   gap: 0.55rem;
@@ -607,6 +703,9 @@ img {
 }
 .career-video {
   background: linear-gradient(135deg, rgba(244, 248, 255, 0.72), rgba(229, 238, 255, 0.72));
+}
+.money-video {
+  background: linear-gradient(135deg, rgba(255, 247, 218, 0.76), rgba(251, 235, 182, 0.74));
 }
 .love-card {
   background: rgba(255, 250, 252, 0.7);
@@ -646,6 +745,9 @@ img {
 }
 .portal-info-panel.career-info-panel {
   background: linear-gradient(135deg, rgba(31, 44, 76, 0.95), rgba(48, 66, 112, 0.9));
+}
+.portal-info-panel.money-info-panel {
+  background: linear-gradient(135deg, rgba(92, 62, 20, 0.95), rgba(137, 96, 30, 0.9));
 }
 .portal-credentials {
   display: grid;
@@ -700,6 +802,7 @@ img {
 }
 .video-frame.love-video::after { z-index: 2; background: linear-gradient(135deg, rgba(255,255,255,0.45), rgba(255,230,240,0.25)); opacity: 0.8; }
 .video-frame.career-video::after { z-index: 2; background: linear-gradient(135deg, rgba(255,255,255,0.28), rgba(214, 227, 255, 0.2)); opacity: 0.8; }
+.video-frame.money-video::after { z-index: 2; background: linear-gradient(135deg, rgba(255,255,255,0.28), rgba(250, 235, 182, 0.2)); opacity: 0.8; }
 
 .section .container {
   position: relative;
