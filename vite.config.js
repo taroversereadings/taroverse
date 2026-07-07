@@ -11,6 +11,8 @@ export default defineConfig({
     proxy: {
       '/create-order': 'http://localhost:3000',
       '/record-payment': 'http://localhost:3000',
+      '/portal-login': 'http://localhost:3000',
+      '/validate-portal': 'http://localhost:3000',
       '/export-payments': 'http://localhost:3000'
     }
   }

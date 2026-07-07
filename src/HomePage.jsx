@@ -34,6 +34,24 @@ const servicePricing = {
     duration: '60 mins',
     description: 'Private booking confirmation',
     calendly: 'https://calendly.com/shivangiarora424/new-meeting-1?month=2026-06'
+  },
+  love: {
+    id: 'love',
+    label: 'Love Spell Manifestation',
+    amount: 1999,
+    duration: 'Instant access',
+    description: 'Unlock the Love Spell Manifestation portal',
+    calendly: '',
+    portal: true
+  },
+  career: {
+    id: 'career',
+    label: 'Career Manifestation',
+    amount: 1999,
+    duration: 'Instant access',
+    description: 'Unlock the Career Manifestation portal',
+    calendly: '',
+    portal: true
   }
 };
 
@@ -52,6 +70,7 @@ const testimonials = [
 const sections = [
   { id: 'about', label: 'About' },
   { id: 'services', label: 'Services' },
+  { id: 'manifestations', label: 'Manifestations' },
   { id: 'testimonials', label: 'Testimonials' },
   { id: 'schedule', label: 'Schedule' }
 ];
@@ -319,10 +338,28 @@ function HomePage() {
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [userCurrency, setUserCurrency] = useState('INR');
   const [userLocale, setUserLocale] = useState('en-IN');
+  const [portalAccess, setPortalAccess] = useState(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      return JSON.parse(localStorage.getItem('taroversePortalAccess')) || [];
+    } catch {
+      return [];
+    }
+  });
+  const [portalUser, setPortalUser] = useState(() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      return JSON.parse(localStorage.getItem('taroversePortalUser'));
+    } catch {
+      return null;
+    }
+  });
+  const [portalEmail, setPortalEmail] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
 
   const service = useMemo(() => servicePricing[selectedService], [selectedService]);
-  const bookingUrl = useMemo(() => service.calendly, [service]);
+  const bookingUrl = useMemo(() => (service.portal ? '' : service.calendly), [service]);
+  const isPortalService = service.portal === true;
 
   const updatePaymentStatus = (message, type = 'info') => {
     setPaymentStatus({ message, type });
@@ -342,7 +379,7 @@ function HomePage() {
   };
 
   useEffect(() => {
-    if (paymentCompleted && window.Calendly && typeof window.Calendly.initInlineWidget === 'function') {
+    if (paymentCompleted && bookingUrl && window.Calendly && typeof window.Calendly.initInlineWidget === 'function') {
       const widgetContainer = document.getElementById('calendlyInlineWidget');
       if (widgetContainer) {
         widgetContainer.innerHTML = '';
@@ -391,6 +428,19 @@ function HomePage() {
     }
   };
 
+  const handleManifestationClick = (videoId) => {
+    if (portalAccess.includes(videoId)) {
+      window.location.href = `/portal?video=${videoId}`;
+      return;
+    }
+
+    setSelectedService(videoId);
+    const scheduleSection = document.getElementById('schedule');
+    if (scheduleSection) {
+      scheduleSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const handleExportPayments = () => {
     const month = new Date().toISOString().slice(0, 7);
     const exportUrl = `/export-payments?month=${month}`;
@@ -403,8 +453,13 @@ function HomePage() {
   };
 
   const handlePayment = async () => {
-    if (!bookingUrl) {
+    if (!bookingUrl && !service.portal) {
       updatePaymentStatus('Booking URL is not configured. Please choose a service.', 'error');
+      return;
+    }
+
+    if (service.portal && !portalEmail) {
+      updatePaymentStatus('Please provide an email to receive your portal password.', 'error');
       return;
     }
 
@@ -440,21 +495,41 @@ function HomePage() {
 
       const recordPayment = async (paymentResponse) => {
         try {
-          await fetch(RECORD_PAYMENT_ENDPOINT, {
+          const recordResponse = await fetch(RECORD_PAYMENT_ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               paymentId: paymentResponse.razorpay_payment_id,
               orderId: paymentResponse.razorpay_order_id,
               service: service.label,
+              serviceId: service.id,
               duration: service.duration,
               amount: service.amount,
               currency: 'INR',
-              receipt: checkout.order.receipt || ''
+              receipt: checkout.order.receipt || '',
+              email: service.portal ? portalEmail : ''
             })
           });
+
+          if (!recordResponse.ok) {
+            const recordErrorText = await recordResponse.text();
+            console.error('Failed to record payment:', recordErrorText);
+            return null;
+          }
+
+          const recordResult = await recordResponse.json();
+          if (recordResult.user) {
+            const updatedAccess = Array.from(new Set([...portalAccess, service.id]));
+            localStorage.setItem('taroversePortalAccess', JSON.stringify(updatedAccess));
+            localStorage.setItem('taroversePortalUser', JSON.stringify(recordResult.user));
+            setPortalAccess(updatedAccess);
+            setPortalUser(recordResult.user);
+          }
+
+          return recordResult;
         } catch (recordError) {
           console.error('Failed to record payment:', recordError);
+          return null;
         }
       };
 
@@ -465,10 +540,14 @@ function HomePage() {
         name: 'TaroVerse Readings',
         description: `${service.label} • ${service.duration}`,
         order_id: checkout.order.id,
-        handler: (response) => {
+        handler: async (response) => {
           setPaymentCompleted(true);
           updatePaymentStatus('Payment confirmed. Your booking window is now unlocked.', 'success');
-          recordPayment(response);
+          const recordResult = await recordPayment(response);
+          if (service.portal) {
+            const portalUrl = `/portal?video=${service.id}`;
+            window.location.href = portalUrl;
+          }
         },
         prefill: {
           name: '',
@@ -610,29 +689,65 @@ function HomePage() {
               <span className="divine-number" style={{ '--x': '52%', '--y': '76%', '--delay': '0.6s' }}>222</span>
             </div>
             <div className="row g-4">
-              {Object.values(servicePricing).map((serviceItem) => (
-                <div className="col-md-6 col-lg-4" key={serviceItem.label}>
-                  <div
-                    className="service-card rounded-4 p-4 h-100 shadow animate-zoomIn d-flex flex-column"
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => handleServiceCardClick(serviceItem.id)}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault();
-                        handleServiceCardClick(serviceItem.id);
-                      }
-                    }}
-                  >
-                    <img src={serviceItem.amount === 199 ? service1Url : serviceItem.amount === 599 ? service2Url : service3Url} alt={serviceItem.label} className="service-image rounded-4 mb-3" decoding="async" loading="lazy" />
-                    <h3>{serviceItem.label}</h3>
-                    <p>{serviceItem.amount === 199 ? 'Receive a clear yes, no, or “not yet” answer to one specific question.' : serviceItem.amount === 599 ? 'Gain clarity by exploring the past, present, and likely path ahead.' : 'A personalized tarot session to explore recurring patterns, relationships, and life purpose.'}</p>
-                    <div className="pricing-badge mt-auto" style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                      <p className="mb-1" style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)' }}><strong>{formatLocalPrice(serviceItem.amount, userCurrency, userLocale, serviceItem.id)}</strong> • {serviceItem.duration}</p>
+              {Object.values(servicePricing)
+                .filter((serviceItem) => !serviceItem.portal)
+                .map((serviceItem) => (
+                  <div className="col-md-6 col-lg-4" key={serviceItem.label}>
+                    <div
+                      className="service-card rounded-4 p-4 h-100 shadow animate-zoomIn d-flex flex-column"
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => handleServiceCardClick(serviceItem.id)}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          handleServiceCardClick(serviceItem.id);
+                        }
+                      }}
+                    >
+                      <img src={serviceItem.amount === 199 ? service1Url : serviceItem.amount === 599 ? service2Url : service3Url} alt={serviceItem.label} className="service-image rounded-4 mb-3" decoding="async" loading="lazy" />
+                      <h3>{serviceItem.label}</h3>
+                      <p>{serviceItem.amount === 199 ? 'Receive a clear yes, no, or “not yet” answer to one specific question.' : serviceItem.amount === 599 ? 'Gain clarity by exploring the past, present, and likely path ahead.' : 'A personalized tarot session to explore recurring patterns, relationships, and life purpose.'}</p>
+                      <div className="pricing-badge mt-auto" style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                        <p className="mb-1" style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)' }}><strong>{formatLocalPrice(serviceItem.amount, userCurrency, userLocale, serviceItem.id)}</strong> • {serviceItem.duration}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+            </div>
+          </div>
+        </section>
+          <section className="section section-dark text-white" id="manifestations">
+          <div className="container">
+            <div className="text-center mb-5">
+              <span className="section-label">Manifestations</span>
+              <h2>Unlock Your Manifestation Portal</h2>
+              <p className="mx-auto lead" style={{ maxWidth: '720px' }}>Choose a guided manifestation journey and pay once to unlock lifetime re-entry with your portal credentials.</p>
+            </div>
+            <div className="row g-4">
+              {Object.values(servicePricing)
+                .filter((serviceItem) => serviceItem.portal)
+                .map((serviceItem) => (
+                  <div className="col-md-6" key={serviceItem.id}>
+                    <div className="manifestation-card rounded-4 p-4 shadow animate-zoomIn h-100 d-flex flex-column">
+                      <h3>{serviceItem.label}</h3>
+                      <p>{serviceItem.description}</p>
+                      <div className="mt-3 mb-4">
+                        <strong>{formatLocalPrice(serviceItem.amount, userCurrency, userLocale, serviceItem.id)}</strong> • {serviceItem.duration}
+                      </div>
+                      <button
+                        type="button"
+                        className="btn btn-outline-light mt-auto"
+                        onClick={() => handleManifestationClick(serviceItem.id)}
+                      >
+                        {portalAccess.includes(serviceItem.id) ? 'Enter portal' : 'Pay to unlock'}
+                      </button>
+                      {portalAccess.includes(serviceItem.id) && (
+                        <p className="mt-3 small text-white-50">You already have access. Open the portal or use your stored credentials later.</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
             </div>
           </div>
         </section>
@@ -669,44 +784,78 @@ function HomePage() {
 
                   <label className="form-label" htmlFor="booking-service">Choose a session</label>
                   <select id="booking-service" className="form-select mb-3" value={selectedService} onChange={(e) => setSelectedService(e.target.value)}>
-                    <option value="single">Single Card Insight</option>
-                    <option value="three">Three-Card Spread</option>
-                    <option value="deep">Deep Insight Session</option>
+                    {Object.values(servicePricing).map((serviceItem) => (
+                      <option key={serviceItem.id} value={serviceItem.id}>
+                        {serviceItem.label}
+                      </option>
+                    ))}
                   </select>
 
-                  <div className="d-flex justify-content-between mb-2">
-                    <span>Amount</span>
-                    <strong>{formatLocalPrice(service.amount, userCurrency, userLocale, service.id)}</strong>
-                  </div>
-                  <div className="booking-meta-row mb-3">
-                    <span className="booking-meta-label">Includes</span>
-                    <span className="booking-meta-value">{service.duration} • {service.description}</span>
-                  </div>
-
-                  <button type="button" className="btn btn-primary w-100" onClick={handlePayment}>Pay & unlock booking</button>
-                  {isAdmin && (
-                    <button type="button" className="btn btn-outline-light w-100 mt-3" onClick={handleExportPayments}>
-                      Download current month report
-                    </button>
+                  {service.portal && (
+                    <div className="mb-3">
+                      <label className="form-label" htmlFor="portal-email">Email for portal access</label>
+                      <input id="portal-email" type="email" className="form-control" placeholder="you@example.com" value={portalEmail} onChange={(e) => setPortalEmail(e.target.value)} />
+                      <div className="form-text">We will email a one-time password to this address to access your portal on a single device.</div>
+                    </div>
                   )}
-                  <div className={`payment-status mt-3 ${paymentStatus.type}`}>{paymentStatus.message}</div>
+
+                    <div className="d-flex justify-content-between mb-2">
+                      <span>Amount</span>
+                      <strong>{formatLocalPrice(service.amount, userCurrency, userLocale, service.id)}</strong>
+                    </div>
+                    <div className="booking-meta-row mb-3">
+                      <span className="booking-meta-label">Includes</span>
+                      <span className="booking-meta-value">{service.duration} • {service.description}</span>
+                    </div>
+
+                    <button type="button" className="btn btn-primary w-100" onClick={handlePayment}>
+                      {service.portal ? 'Pay to unlock portal' : 'Pay & unlock booking'}
+                    </button>
+                      {isAdmin && (
+                      <button type="button" className="btn btn-outline-light w-100 mt-3" onClick={handleExportPayments}>
+                        Download current month report
+                      </button>
+                    )}
+                    {service.portal && portalAccess.includes(service.id) && (
+                      <a href={`/portal?video=${service.id}`} className="btn btn-outline-light w-100 mt-3">Go to your manifestation portal</a>
+                    )}
+                    <div className={`payment-status mt-3 ${paymentStatus.type}`}>{paymentStatus.message}</div>
                   <p className="text-white-50 small mt-3 mb-0">No refunds once payment is completed. If you face any payment issue, email <a href="mailto:taroverse.readings@gmail.com" className="text-white">taroverse.readings@gmail.com</a>.</p>
                 </div>
 
-                <div className="calendly-widget rounded-4 shadow-lg overflow-hidden">
-                  <div className="text-white mb-3">{paymentCompleted ? 'Your booking widget is ready. Please choose a slot below.' : '🔒 Complete payment above to unlock booking. Select a service and pay to see available slots.'}</div>
-                  <div className="calendly-inline-widget" id="calendlyInlineWidget" style={{ minWidth: '320px' }}>
-                    {!paymentCompleted && (
-                      <div className="p-4 text-center text-white" style={{ minHeight: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <p style={{ fontSize: '1.1rem', color: '#ddd', margin: 0 }}>🔒 Booking widget will appear after payment</p>
+                {service.portal ? (
+                  <div className="portal-placeholder rounded-4 shadow-lg p-4">
+                    <div className="text-white mb-2">This service opens the manifestation portal in a new page. Complete payment to receive portal credentials via email and access on a single device.</div>
+                    {!portalAccess.includes(service.id) && (
+                      <div className="p-3 text-white-50" style={{ minHeight: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <p style={{ margin: 0 }}>🔒 Complete payment above to unlock the portal. After payment you'll be redirected and emailed credentials.</p>
+                      </div>
+                    )}
+                    {portalAccess.includes(service.id) && (
+                      <div className="d-flex gap-2">
+                        <a href={`/portal?video=${service.id}`} className="btn btn-outline-light">Open portal</a>
+                        <a href={`/portal?video=${service.id}`} className="btn btn-light">Open in new tab</a>
                       </div>
                     )}
                   </div>
-                </div>
+                ) : (
+                  <div className="calendly-widget rounded-4 shadow-lg overflow-hidden">
+                    <div className="text-white mb-3">{paymentCompleted ? 'Your booking widget is ready. Please choose a slot below.' : '🔒 Complete payment above to unlock booking. Select a service and pay to see available slots.'}</div>
+                    <div className="calendly-inline-widget" id="calendlyInlineWidget" style={{ minWidth: '320px' }}>
+                      {!paymentCompleted && (
+                        <div className="p-4 text-center text-white" style={{ minHeight: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <p style={{ fontSize: '1.1rem', color: '#ddd', margin: 0 }}>🔒 Booking widget will appear after payment</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </section>
+
+      
 
         <section className="section section-dark text-white" id="testimonials">
           <div className="container">
@@ -746,7 +895,7 @@ function HomePage() {
           { icon: 'fab fa-linkedin-in', href: 'https://www.linkedin.com/company/taroverse-readings' },
           { icon: 'fab fa-facebook-f', href: 'https://www.facebook.com/taroverse.readings' },
           { icon: 'x', href: 'https://x.com/taroverse5' },
-          { icon: 'fab fa-youtube', href: 'https://www.youtube.com/@taroverse' }
+          { icon: 'fab fa-youtube', href: 'https://www.youtube.com/@TaroVerse.readings' }
         ].map((item) => (
           <a key={item.href} className={`social-icon ${item.icon === 'x' ? 'x-twitter' : item.icon.split(' ')[1].replace('fa-', '')}`} href={item.href} target="_blank" rel="noopener noreferrer" aria-label={item.icon === 'x' ? 'X' : item.icon}>
             {item.icon === 'x' ? (
@@ -769,7 +918,7 @@ function HomePage() {
               { icon: 'fab fa-linkedin-in', href: 'https://www.linkedin.com/company/taroverse-readings/' },
               { icon: 'fab fa-facebook-f', href: 'https://www.facebook.com/taroverse.readings' },
               { icon: 'x', href: 'https://x.com/taroverse5' },
-              { icon: 'fab fa-youtube', href: 'https://www.youtube.com/@taroverse' }
+              { icon: 'fab fa-youtube', href: 'https://www.youtube.com/@TaroVerse.readings' }
             ].map((item) => (
               <a key={item.href} className={`social-icon ${item.icon === 'x' ? 'x-twitter' : item.icon.split(' ')[1].replace('fa-', '')}`} href={item.href} target="_blank" rel="noopener noreferrer" aria-label={item.icon === 'x' ? 'X' : item.icon}>
                 {item.icon === 'x' ? (

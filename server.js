@@ -1,6 +1,7 @@
 import express from 'express';
 import fs from 'fs/promises';
 import path from 'path';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import Razorpay from 'razorpay';
@@ -73,26 +74,57 @@ app.post('/create-order', async (req, res) => {
 
 app.post('/record-payment', async (req, res) => {
   try {
-    const { paymentId, orderId, service, duration, amount, currency, receipt } = req.body;
+    const { paymentId, orderId, service, serviceId, duration, amount, currency, receipt } = req.body;
 
-    if (!paymentId || !orderId || !service || !amount || !currency) {
+    if (!paymentId || !orderId || !service || !amount || !currency || !serviceId) {
       return res.status(400).json({ error: 'Missing required payment data.' });
     }
+
+    const isPortalService = ['love', 'career'].includes(serviceId);
+    const portalUser = isPortalService
+      ? {
+          serviceId,
+          paymentId,
+          portalToken: crypto.randomBytes(12).toString('hex'),
+          createdAt: new Date().toISOString()
+        }
+      : null;
 
     const payments = await readPayments();
     payments.push({
       paymentId,
       orderId,
       service,
+      serviceId,
       duration,
       amount: Number(amount),
       currency,
       receipt: receipt || '',
+      portalUser,
       createdAt: new Date().toISOString()
     });
 
     await writePayments(payments);
-    res.json({ success: true });
+    res.json({ success: true, user: portalUser });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/validate-portal', async (req, res) => {
+  try {
+    const { paymentId, portalToken } = req.body;
+    if (!paymentId || !portalToken) {
+      return res.status(400).json({ error: 'Missing portal credentials.' });
+    }
+
+    const payments = await readPayments();
+    const payment = payments.find((entry) => entry.paymentId === paymentId && entry.portalUser?.portalToken === portalToken);
+    if (!payment) {
+      return res.status(401).json({ error: 'Portal credentials are invalid.' });
+    }
+
+    res.json({ success: true, serviceId: payment.serviceId, user: payment.portalUser });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -104,6 +136,7 @@ app.get('/export-payments', async (req, res) => {
     const payments = await readPayments();
     const filtered = month ? payments.filter((payment) => payment.createdAt.startsWith(month)) : payments;
     const total = filtered.reduce((sum, payment) => sum + Number(payment.amount), 0);
+    const userCount = filtered.length;
 
     function escapeCsv(value) {
       if (value == null) return '';
@@ -128,7 +161,10 @@ app.get('/export-payments', async (req, res) => {
           payment.createdAt
         ].map(escapeCsv).join(',')
       ),
-      `,,Total, ,${total.toFixed(2)}, , , `
+      `,,,,,,,
+`,
+      `Total Users:,${userCount}`,
+      `Total Earnings:,${total.toFixed(2)} ${filtered[0]?.currency || 'INR'}`
     ];
 
     const filename = `taroverse-payments${month ? `-${month}` : ''}.csv`;

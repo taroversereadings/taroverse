@@ -136,7 +136,7 @@ export default function SEO({
         "https://www.linkedin.com/company/taroverse-readings/",
         "https://www.facebook.com/taroverse.readings",
         "https://x.com/taroverse5",
-        "https://www.youtube.com/@taroverse",
+        "https://www.youtube.com/@TaroVerse.readings",
       ],
 
       areaServed: {
@@ -227,7 +227,7 @@ export default function SEO({
         "https://www.linkedin.com/company/taroverse-readings/",
         "https://www.facebook.com/taroverse.readings",
         "https://x.com/taroverse5",
-        "https://www.youtube.com/@taroverse",
+        "https://www.youtube.com/@TaroVerse.readings",
       ],
     });
   }, [title, description, canonicalPath, ogImage]);
