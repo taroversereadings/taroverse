@@ -176,7 +176,7 @@ function PortalPage() {
                 className={`ambient-sparkle s-${i}`}
                 style={{ left: `${4 + (i % 10) * 9}%`, animationDelay: `${i * 0.12}s` }}
               >
-                ✨
+                {i % 3 === 0 ? '⭐' : i % 3 === 1 ? '💫' : '🌟'}
               </span>
             ))}
           </div>
