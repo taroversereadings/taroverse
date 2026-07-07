@@ -154,140 +154,160 @@ const fixedPriceOverrides = {
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   EUR: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   GBP: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   CAD: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   AUD: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   NZD: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   SGD: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   CHF: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   AED: {
     single: 200,
     three: 400,
     deep: 600,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   ZAR: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   ARS: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   BYN: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   CLP: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   CRC: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   JMD: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   TTD: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   BBD: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   BZD: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   RUB: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   },
   CNY: {
     single: 100,
     three: 200,
     deep: 300,
     love: 400,
-    career: 400
+    career: 400,
+    money:500,
   }
 };
 
