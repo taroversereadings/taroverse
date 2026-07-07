@@ -361,6 +361,14 @@ img {
 .portal-decor-career .spark { font-size: 0.85rem; color: #ffd; opacity: 0.95; animation: spark-twinkle 2s linear infinite; }
 .portal-decor-career .spark.s2 { animation-delay: 0.6s; font-size:1rem }
 
+/* Money portal: coin glow */
+.portal-decor-money { transform: translateX(10px); }
+.portal-decor-money .money-icons { position: absolute; right: 8px; top: 58px; display:flex; gap:8px; }
+.portal-decor-money .money-crest { animation: money-glow 3s ease-in-out infinite; }
+.portal-decor-money .coin-icon { font-size: 1.25rem; animation: coin-bounce 2.6s ease-in-out infinite; }
+.portal-decor-money .spark { font-size: 0.9rem; color: #ffd; opacity: 0.95; animation: spark-twinkle 1.8s linear infinite; }
+.portal-decor-money .spark.s2 { animation-delay: 0.6s; font-size:1rem; }
+
 @keyframes briefcase-bounce {
   0% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
@@ -374,6 +382,14 @@ img {
 @keyframes crest-glow {
   0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(255,255,255,0)); }
   50% { transform: scale(1.04); filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); }
+}
+@keyframes money-glow {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(255, 219, 122, 0)); }
+  50% { transform: scale(1.05); filter: drop-shadow(0 0 12px rgba(255, 219, 122, 0.4)); }
+}
+@keyframes coin-bounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(5deg); }
 }
 
 /* Portal header variants */
