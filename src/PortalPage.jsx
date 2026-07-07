@@ -157,7 +157,7 @@ function PortalPage() {
       <div className={`portal-page-ambient ${activeVariant}`} aria-hidden="true">
         {activeVariant === 'love' && (
           <div className="ambient-particles ambient-flowers">
-            {Array.from({ length: 24 }).map((_, i) => (
+            {Array.from({ length: 36 }).map((_, i) => (
               <span
                 key={i}
                 className={`ambient-flower f-${i}`}
@@ -170,7 +170,7 @@ function PortalPage() {
         )}
         {activeVariant === 'career' && (
           <div className="ambient-particles ambient-sparkles">
-            {Array.from({ length: 20 }).map((_, i) => (
+            {Array.from({ length: 32 }).map((_, i) => (
               <span
                 key={i}
                 className={`ambient-sparkle s-${i}`}
@@ -183,7 +183,7 @@ function PortalPage() {
         )}
         {activeVariant === 'money' && (
           <div className="ambient-particles ambient-coins">
-            {Array.from({ length: 20 }).map((_, i) => (
+            {Array.from({ length: 28 }).map((_, i) => (
               <span
                 key={i}
                 className={`ambient-coin c-${i}`}

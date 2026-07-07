@@ -116,36 +116,44 @@ body.portal-page {
   font-size: 1rem;
   opacity: 0.95;
   animation: ambient-fall linear infinite;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.35));
   will-change: transform, opacity;
 }
 
 .portal-page-ambient.love .ambient-flower {
-  animation-duration: 8s;
+  animation-duration: 7.2s;
+  font-size: 1.15rem;
 }
 
 .portal-page-ambient.career .ambient-sparkle {
-  animation-duration: 9s;
+  animation-duration: 8s;
+  font-size: 1.25rem;
 }
 
 .portal-page-ambient.money .ambient-coin {
-  animation-duration: 9.5s;
+  animation-duration: 8.6s;
+  font-size: 1.2rem;
 }
 
 @keyframes ambient-fall {
   0% {
-    transform: translate3d(0, -10vh, 0) rotate(0deg) scale(0.85);
-    opacity: 0.15;
+    transform: translate3d(0, -12vh, 0) rotate(0deg) scale(0.7);
+    opacity: 0.1;
   }
   20% {
-    opacity: 0.6;
+    opacity: 0.75;
   }
-  50% {
-    transform: translate3d(0, 45vh, 0) rotate(180deg) scale(1.08);
+  45% {
+    transform: translate3d(0, 34vh, 0) rotate(180deg) scale(1.16);
     opacity: 1;
   }
+  70% {
+    transform: translate3d(0, 70vh, 0) rotate(260deg) scale(1.02);
+    opacity: 0.9;
+  }
   100% {
-    transform: translate3d(0, 110vh, 0) rotate(360deg) scale(0.95);
-    opacity: 0.2;
+    transform: translate3d(0, 115vh, 0) rotate(360deg) scale(0.95);
+    opacity: 0.15;
   }
 }
 
