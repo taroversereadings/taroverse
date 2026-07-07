@@ -302,7 +302,7 @@ function PortalPage() {
           <div className="portal-content-stack">
             <div className={`portal-info-panel rounded-4 p-4 shadow-sm ${isLove ? 'love-info-panel' : isMoney ? 'money-info-panel' : 'career-info-panel'}`}>
               <div className="portal-panel-badge">{isMoney ? '💸 Abundance access' : 'Your sacred access'}</div>
-              <h2>{isLove ? 'Welcome back, love' : isMoney ? 'Welcome back to abundance' : 'Welcome back'}</h2>
+              <h2>{isLove ? 'Welcome back, love' : isMoney ? 'Welcome back to abundance' : 'Welcome back to success'}</h2>
               <p>{isLove ? 'Keep these details close for your next return to this soft, guided space.' : isMoney ? 'Keep these details close for your next return to a grounded abundance practice.' : 'Keep these details close for your next return to this calm, guided space.'}</p>
               <ul className="list-unstyled portal-credentials">
                 <li><strong>Service:</strong> {serviceLabel}</li>

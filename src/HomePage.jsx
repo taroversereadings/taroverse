@@ -56,7 +56,7 @@ const servicePricing = {
   money: {
     id: 'money',
     label: 'Money Manifestation',
-    amount: 2499,
+    amount: 1999,
     duration: 'Instant access',
     description: 'Unlock the Money Manifestation portal',
     calendly: '',
