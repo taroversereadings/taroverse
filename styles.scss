@@ -1256,6 +1256,27 @@ img {
   background: rgba(156, 104, 13, 0.49);
 }
 
+.testimonial-swipe-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  color: rgba(249, 245, 238, 0.9);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.testimonial-swipe-icon {
+  font-size: 1.2rem;
+  animation: swipe-bounce 1.2s ease-in-out infinite;
+}
+
+@keyframes swipe-bounce {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(8px); }
+}
+
 .testimonial-author {
   margin-top: 1.5rem;
   font-weight: 600;

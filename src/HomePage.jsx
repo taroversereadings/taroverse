@@ -56,7 +56,7 @@ const servicePricing = {
   money: {
     id: 'money',
     label: 'Money Manifestation',
-    amount: 1999,
+    amount: 2499,
     duration: 'Instant access',
     description: 'Unlock the Money Manifestation portal',
     calendly: '',
@@ -944,6 +944,10 @@ function HomePage() {
                   <div className="testimonial-author">— {item.author}</div>
                 </div>
               ))}
+            </div>
+            <div className="testimonial-swipe-hint d-md-none mt-3" aria-label="Swipe to see more testimonials">
+              <span className="testimonial-swipe-icon" aria-hidden="true">↔</span>
+              <span>Swipe to see more</span>
             </div>
           </div>
         </section>
