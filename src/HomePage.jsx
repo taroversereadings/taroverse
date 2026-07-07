@@ -14,7 +14,7 @@ const servicePricing = {
   single: {
     id: 'single',
     label: 'Single Card Insight',
-    amount: 199,
+    amount: 499,
     duration: '15 mins',
     description: 'Private booking confirmation',
     calendly: 'https://calendly.com/shivangiarora424/tarot-reading?month=2026-06'
@@ -22,7 +22,7 @@ const servicePricing = {
   three: {
     id: 'three',
     label: 'Three-Card Spread',
-    amount: 599,
+    amount: 999,
     duration: '30 mins',
     description: 'Private booking confirmation',
     calendly: 'https://calendly.com/shivangiarora424/new-meeting?month=2026-06'
