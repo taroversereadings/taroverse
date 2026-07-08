@@ -230,6 +230,32 @@ export default function SEO({
         "https://www.youtube.com/@TaroVerse.readings",
       ],
     });
+
+    // Breadcrumbs (helps search engines understand site structure)
+    upsertJsonLd("taroverse-breadcrumb", {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": SITE_URL
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Services",
+          "item": `${SITE_URL}/manifestations`
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Schedule",
+          "item": `${SITE_URL}/schedule`
+        }
+      ]
+    });
   }, [title, description, canonicalPath, ogImage]);
 
   return null;
