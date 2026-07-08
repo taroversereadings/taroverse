@@ -37,6 +37,56 @@ const emailCc = process.env.EMAIL_CC || '';
 
 app.use(express.json());
 
+const portalSessions = new Map();
+const portalSessionTtlMs = 15 * 60 * 1000;
+
+function parseCookies(cookieHeader = '') {
+  return cookieHeader.split(';').reduce((acc, part) => {
+    const [rawKey, ...rawValueParts] = part.trim().split('=');
+    if (!rawKey) return acc;
+    const key = decodeURIComponent(rawKey);
+    const value = decodeURIComponent(rawValueParts.join('=') || '');
+    acc[key] = value;
+    return acc;
+  }, {});
+}
+
+function getPortalSessionFromRequest(req) {
+  const cookies = parseCookies(req.headers.cookie || '');
+  const token = cookies.taroverse_portal_session;
+  if (!token) return null;
+  const session = portalSessions.get(token);
+  if (!session) return null;
+  if (session.expiresAt <= Date.now()) {
+    portalSessions.delete(token);
+    return null;
+  }
+  return session;
+}
+
+function setPortalSessionCookie(res, token) {
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+  res.setHeader('Set-Cookie', `taroverse_portal_session=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${Math.floor(portalSessionTtlMs / 1000)}${secure}`);
+}
+
+function clearPortalSessionCookie(res) {
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+  res.setHeader('Set-Cookie', `taroverse_portal_session=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0${secure}`);
+}
+
+function createPortalSession(res, user, paymentId, serviceId) {
+  const token = crypto.randomBytes(24).toString('hex');
+  portalSessions.set(token, {
+    token,
+    paymentId,
+    serviceId,
+    user,
+    expiresAt: Date.now() + portalSessionTtlMs
+  });
+  setPortalSessionCookie(res, token);
+  return token;
+}
+
 async function readPayments() {
   try {
     const data = await fs.readFile(paymentsFile, 'utf-8');
@@ -150,12 +200,32 @@ app.post('/create-order', async (req, res) => {
   }
 });
 
+async function verifyRazorpayPayment(paymentId, orderId) {
+  if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
+    return { verified: false, reason: 'razorpay-not-configured' };
+  }
+
+  try {
+    const razorpay = new Razorpay({ key_id: RAZORPAY_KEY_ID, key_secret: RAZORPAY_KEY_SECRET });
+    const payment = await razorpay.payments.fetch(paymentId);
+    const verified = Boolean(payment && payment.order_id === orderId && ['captured', 'authorized'].includes(payment.status));
+    return { verified, reason: verified ? null : 'payment-not-verified', payment };
+  } catch (error) {
+    return { verified: false, reason: error.message || 'payment-verification-failed' };
+  }
+}
+
 app.post('/record-payment', async (req, res) => {
   try {
     const { paymentId, orderId, service, serviceId, duration, amount, currency, receipt, email } = req.body;
 
     if (!paymentId || !orderId || !service || !amount || !currency || !serviceId) {
       return res.status(400).json({ error: 'Missing required payment data.' });
+    }
+
+    const verification = await verifyRazorpayPayment(paymentId, orderId);
+    if (!verification.verified) {
+      return res.status(400).json({ error: 'Payment could not be verified securely.' });
     }
 
     const isPortalService = ['love', 'career', 'money'].includes(serviceId);
@@ -199,10 +269,30 @@ app.post('/record-payment', async (req, res) => {
       });
     }
 
-    res.json({ success: true, user: portalUser, portalPassword, emailDelivery });
+    if (portalUser) {
+      createPortalSession(res, portalUser, paymentId, serviceId);
+    }
+
+    res.json({ success: true, user: portalUser, emailDelivery });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+app.get('/portal-session', (req, res) => {
+  const session = getPortalSessionFromRequest(req);
+  if (!session) {
+    return res.status(401).json({ error: 'No active portal session.' });
+  }
+  res.json({ success: true, serviceId: session.serviceId, user: session.user });
+});
+
+app.post('/portal-logout', (req, res) => {
+  clearPortalSessionCookie(res);
+  const cookies = parseCookies(req.headers.cookie || '');
+  const token = cookies.taroverse_portal_session;
+  if (token) portalSessions.delete(token);
+  res.json({ success: true });
 });
 
 app.post('/validate-portal', async (req, res) => {
@@ -213,17 +303,15 @@ app.post('/validate-portal', async (req, res) => {
     }
 
     if (demoPortalEnabled && paymentId === demoPortalCredentials.paymentId && portalToken === demoPortalCredentials.portalToken) {
-      return res.json({
-        success: true,
+      const user = {
         serviceId: demoPortalCredentials.serviceId,
-        user: {
-          serviceId: demoPortalCredentials.serviceId,
-          paymentId: demoPortalCredentials.paymentId,
-          portalToken: demoPortalCredentials.portalToken,
-          deviceId: deviceId || null,
-          createdAt: new Date().toISOString()
-        }
-      });
+        paymentId: demoPortalCredentials.paymentId,
+        portalToken: demoPortalCredentials.portalToken,
+        deviceId: deviceId || null,
+        createdAt: new Date().toISOString()
+      };
+      createPortalSession(res, user, user.paymentId, user.serviceId);
+      return res.json({ success: true, serviceId: demoPortalCredentials.serviceId, user });
     }
 
     const payments = await readPayments();
@@ -241,6 +329,7 @@ app.post('/validate-portal', async (req, res) => {
       await writePayments(payments);
     }
 
+    createPortalSession(res, payment.portalUser, payment.paymentId, payment.serviceId);
     res.json({ success: true, serviceId: payment.serviceId, user: payment.portalUser });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -255,17 +344,15 @@ app.post('/portal-login', async (req, res) => {
     }
 
     if (demoPortalEnabled && paymentId === demoPortalCredentials.paymentId && password === demoPortalCredentials.password) {
-      return res.json({
-        success: true,
+      const user = {
         serviceId: demoPortalCredentials.serviceId,
-        user: {
-          serviceId: demoPortalCredentials.serviceId,
-          paymentId: demoPortalCredentials.paymentId,
-          portalToken: demoPortalCredentials.portalToken,
-          deviceId: deviceId || null,
-          createdAt: new Date().toISOString()
-        }
-      });
+        paymentId: demoPortalCredentials.paymentId,
+        portalToken: demoPortalCredentials.portalToken,
+        deviceId: deviceId || null,
+        createdAt: new Date().toISOString()
+      };
+      createPortalSession(res, user, user.paymentId, user.serviceId);
+      return res.json({ success: true, serviceId: demoPortalCredentials.serviceId, user });
     }
 
     const payments = await readPayments();
@@ -287,6 +374,7 @@ app.post('/portal-login', async (req, res) => {
       await writePayments(payments);
     }
 
+    createPortalSession(res, payment.portalUser, payment.paymentId, payment.serviceId);
     res.json({ success: true, serviceId: payment.serviceId, user: payment.portalUser });
   } catch (error) {
     res.status(500).json({ error: error.message });

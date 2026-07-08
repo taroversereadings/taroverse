@@ -404,14 +404,7 @@ function HomePage() {
       return [];
     }
   });
-  const [portalUser, setPortalUser] = useState(() => {
-    if (typeof window === 'undefined') return null;
-    try {
-      return JSON.parse(localStorage.getItem('taroversePortalUser'));
-    } catch {
-      return null;
-    }
-  });
+  const [portalUser, setPortalUser] = useState(null);
   const [portalEmail, setPortalEmail] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -579,11 +572,6 @@ function HomePage() {
           if (recordResult.user) {
             const updatedAccess = Array.from(new Set([...portalAccess, service.id]));
             localStorage.setItem('taroversePortalAccess', JSON.stringify(updatedAccess));
-            localStorage.setItem('taroversePortalUser', JSON.stringify(recordResult.user));
-            if (recordResult.portalPassword) {
-              localStorage.setItem('taroversePortalPassword', recordResult.portalPassword);
-              localStorage.setItem('taroversePortalPaymentId', recordResult.user.paymentId);
-            }
             setPortalAccess(updatedAccess);
             setPortalUser(recordResult.user);
           }
@@ -609,9 +597,7 @@ function HomePage() {
           if (service.portal) {
             const emailStatus = recordResult?.emailDelivery?.sent
               ? 'Portal credentials were emailed successfully.'
-              : recordResult?.portalPassword
-                ? 'Portal credentials were generated and saved for this browser because email delivery was unavailable.'
-                : 'Portal access is ready.';
+              : 'Portal access is ready. Check your email for your password.';
             updatePaymentStatus(`${emailStatus} Redirecting to your portal...`, 'success');
             const portalUrl = `/portal?video=${service.id}`;
             window.location.href = portalUrl;

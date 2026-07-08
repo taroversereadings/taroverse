@@ -47,30 +47,10 @@ function PortalPage() {
   const [portalUser, setPortalUser] = useState(null);
   const [paymentIdInput, setPaymentIdInput] = useState(() => {
     if (typeof window === 'undefined') return '';
-    try {
-      const stored = localStorage.getItem('taroversePortalPaymentId');
-      if (stored) return stored;
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        return demoPortalCredentials.paymentId;
-      }
-      return '';
-    } catch {
-      return '';
-    }
+    const queryPaymentId = new URLSearchParams(window.location.search).get('paymentId');
+    return queryPaymentId || '';
   });
-  const [passwordInput, setPasswordInput] = useState(() => {
-    if (typeof window === 'undefined') return '';
-    try {
-      const stored = localStorage.getItem('taroversePortalPassword');
-      if (stored) return stored;
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        return demoPortalCredentials.password;
-      }
-      return '';
-    } catch {
-      return '';
-    }
-  });
+  const [passwordInput, setPasswordInput] = useState('');
   const [loginError, setLoginError] = useState('');
   const [validated, setValidated] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -98,11 +78,12 @@ function PortalPage() {
     const queryToken = searchParams.get('token');
     const idleTimeoutMs = 15 * 60 * 1000;
 
-    const logoutPortal = () => {
+    const logoutPortal = async () => {
       try {
         localStorage.removeItem('taroversePortalUser');
         localStorage.removeItem('taroversePortalPaymentId');
         localStorage.removeItem('taroversePortalPassword');
+        await fetch('/portal-logout', { method: 'POST' });
       } catch {}
       setPortalUser(null);
       setValidated(false);
@@ -128,6 +109,19 @@ function PortalPage() {
     async function validateUser() {
       const deviceId = typeof window !== 'undefined' ? getDeviceId() : null;
 
+      try {
+        const sessionResponse = await fetch('/portal-session', { credentials: 'include' });
+        if (sessionResponse.ok) {
+          const sessionResult = await sessionResponse.json();
+          if (sessionResult.success) {
+            setPortalUser(sessionResult.user);
+            setValidated(true);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch {}
+
       if (queryPaymentId && queryToken) {
         if (queryPaymentId === demoPortalCredentials.paymentId && queryToken === demoPortalCredentials.portalToken) {
           setLoginError('');
@@ -138,6 +132,7 @@ function PortalPage() {
         try {
           const response = await fetch('/validate-portal', {
             method: 'POST',
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ paymentId: queryPaymentId, portalToken: queryToken, deviceId })
           });
@@ -225,11 +220,6 @@ function PortalPage() {
     if (demoMatch) {
       const requestedService = searchParams.get('video') || 'love';
       const demoUser = getDemoPortalUser(deviceId, requestedService);
-      try {
-        localStorage.setItem('taroversePortalPaymentId', paymentIdInput);
-        localStorage.setItem('taroversePortalPassword', passwordInput);
-        localStorage.setItem('taroversePortalUser', JSON.stringify(demoUser));
-      } catch {}
       setPortalUser(demoUser);
       setValidated(true);
       setLoading(false);
@@ -239,14 +229,12 @@ function PortalPage() {
     try {
       const response = await fetch('/portal-login', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ paymentId: paymentIdInput, password: passwordInput, deviceId })
       });
       const result = await response.json();
       if (response.ok && result.success) {
-        localStorage.setItem('taroversePortalUser', JSON.stringify(result.user));
-        localStorage.setItem('taroversePortalPaymentId', paymentIdInput);
-        localStorage.setItem('taroversePortalPassword', passwordInput);
         setPortalUser(result.user);
         setValidated(true);
       } else {
