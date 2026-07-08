@@ -246,7 +246,7 @@ function PortalPage() {
                 className={`ambient-coin c-${i}`}
                 style={{ left: `${4 + (i % 10) * 9}%`, animationDelay: `${i * 0.13}s` }}
               >
-                💰
+                💸
               </span>
             ))}
           </div>
@@ -290,7 +290,7 @@ function PortalPage() {
               <div className="money-lines" aria-hidden="true" />
               <div className="gold-shower" aria-hidden="true">
                 {Array.from({ length: 12 }).map((_, i) => (
-                  <span key={i} className={`coin c-${i}`}>💰</span>
+                  <span key={i} className={`coin c-${i}`}>💸</span>
                 ))}
               </div>
               <div className="money-banner" aria-hidden="true">Abundance is already moving ✨</div>
