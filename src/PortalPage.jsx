@@ -73,6 +73,19 @@ function PortalPage() {
     }
   }
 
+  async function readPortalResponse(response) {
+    const text = await response.text();
+    if (!text) {
+      return { error: `Request failed with status ${response.status}.` };
+    }
+
+    try {
+      return JSON.parse(text);
+    } catch {
+      return { error: text };
+    }
+  }
+
   useEffect(() => {
     const queryPaymentId = searchParams.get('paymentId');
     const queryToken = searchParams.get('token');
@@ -136,7 +149,7 @@ function PortalPage() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ paymentId: queryPaymentId, portalToken: queryToken, deviceId })
           });
-          const result = await response.json();
+          const result = await readPortalResponse(response);
           if (response.ok && result.success) {
             setPortalUser(result.user);
             setValidated(true);
@@ -214,8 +227,22 @@ function PortalPage() {
     setLoginError('');
     setLoading(true);
 
+    const enteredPaymentId = paymentIdInput.trim();
+    const enteredPassword = passwordInput.trim();
     const deviceId = getDeviceId();
-    const demoMatch = isDemoPortalAttempt(paymentIdInput, passwordInput);
+    const demoMatch = isDemoPortalAttempt(enteredPaymentId, enteredPassword);
+
+    if (!enteredPaymentId) {
+      setLoginError('Please enter your Payment ID.');
+      setLoading(false);
+      return;
+    }
+
+    if (!enteredPassword) {
+      setLoginError('Please enter your portal password.');
+      setLoading(false);
+      return;
+    }
 
     if (demoMatch) {
       const requestedService = searchParams.get('video') || 'love';
@@ -231,14 +258,14 @@ function PortalPage() {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ paymentId: paymentIdInput, password: passwordInput, deviceId })
+        body: JSON.stringify({ paymentId: enteredPaymentId, password: enteredPassword, deviceId })
       });
-      const result = await response.json();
+      const result = await readPortalResponse(response);
       if (response.ok && result.success) {
         setPortalUser(result.user);
         setValidated(true);
       } else {
-        setLoginError(result.error || 'Login failed.');
+        setLoginError(result.error || 'We could not verify your portal access right now.');
       }
     } catch (err) {
       setLoginError('Unable to contact server.');
@@ -728,7 +755,11 @@ function PortalPage() {
                     {showPassword ? '🙈' : '👁️'}
                   </button>
                 </div>
-                {loginError && <div className="text-danger mb-3">{loginError}</div>}
+                {loginError && (
+                  <div className="alert alert-danger py-2 mb-3" role="alert">
+                    {loginError}
+                  </div>
+                )}
                 <button className="btn portal-action-btn">Enter Portal</button>
               </form>
             </div>

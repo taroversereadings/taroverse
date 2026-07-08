@@ -428,11 +428,11 @@ app.post('/portal-login', async (req, res) => {
     const payments = await readPayments();
     const payment = payments.find((entry) => entry.paymentId === paymentId && entry.portalUser);
     if (!payment || !payment.portalUser) {
-      return res.status(401).json({ error: 'Portal credentials are invalid.' });
+      return res.status(401).json({ error: 'Payment ID was not found. Please check the Payment ID from your purchase email.' });
     }
 
     if (hashValue(password) !== payment.portalUser.portalPasswordHash) {
-      return res.status(401).json({ error: 'Portal password is incorrect.' });
+      return res.status(401).json({ error: 'Password is incorrect. Please check the password emailed to you.' });
     }
 
     if (payment.portalUser.deviceId && payment.portalUser.deviceId !== deviceId) {
