@@ -27,6 +27,7 @@ const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || '';
 const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
 const paymentsFile = path.join(__dirname, 'payments.json');
 const portalBaseUrl = process.env.PORTAL_BASE_URL || 'http://localhost:3000';
+const adminExportToken = process.env.ADMIN_EXPORT_TOKEN || '';
 const emailFrom = process.env.EMAIL_FROM || 'taroverse.readings@gmail.com';
 const emailHost = process.env.EMAIL_HOST || '';
 const emailPort = Number(process.env.EMAIL_PORT || 587);
@@ -383,6 +384,11 @@ app.post('/portal-login', async (req, res) => {
 
 app.get('/export-payments', async (req, res) => {
   try {
+    const requestedToken = req.query.token || req.headers['x-admin-export-token'];
+    if (!adminExportToken || requestedToken !== adminExportToken) {
+      return res.status(403).json({ error: 'Admin export access denied.' });
+    }
+
     const month = req.query.month;
     const payments = await readPayments();
     const filtered = month ? payments.filter((payment) => payment.createdAt.startsWith(month)) : payments;

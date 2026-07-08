@@ -66,6 +66,7 @@ const servicePricing = {
 
 const RAZORPAY_ORDER_ENDPOINT = import.meta.env.VITE_RAZORPAY_ORDER_ENDPOINT || '/create-order';
 const RECORD_PAYMENT_ENDPOINT = import.meta.env.VITE_RECORD_PAYMENT_ENDPOINT || '/record-payment';
+const ADMIN_EXPORT_TOKEN = import.meta.env.VITE_ADMIN_EXPORT_TOKEN || '';
 
 const testimonials = [
   { text: 'The reading felt so comforting and clear. I left with new confidence and a beautiful sense of calm.', author: 'Ananya, Mumbai' },
@@ -494,7 +495,9 @@ function HomePage() {
 
   const handleExportPayments = () => {
     const month = new Date().toISOString().slice(0, 7);
-    const exportUrl = `/export-payments?month=${month}`;
+    const exportUrl = ADMIN_EXPORT_TOKEN
+      ? `/export-payments?month=${month}&token=${encodeURIComponent(ADMIN_EXPORT_TOKEN)}`
+      : `/export-payments?month=${month}`;
     const anchor = document.createElement('a');
     anchor.href = exportUrl;
     anchor.style.display = 'none';
@@ -865,7 +868,7 @@ function HomePage() {
                   <button type="button" className="btn btn-primary w-100" onClick={handlePayment}>
                     {service.portal ? 'Pay to unlock portal' : 'Pay & unlock booking'}
                   </button>
-                  {isAdmin && (
+                  {isAdmin && ADMIN_EXPORT_TOKEN && (
                     <button type="button" className="btn btn-outline-light w-100 mt-3" onClick={handleExportPayments}>
                       Download current month report
                     </button>
