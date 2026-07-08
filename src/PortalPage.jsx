@@ -2,6 +2,26 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import SEO from './SEO';
 
+const demoPortalCredentials = {
+  paymentId: 'TEST-PAYMENT-PORTAL',
+  password: 'TAROVERSE2026',
+  portalToken: 'demo-portal-token'
+};
+
+function getDemoPortalUser(deviceId, serviceId = 'love') {
+  return {
+    serviceId,
+    paymentId: demoPortalCredentials.paymentId,
+    portalToken: demoPortalCredentials.portalToken,
+    deviceId: deviceId || null,
+    createdAt: new Date().toISOString()
+  };
+}
+
+function isDemoPortalAttempt(paymentId, password) {
+  return paymentId === demoPortalCredentials.paymentId && password === demoPortalCredentials.password;
+}
+
 const portalVideos = {
   love: {
     title: 'Love Spell Manifestation',
@@ -28,7 +48,12 @@ function PortalPage() {
   const [paymentIdInput, setPaymentIdInput] = useState(() => {
     if (typeof window === 'undefined') return '';
     try {
-      return localStorage.getItem('taroversePortalPaymentId') || '';
+      const stored = localStorage.getItem('taroversePortalPaymentId');
+      if (stored) return stored;
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return demoPortalCredentials.paymentId;
+      }
+      return '';
     } catch {
       return '';
     }
@@ -36,13 +61,21 @@ function PortalPage() {
   const [passwordInput, setPasswordInput] = useState(() => {
     if (typeof window === 'undefined') return '';
     try {
-      return localStorage.getItem('taroversePortalPassword') || '';
+      const stored = localStorage.getItem('taroversePortalPassword');
+      if (stored) return stored;
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return demoPortalCredentials.password;
+      }
+      return '';
     } catch {
       return '';
     }
   });
   const [loginError, setLoginError] = useState('');
   const [validated, setValidated] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [idleMessage, setIdleMessage] = useState('');
+  const [videoPlaying, setVideoPlaying] = useState(false);
   const [activeChapters, setActiveChapters] = useState(() => {
     const init = { love: 'intro', career: 'intro', money: 'intro' };
     const q = searchParams.get('chapter');
@@ -61,17 +94,47 @@ function PortalPage() {
   }
 
   useEffect(() => {
-    const existingUser = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('taroversePortalUser') || 'null') : null;
     const queryPaymentId = searchParams.get('paymentId');
     const queryToken = searchParams.get('token');
-    const storedPaymentId = existingUser?.paymentId;
-    const storedToken = existingUser?.portalToken;
-    const requestedVideo = searchParams.get('video');
+    const idleTimeoutMs = 15 * 60 * 1000;
+
+    const logoutPortal = () => {
+      try {
+        localStorage.removeItem('taroversePortalUser');
+        localStorage.removeItem('taroversePortalPaymentId');
+        localStorage.removeItem('taroversePortalPassword');
+      } catch {}
+      setPortalUser(null);
+      setValidated(false);
+      setIdleMessage('You were logged out due to inactivity. Please enter your credentials again.');
+      setLoginError('');
+    };
+
+    let idleTimer;
+    const resetIdleTimer = () => {
+      if (videoPlaying) {
+        setIdleMessage('');
+        return;
+      }
+      if (idleTimer) window.clearTimeout(idleTimer);
+      setIdleMessage('');
+      idleTimer = window.setTimeout(logoutPortal, idleTimeoutMs);
+    };
+
+    const activityEvents = ['mousemove', 'keydown', 'scroll', 'click', 'touchstart'];
+    activityEvents.forEach((eventName) => window.addEventListener(eventName, resetIdleTimer));
+    resetIdleTimer();
 
     async function validateUser() {
       const deviceId = typeof window !== 'undefined' ? getDeviceId() : null;
 
       if (queryPaymentId && queryToken) {
+        if (queryPaymentId === demoPortalCredentials.paymentId && queryToken === demoPortalCredentials.portalToken) {
+          setLoginError('');
+          setLoading(false);
+          return;
+        }
+
         try {
           const response = await fetch('/validate-portal', {
             method: 'POST',
@@ -83,33 +146,14 @@ function PortalPage() {
             setPortalUser(result.user);
             setValidated(true);
           } else {
-            // allow login form if validation fails
             setLoginError(result.error || 'Unable to validate your portal credentials.');
           }
         } catch (fetchError) {
           setLoginError('Unable to validate portal access at the moment.');
         }
-      } else if (storedPaymentId && storedToken) {
-        // try server validation using stored values and device id
-        try {
-          const response = await fetch('/validate-portal', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId: storedPaymentId, portalToken: storedToken, deviceId })
-          });
-          const result = await response.json();
-          if (response.ok && result.success) {
-            setPortalUser(result.user);
-            setValidated(true);
-          } else {
-            // show login form
-            setLoginError('Please log in with the password sent to your email.');
-          }
-        } catch (e) {
-          setLoginError('Unable to validate portal access at the moment.');
-        }
       } else {
-        // no existing credentials — show login form
+        setValidated(false);
+        setPortalUser(null);
         setLoginError('Enter the Payment ID and password emailed to you to unlock your portal.');
       }
 
@@ -117,6 +161,11 @@ function PortalPage() {
     }
 
     validateUser();
+
+    return () => {
+      if (idleTimer) window.clearTimeout(idleTimer);
+      activityEvents.forEach((eventName) => window.removeEventListener(eventName, resetIdleTimer));
+    };
   }, [searchParams]);
 
   
@@ -169,8 +218,25 @@ function PortalPage() {
     e.preventDefault();
     setLoginError('');
     setLoading(true);
+
+    const deviceId = getDeviceId();
+    const demoMatch = isDemoPortalAttempt(paymentIdInput, passwordInput);
+
+    if (demoMatch) {
+      const requestedService = searchParams.get('video') || 'love';
+      const demoUser = getDemoPortalUser(deviceId, requestedService);
+      try {
+        localStorage.setItem('taroversePortalPaymentId', paymentIdInput);
+        localStorage.setItem('taroversePortalPassword', passwordInput);
+        localStorage.setItem('taroversePortalUser', JSON.stringify(demoUser));
+      } catch {}
+      setPortalUser(demoUser);
+      setValidated(true);
+      setLoading(false);
+      return;
+    }
+
     try {
-      const deviceId = getDeviceId();
       const response = await fetch('/portal-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -179,6 +245,8 @@ function PortalPage() {
       const result = await response.json();
       if (response.ok && result.success) {
         localStorage.setItem('taroversePortalUser', JSON.stringify(result.user));
+        localStorage.setItem('taroversePortalPaymentId', paymentIdInput);
+        localStorage.setItem('taroversePortalPassword', passwordInput);
         setPortalUser(result.user);
         setValidated(true);
       } else {
@@ -394,7 +462,7 @@ function PortalPage() {
                           <h3 className="h5 mb-2">{current.title}</h3>
                           <div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div>
                         </div>
-                        <div className="video-frame rounded-4 overflow-hidden shadow-lg love-video mb-3" style={{ minHeight: 200 }}>
+                        <div className="video-frame rounded-4 overflow-hidden shadow-lg love-video mb-3" style={{ minHeight: 200, userSelect: 'none' }} onContextMenu={(e) => e.preventDefault()}>
                           <iframe
                             title={`${activeVideo.title} — ${current.id}`}
                             width="100%"
@@ -403,6 +471,7 @@ function PortalPage() {
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
+                            onLoad={() => setVideoPlaying(true)}
                           />
                         </div>
                       </>
@@ -499,8 +568,8 @@ function PortalPage() {
                       if (current.id === 'ritual') {
                         return (<>
                           <div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>
-                          <div className="video-frame rounded-4 overflow-hidden shadow-lg career-video mb-3" style={{ minHeight: 200 }}>
-                            <iframe title={`${activeVideo.title} — ${current.id}`} width="100%" height="480" src={activeVideo.videoUrl} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                          <div className="video-frame rounded-4 overflow-hidden shadow-lg career-video mb-3" style={{ minHeight: 200, userSelect: 'none' }} onContextMenu={(e) => e.preventDefault()}>
+                            <iframe title={`${activeVideo.title} — ${current.id}`} width="100%" height="480" src={activeVideo.videoUrl} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen onLoad={() => setVideoPlaying(true)} />
                           </div>
                         </>);
                       }
@@ -555,8 +624,8 @@ function PortalPage() {
                       if (current.id === 'ritual') {
                         return (<>
                           <div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>
-                          <div className="video-frame rounded-4 overflow-hidden shadow-lg money-video mb-3" style={{ minHeight: 200 }}>
-                            <iframe title={`${activeVideo.title} — ${current.id}`} width="100%" height="480" src={activeVideo.videoUrl} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                          <div className="video-frame rounded-4 overflow-hidden shadow-lg money-video mb-3" style={{ minHeight: 200, userSelect: 'none' }} onContextMenu={(e) => e.preventDefault()}>
+                            <iframe title={`${activeVideo.title} — ${current.id}`} width="100%" height="480" src={activeVideo.videoUrl} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen onLoad={() => setVideoPlaying(true)} />
                           </div>
                         </>);
                       }
@@ -606,7 +675,7 @@ function PortalPage() {
                   </div>
                 </div>
 
-                <div className={`video-frame rounded-4 overflow-hidden shadow-lg ${isMoney ? 'money-video' : 'career-video'}`} style={{ minHeight: 200, background: isMoney ? 'linear-gradient(135deg,#fff9e8,#fdf1cc)' : 'linear-gradient(135deg,#f4f8ff,#e9f0ff)' }}>
+                <div className={`video-frame rounded-4 overflow-hidden shadow-lg ${isMoney ? 'money-video' : 'career-video'}`} style={{ minHeight: 200, background: isMoney ? 'linear-gradient(135deg,#fff9e8,#fdf1cc)' : 'linear-gradient(135deg,#f4f8ff,#e9f0ff)', userSelect: 'none' }} onContextMenu={(e) => e.preventDefault()}>
                   <iframe
                     title={activeVideo.title}
                     width="100%"
@@ -616,6 +685,7 @@ function PortalPage() {
                     style={{ border: isMoney ? '2px solid rgba(255,255,255,0.12)' : '2px solid rgba(255,255,255,0.12)', background: 'transparent' }}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
+                    onLoad={() => setVideoPlaying(true)}
                   />
                   <div className="mt-2 text-center">
                     <a href={activeVideo.videoUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline-light">Open video in new tab</a>
@@ -653,11 +723,23 @@ function PortalPage() {
               <div className="portal-panel-badge">Welcome back</div>
               <h2 className="h5">Portal Login</h2>
               <p className="small">Enter the Payment ID and the password emailed to you to return to your guided space.</p>
+              <p className="small text-muted mb-3">Local demo access: Payment ID {demoPortalCredentials.paymentId} • Password {demoPortalCredentials.password}</p>
+              {idleMessage && <div className="alert alert-warning py-2 small mb-3">{idleMessage}</div>}
               <form onSubmit={handleLogin} className="mt-3">
                 <label className="form-label">Payment ID</label>
                 <input className="form-control mb-3" value={paymentIdInput} onChange={(e) => setPaymentIdInput(e.target.value)} />
                 <label className="form-label">Password</label>
-                <input type="password" className="form-control mb-3" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} />
+                <div className="position-relative mb-3">
+                  <input type={showPassword ? 'text' : 'password'} className="form-control pe-5" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} />
+                  <button
+                    type="button"
+                    className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 text-decoration-none"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? '🙈' : '👁️'}
+                  </button>
+                </div>
                 {loginError && <div className="text-danger mb-3">{loginError}</div>}
                 <button className="btn portal-action-btn">Enter Portal</button>
               </form>

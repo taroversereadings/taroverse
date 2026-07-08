@@ -15,6 +15,14 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
 
+const demoPortalEnabled = process.env.NODE_ENV !== 'production';
+const demoPortalCredentials = {
+  paymentId: process.env.DEMO_PORTAL_PAYMENT_ID || 'TEST-PAYMENT-PORTAL',
+  password: process.env.DEMO_PORTAL_PASSWORD || 'TAROVERSE2026',
+  serviceId: 'love',
+  portalToken: 'demo-portal-token'
+};
+
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || '';
 const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
 const paymentsFile = path.join(__dirname, 'payments.json');
@@ -204,6 +212,20 @@ app.post('/validate-portal', async (req, res) => {
       return res.status(400).json({ error: 'Missing portal credentials.' });
     }
 
+    if (demoPortalEnabled && paymentId === demoPortalCredentials.paymentId && portalToken === demoPortalCredentials.portalToken) {
+      return res.json({
+        success: true,
+        serviceId: demoPortalCredentials.serviceId,
+        user: {
+          serviceId: demoPortalCredentials.serviceId,
+          paymentId: demoPortalCredentials.paymentId,
+          portalToken: demoPortalCredentials.portalToken,
+          deviceId: deviceId || null,
+          createdAt: new Date().toISOString()
+        }
+      });
+    }
+
     const payments = await readPayments();
     const payment = payments.find((entry) => entry.paymentId === paymentId && entry.portalUser?.portalToken === portalToken);
     if (!payment) {
@@ -230,6 +252,20 @@ app.post('/portal-login', async (req, res) => {
     const { paymentId, password, deviceId } = req.body;
     if (!paymentId || !password) {
       return res.status(400).json({ error: 'Payment ID and password are required.' });
+    }
+
+    if (demoPortalEnabled && paymentId === demoPortalCredentials.paymentId && password === demoPortalCredentials.password) {
+      return res.json({
+        success: true,
+        serviceId: demoPortalCredentials.serviceId,
+        user: {
+          serviceId: demoPortalCredentials.serviceId,
+          paymentId: demoPortalCredentials.paymentId,
+          portalToken: demoPortalCredentials.portalToken,
+          deviceId: deviceId || null,
+          createdAt: new Date().toISOString()
+        }
+      });
     }
 
     const payments = await readPayments();
