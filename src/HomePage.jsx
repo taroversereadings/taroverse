@@ -791,6 +791,10 @@ function HomePage() {
               <span className="section-label">Manifestations</span>
               <h2>Unlock Your Manifestation Portal</h2>
               <p className="mx-auto lead" style={{ maxWidth: '720px' }}>Choose a guided manifestation journey and pay once to unlock lifetime re-entry with your portal credentials.</p>
+              <div className="portal-cta-banner rounded-4 p-4 mx-auto mt-4" style={{ maxWidth: '840px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                <p className="mb-2" style={{ fontWeight: 600 }}>This service opens the manifestation portal in a new page, where your portal credentials can be shared with you by email after payment.</p>
+                <p className="mb-0 text-white-50">🔒 Payment helps unlock your access, and you’ll be guided to the portal shortly after checkout.</p>
+              </div>
             </div>
             <div className="row g-4 justify-content-center">
               {Object.values(servicePricing)
