@@ -26,19 +26,21 @@ function Privacy() {
               <div className="content-card p-4 shadow-sm rounded-4 mb-4">
                 <span className="section-label">Privacy</span>
                 <h2>Privacy built around calm, secure booking</h2>
-                <p className="mt-3">Your details are only used to confirm your session and handle payment support. We keep the process transparent, gentle, and easy to trust.</p>
+                <p className="mt-3">We collect and use personal information only to provide our tarot services, manage bookings, process payments, deliver portal access, and offer support. We aim to handle your information responsibly and transparently.</p>
+                <p className="mb-0 small text-muted mt-3">Last updated: 8 July 2026</p>
               </div>
 
               <div className="accordion" id="privacyAccordion">
                 <div className="accordion-item rounded-4 overflow-hidden mb-3 shadow-sm">
                   <h2 className="accordion-header" id="privacyHeadingOne">
                     <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#privacyCollapseOne" aria-expanded="false" aria-controls="privacyCollapseOne">
-                      What we collect
+                      Information we collect
                     </button>
                   </h2>
                   <div id="privacyCollapseOne" className="accordion-collapse collapse" aria-labelledby="privacyHeadingOne" data-bs-parent="#privacyAccordion">
                     <div className="accordion-body">
-                      We collect only the information necessary to confirm your booking and complete payment, such as your name, email, and any transaction details provided by the payment provider.
+                      <p className="mb-2">When you book a service, make a payment, or request portal access, we may collect your name, email address, payment reference details, service selection, and basic technical information such as your IP address, browser type, and device information.</p>
+                      <p className="mb-0">We collect only the information reasonably necessary to complete your purchase, deliver your service, and provide support.</p>
                     </div>
                   </div>
                 </div>
@@ -50,31 +52,58 @@ function Privacy() {
                   </h2>
                   <div id="privacyCollapseTwo" className="accordion-collapse collapse" aria-labelledby="privacyHeadingTwo" data-bs-parent="#privacyAccordion">
                     <div className="accordion-body">
-                      Your details are used to process bookings, send appointment reminders, and assist with payment issues. We do not use your data for unrelated marketing or selling purposes.
+                      Your information is used to confirm bookings, send confirmation emails, deliver portal credentials when relevant, process payments, prevent fraud, respond to support requests, and improve our website and services. We do not use your data for unrelated marketing or sell your personal information to third parties.
                     </div>
                   </div>
                 </div>
                 <div className="accordion-item rounded-4 overflow-hidden mb-3 shadow-sm">
                   <h2 className="accordion-header" id="privacyHeadingThree">
                     <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#privacyCollapseThree" aria-expanded="false" aria-controls="privacyCollapseThree">
-                      Payment security & support
+                      Payment security and third-party services
                     </button>
                   </h2>
                   <div id="privacyCollapseThree" className="accordion-collapse collapse" aria-labelledby="privacyHeadingThree" data-bs-parent="#privacyAccordion">
                     <div className="accordion-body">
-                      Payments are processed by an external provider for secure checkout. We do not store your full payment credentials on this site. If you face any payment issue, email <a href="mailto:taroverse.readings@gmail.com">taroverse.readings@gmail.com</a> and we’ll support you directly.
+                      Payments are processed through secure third-party payment providers. We do not store your full card details on this website. We may share limited transaction details with payment processors, email delivery services, and support tools strictly for the purpose of completing your purchase and delivering the requested service.
                     </div>
                   </div>
                 </div>
                 <div className="accordion-item rounded-4 overflow-hidden mb-3 shadow-sm">
                   <h2 className="accordion-header" id="privacyHeadingFour">
                     <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#privacyCollapseFour" aria-expanded="false" aria-controls="privacyCollapseFour">
-                      Data sharing & updates
+                      Portal access and confidentiality
                     </button>
                   </h2>
                   <div id="privacyCollapseFour" className="accordion-collapse collapse" aria-labelledby="privacyHeadingFour" data-bs-parent="#privacyAccordion">
                     <div className="accordion-body">
-                      We do not sell your data. We might share information only when needed for booking fulfillment or to comply with legal requirements. Any updates to this policy will be posted here.
+                      For manifestation portal purchases, access credentials may be shared with you by email. You are responsible for keeping those credentials confidential and for using the portal only in accordance with the service terms. Access is intended for personal use and may be limited to a single device for security and privacy purposes.
+                    </div>
+                  </div>
+                </div>
+                <div className="accordion-item rounded-4 overflow-hidden mb-3 shadow-sm">
+                  <h2 className="accordion-header" id="privacyHeadingFive">
+                    <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#privacyCollapseFive" aria-expanded="false" aria-controls="privacyCollapseFive">
+                      Data sharing, retention and your rights
+                    </button>
+                  </h2>
+                  <div id="privacyCollapseFive" className="accordion-collapse collapse" aria-labelledby="privacyHeadingFive" data-bs-parent="#privacyAccordion">
+                    <div className="accordion-body">
+                      <p className="mb-2">We may share personal information only where necessary to provide the service, comply with legal obligations, or protect our rights. We retain personal information only for as long as needed to fulfill the purpose for which it was collected, resolve disputes, meet legal or tax requirements, and enforce our agreements.</p>
+                      <p className="mb-0">If you would like to request access to, correction of, or deletion of your personal information, please contact us at <a href="mailto:taroverse.readings@gmail.com">taroverse.readings@gmail.com</a>.</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="accordion-item rounded-4 overflow-hidden mb-3 shadow-sm">
+                  <h2 className="accordion-header" id="privacyHeadingSix">
+                    <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#privacyCollapseSix" aria-expanded="false" aria-controls="privacyCollapseSix">
+                      Security, children and policy updates
+                    </button>
+                  </h2>
+                  <div id="privacyCollapseSix" className="accordion-collapse collapse" aria-labelledby="privacyHeadingSix" data-bs-parent="#privacyAccordion">
+                    <div className="accordion-body">
+                      <p className="mb-2">We use commercially reasonable security measures to protect your information, but no method of transmission or storage is completely risk-free. Please help us by keeping your login and portal credentials secure.</p>
+                      <p className="mb-2">Our services are not directed to children under the age of 13, and we do not knowingly collect personal information from children without appropriate consent.</p>
+                      <p className="mb-0">We may update this Privacy Policy from time to time. Any changes will be posted on this page with the updated date.</p>
                     </div>
                   </div>
                 </div>
