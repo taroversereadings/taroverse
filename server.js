@@ -19,12 +19,13 @@ const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || '';
 const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
 const paymentsFile = path.join(__dirname, 'payments.json');
 const portalBaseUrl = process.env.PORTAL_BASE_URL || 'http://localhost:3000';
-const emailFrom = process.env.EMAIL_FROM || 'no-reply@taroverse.local';
+const emailFrom = process.env.EMAIL_FROM || 'taroverse.readings@gmail.com';
 const emailHost = process.env.EMAIL_HOST || '';
 const emailPort = Number(process.env.EMAIL_PORT || 587);
 const emailSecure = process.env.EMAIL_SECURE === 'true';
-const emailUser = process.env.EMAIL_USER || '';
+const emailUser = process.env.EMAIL_USER || 'taroverse.readings@gmail.com';
 const emailPass = process.env.EMAIL_PASS || '';
+const emailCc = process.env.EMAIL_CC || '';
 
 app.use(express.json());
 
@@ -62,38 +63,44 @@ function getPortalServiceLabel(serviceId) {
 async function sendPortalEmail({ to, paymentId, portalToken, portalPassword, serviceId }) {
   if (!to || !emailHost || !emailUser || !emailPass) {
     console.warn('[portal] SMTP not configured; skipping portal email.');
-    return false;
+    return { sent: false, reason: 'smtp-not-configured' };
   }
 
-  const transporter = nodemailer.createTransport({
-    host: emailHost,
-    port: emailPort,
-    secure: emailSecure,
-    auth: {
-      user: emailUser,
-      pass: emailPass
-    }
-  });
+  try {
+    const transporter = nodemailer.createTransport({
+      host: emailHost,
+      port: emailPort,
+      secure: emailSecure,
+      auth: {
+        user: emailUser,
+        pass: emailPass
+      }
+    });
 
-  const portalUrl = `${portalBaseUrl}/portal?paymentId=${encodeURIComponent(paymentId)}&token=${encodeURIComponent(portalToken)}&video=${encodeURIComponent(serviceId)}`;
-  const info = await transporter.sendMail({
-    from: emailFrom,
-    to,
-    subject: 'Your TaroVerse manifestation portal is ready',
-    html: `
-      <div style="font-family:Arial,sans-serif;line-height:1.6;max-width:640px;margin:0 auto;">
-        <h2 style="margin-bottom:8px;">Your manifestation portal is ready</h2>
-        <p>Thank you for your purchase. Your portal access has been created successfully.</p>
-        <p><strong>Service:</strong> ${getPortalServiceLabel(serviceId)}</p>
-        <p><strong>Payment ID:</strong> ${paymentId}</p>
-        <p><strong>Password:</strong> ${portalPassword}</p>
-        <p><a href="${portalUrl}" style="display:inline-block;padding:10px 16px;background:#8b5e3c;color:#fff;text-decoration:none;border-radius:6px;">Open your portal</a></p>
-        <p>This portal is linked to one device for your privacy and security.</p>
-      </div>
-    `
-  });
+    const portalUrl = `${portalBaseUrl}/portal?paymentId=${encodeURIComponent(paymentId)}&token=${encodeURIComponent(portalToken)}&video=${encodeURIComponent(serviceId)}`;
+    const info = await transporter.sendMail({
+      from: emailFrom,
+      to,
+      cc: emailCc || undefined,
+      subject: 'Your TaroVerse manifestation portal is ready',
+      html: `
+        <div style="font-family:Arial,sans-serif;line-height:1.6;max-width:640px;margin:0 auto;">
+          <h2 style="margin-bottom:8px;">Your manifestation portal is ready</h2>
+          <p>Thank you for your purchase. Your portal access has been created successfully.</p>
+          <p><strong>Service:</strong> ${getPortalServiceLabel(serviceId)}</p>
+          <p><strong>Payment ID:</strong> ${paymentId}</p>
+          <p><strong>Password:</strong> ${portalPassword}</p>
+          <p><a href="${portalUrl}" style="display:inline-block;padding:10px 16px;background:#8b5e3c;color:#fff;text-decoration:none;border-radius:6px;">Open your portal</a></p>
+          <p>This portal is linked to one device for your privacy and security.</p>
+        </div>
+      `
+    });
 
-  return Boolean(info.messageId);
+    return { sent: Boolean(info.messageId), reason: info.messageId ? null : 'unknown' };
+  } catch (error) {
+    console.error('[portal] Failed to send portal email:', error);
+    return { sent: false, reason: error.message || 'smtp-send-failed' };
+  }
 }
 
 app.use(express.static(path.join(__dirname, 'public'), {
@@ -173,8 +180,9 @@ app.post('/record-payment', async (req, res) => {
 
     await writePayments(payments);
 
+    let emailDelivery = { sent: false, reason: 'not-applicable' };
     if (portalUser && portalUser.email) {
-      await sendPortalEmail({
+      emailDelivery = await sendPortalEmail({
         to: portalUser.email,
         paymentId,
         portalToken: portalUser.portalToken,
@@ -183,7 +191,7 @@ app.post('/record-payment', async (req, res) => {
       });
     }
 
-    res.json({ success: true, user: portalUser });
+    res.json({ success: true, user: portalUser, portalPassword, emailDelivery });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

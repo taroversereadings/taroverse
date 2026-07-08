@@ -25,8 +25,22 @@ function PortalPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [portalUser, setPortalUser] = useState(null);
-  const [paymentIdInput, setPaymentIdInput] = useState('');
-  const [passwordInput, setPasswordInput] = useState('');
+  const [paymentIdInput, setPaymentIdInput] = useState(() => {
+    if (typeof window === 'undefined') return '';
+    try {
+      return localStorage.getItem('taroversePortalPaymentId') || '';
+    } catch {
+      return '';
+    }
+  });
+  const [passwordInput, setPasswordInput] = useState(() => {
+    if (typeof window === 'undefined') return '';
+    try {
+      return localStorage.getItem('taroversePortalPassword') || '';
+    } catch {
+      return '';
+    }
+  });
   const [loginError, setLoginError] = useState('');
   const [validated, setValidated] = useState(false);
   const [activeChapters, setActiveChapters] = useState(() => {
@@ -53,22 +67,6 @@ function PortalPage() {
     const storedPaymentId = existingUser?.paymentId;
     const storedToken = existingUser?.portalToken;
     const requestedVideo = searchParams.get('video');
-
-    // Dev test bypass: open portal UI without validation using ?test=true
-    if (searchParams.get('test') === 'true') {
-      const vid = requestedVideo || 'love';
-      const testUser = {
-        serviceId: vid,
-        paymentId: 'TEST-PAYMENT',
-        portalToken: 'TEST-TOKEN',
-        createdAt: new Date().toISOString(),
-        deviceId: 'test-device'
-      };
-      setPortalUser(testUser);
-      setValidated(true);
-      setLoading(false);
-      return;
-    }
 
     async function validateUser() {
       const deviceId = typeof window !== 'undefined' ? getDeviceId() : null;
@@ -125,7 +123,6 @@ function PortalPage() {
 
   const activeVideoId = searchParams.get('video') || portalUser?.serviceId;
   const activeVideo = portalVideos[activeVideoId] || portalVideos.love;
-  const isTestMode = searchParams.get('test') === 'true';
   const isLove = activeVideoId === 'love';
   const isMoney = activeVideoId === 'money';
   const isCareer = activeVideoId === 'career';
@@ -135,21 +132,6 @@ function PortalPage() {
     : portalUser?.serviceId === 'money'
       ? 'Money Manifestation'
       : 'Love Spell Manifestation';
-  const debugFallbackVideo = 'https://www.youtube.com/embed/Cb6wuzOurPc';
-
-  // debug: log key portal state to help diagnose welcome-panel visibility
-  const _paramVideo = searchParams.get('video');
-  useEffect(() => {
-    try {
-      // eslint-disable-next-line no-console
-      console.debug('[PortalPage debug]', {
-        validated,
-        portalService: portalUser?.serviceId,
-        paramVideo: _paramVideo,
-        activeVideoId
-      });
-    } catch (e) {}
-  }, [validated, portalUser, _paramVideo, activeVideoId]);
 
   const loveChapters = [
     { id: 'intro', title: 'Instructions', content: `Hi honey, welcome to the Love Spell.\n\nYou didn't find this method by accident. This method found you. The universe saw you had desires that you wanted to manifest and it brought this method to you so you could claim it. You are here for a reason.\n\nBefore we begin, I'd like to walk you through the method and how it works. This method is a powerful combination of spell work, affirmations, hypnosis, the Law of Assumption and ritual.` },
@@ -417,7 +399,7 @@ function PortalPage() {
                             title={`${activeVideo.title} — ${current.id}`}
                             width="100%"
                             height="480"
-                            src={isTestMode ? debugFallbackVideo : activeVideo.videoUrl}
+                            src={activeVideo.videoUrl}
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
@@ -518,7 +500,7 @@ function PortalPage() {
                         return (<>
                           <div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>
                           <div className="video-frame rounded-4 overflow-hidden shadow-lg career-video mb-3" style={{ minHeight: 200 }}>
-                            <iframe title={`${activeVideo.title} — ${current.id}`} width="100%" height="480" src={isTestMode ? debugFallbackVideo : activeVideo.videoUrl} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                            <iframe title={`${activeVideo.title} — ${current.id}`} width="100%" height="480" src={activeVideo.videoUrl} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                           </div>
                         </>);
                       }
@@ -574,7 +556,7 @@ function PortalPage() {
                         return (<>
                           <div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>
                           <div className="video-frame rounded-4 overflow-hidden shadow-lg money-video mb-3" style={{ minHeight: 200 }}>
-                            <iframe title={`${activeVideo.title} — ${current.id}`} width="100%" height="480" src={isTestMode ? debugFallbackVideo : activeVideo.videoUrl} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                            <iframe title={`${activeVideo.title} — ${current.id}`} width="100%" height="480" src={activeVideo.videoUrl} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                           </div>
                         </>);
                       }
@@ -629,14 +611,14 @@ function PortalPage() {
                     title={activeVideo.title}
                     width="100%"
                     height="500"
-                    src={isTestMode ? debugFallbackVideo : activeVideo.videoUrl}
+                    src={activeVideo.videoUrl}
                     frameBorder="0"
                     style={{ border: isMoney ? '2px solid rgba(255,255,255,0.12)' : '2px solid rgba(255,255,255,0.12)', background: 'transparent' }}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
                   <div className="mt-2 text-center">
-                    <a href={isTestMode ? debugFallbackVideo : activeVideo.videoUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline-light">Open video in new tab</a>
+                    <a href={activeVideo.videoUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline-light">Open video in new tab</a>
                   </div>
                 </div>
 
