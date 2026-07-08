@@ -119,6 +119,61 @@ function getPortalServiceLabel(serviceId) {
   return labels[serviceId] || 'Manifestation Portal';
 }
 
+function getBookingCalendlyLink(serviceId) {
+  const links = {
+    single: 'https://calendly.com/shivangiarora424/tarot-reading?month=2026-06',
+    three: 'https://calendly.com/shivangiarora424/new-meeting?month=2026-06',
+    deep: 'https://calendly.com/shivangiarora424/new-meeting-1?month=2026-06'
+  };
+  return links[serviceId] || '';
+}
+
+async function sendBookingConfirmationEmail({ to, paymentId, serviceId, serviceLabel, duration, amount, currency }) {
+  if (!to || !emailHost || !emailUser || !emailPass) {
+    console.warn('[booking] SMTP not configured; skipping booking confirmation email.');
+    return { sent: false, reason: 'smtp-not-configured' };
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: emailHost,
+      port: emailPort,
+      secure: emailSecure,
+      auth: {
+        user: emailUser,
+        pass: emailPass
+      }
+    });
+
+    const calendly = getBookingCalendlyLink(serviceId);
+    const bookingText = calendly ? `<p><a href="${calendly}" style="display:inline-block;padding:10px 16px;background:#8b5e3c;color:#fff;text-decoration:none;border-radius:6px;">Choose your slot on Calendly</a></p>` : '';
+
+    const info = await transporter.sendMail({
+      from: emailFrom,
+      to,
+      cc: emailCc || undefined,
+      subject: `Your TaroVerse booking — ${serviceLabel}`,
+      html: `
+        <div style="font-family:Arial,sans-serif;line-height:1.6;max-width:640px;margin:0 auto;">
+          <h2 style="margin-bottom:8px;">Thanks for your booking</h2>
+          <p>We received your payment and your booking window is now unlocked.</p>
+          <p><strong>Service:</strong> ${serviceLabel}</p>
+          <p><strong>Duration:</strong> ${duration}</p>
+          <p><strong>Payment ID:</strong> ${paymentId}</p>
+          <p><strong>Amount:</strong> ${Number(amount).toFixed(2)} ${currency}</p>
+          ${bookingText}
+          <p>If you have any issues, reply to this email and we will assist.</p>
+        </div>
+      `
+    });
+
+    return { sent: Boolean(info.messageId), reason: info.messageId ? null : 'unknown' };
+  } catch (error) {
+    console.error('[booking] Failed to send booking confirmation email:', error);
+    return { sent: false, reason: error.message || 'smtp-send-failed' };
+  }
+}
+
 async function sendPortalEmail({ to, paymentId, portalToken, portalPassword, serviceId }) {
   if (!to || !emailHost || !emailUser || !emailPass) {
     console.warn('[portal] SMTP not configured; skipping portal email.');
@@ -137,10 +192,13 @@ async function sendPortalEmail({ to, paymentId, portalToken, portalPassword, ser
     });
 
     const portalUrl = `${portalBaseUrl}/portal?paymentId=${encodeURIComponent(paymentId)}&token=${encodeURIComponent(portalToken)}&video=${encodeURIComponent(serviceId)}`;
+    // Ensure the payer's email is included in CC while preserving an optional admin CC
+    const combinedCc = emailCc ? `${emailCc},${to}` : to;
+
     const info = await transporter.sendMail({
       from: emailFrom,
       to,
-      cc: emailCc || undefined,
+      cc: combinedCc,
       subject: 'Your TaroVerse manifestation portal is ready',
       html: `
         <div style="font-family:Arial,sans-serif;line-height:1.6;max-width:640px;margin:0 auto;">
@@ -267,6 +325,17 @@ app.post('/record-payment', async (req, res) => {
         portalToken: portalUser.portalToken,
         portalPassword,
         serviceId
+      });
+    } else if (!isPortalService && String(email || '').trim()) {
+      // send booking confirmation for non-portal purchases
+      emailDelivery = await sendBookingConfirmationEmail({
+        to: String(email).trim(),
+        paymentId,
+        serviceId,
+        serviceLabel: service,
+        duration,
+        amount,
+        currency
       });
     }
 

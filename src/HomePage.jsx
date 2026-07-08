@@ -406,7 +406,14 @@ function HomePage() {
     }
   });
   const [portalUser, setPortalUser] = useState(null);
-  const [portalEmail, setPortalEmail] = useState('');
+  const [portalEmail, setPortalEmail] = useState(() => {
+    if (typeof window === 'undefined') return '';
+    try {
+      return localStorage.getItem('taroversePortalEmail') || '';
+    } catch {
+      return '';
+    }
+  });
   const [isAdmin, setIsAdmin] = useState(false);
 
   const service = useMemo(() => servicePricing[selectedService], [selectedService]);
@@ -549,7 +556,7 @@ function HomePage() {
 
       const recordPayment = async (paymentResponse) => {
         try {
-          const recordResponse = await fetch(RECORD_PAYMENT_ENDPOINT, {
+              const recordResponse = await fetch(RECORD_PAYMENT_ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -561,7 +568,7 @@ function HomePage() {
               amount: service.amount,
               currency: 'INR',
               receipt: checkout.order.receipt || '',
-              email: service.portal ? portalEmail : ''
+                  email: portalEmail
             })
           });
 
@@ -578,6 +585,10 @@ function HomePage() {
             setPortalAccess(updatedAccess);
             setPortalUser(recordResult.user);
           }
+
+          try {
+            localStorage.setItem('taroversePortalEmail', portalEmail || '');
+          } catch {}
 
           return recordResult;
         } catch (recordError) {
@@ -848,13 +859,11 @@ function HomePage() {
                     ))}
                   </select>
 
-                  {service.portal && (
-                    <div className="mb-3">
-                      <label className="form-label" htmlFor="portal-email">Email for portal access</label>
-                      <input id="portal-email" type="email" className="form-control" placeholder="you@example.com" value={portalEmail} onChange={(e) => setPortalEmail(e.target.value)} />
-                      <div className="form-text">We will email a one-time password to this address to access your portal on a single device.</div>
-                    </div>
-                  )}
+                  <div className="mb-3">
+                    <label className="form-label" htmlFor="portal-email">Email for this purchase</label>
+                    <input id="portal-email" type="email" className="form-control" placeholder="you@example.com" value={portalEmail} onChange={(e) => setPortalEmail(e.target.value)} />
+                    <div className="form-text">We'll use this email for receipts and portal access if the service includes a portal.</div>
+                  </div>
 
                   <div className="d-flex justify-content-between mb-2">
                     <span>Amount</span>
