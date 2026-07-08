@@ -128,7 +128,8 @@ function PortalPage() {
   const isTestMode = searchParams.get('test') === 'true';
   const isLove = activeVideoId === 'love';
   const isMoney = activeVideoId === 'money';
-  const activeVariant = isLove ? 'love' : isMoney ? 'money' : 'career';
+  const isCareer = activeVideoId === 'career';
+  const activeVariant = isLove ? 'love' : isMoney ? 'money' : isCareer ? 'career' : 'love';
   const serviceLabel = portalUser?.serviceId === 'career'
     ? 'Career Manifestation'
     : portalUser?.serviceId === 'money'
@@ -170,8 +171,6 @@ function PortalPage() {
     { id: 'affirmations', title: 'Affirmations', content: 'Affirmations: I welcome steady abundance. I am worthy of wealth that supports my life.' },
     { id: 'journaling', title: 'Journaling', content: 'Simple prompts to notice shifts and take practical next steps after the practice.' }
   ];
-
-  const isCareer = activeVideoId === 'career';
 
   // helper to read/set the active chapter for the current variant
   const activeChapter = activeChapters[activeVariant] || 'intro';
@@ -470,8 +469,8 @@ function PortalPage() {
                     const idx = loveChapters.findIndex(c => c.id === activeChapter);
                     return (
                       <>
-                        <button className="btn btn-outline-light" disabled={idx <= 0} onClick={() => updateActiveChapter(loveChapters[Math.max(0, idx - 1)].id)}>Previous</button>
-                        <button className="btn btn-light ms-auto" disabled={idx >= loveChapters.length - 1} onClick={() => updateActiveChapter(loveChapters[Math.min(loveChapters.length - 1, idx + 1)].id)}>Next</button>
+                        <button className="btn portal-nav-btn portal-nav-btn-prev" disabled={idx <= 0} onClick={() => updateActiveChapter(loveChapters[Math.max(0, idx - 1)].id)}>Previous</button>
+                        <button className="btn portal-nav-btn portal-nav-btn-next ms-auto" disabled={idx >= loveChapters.length - 1} onClick={() => updateActiveChapter(loveChapters[Math.min(loveChapters.length - 1, idx + 1)].id)}>Next</button>
                       </>
                     );
                   })()}
@@ -530,7 +529,7 @@ function PortalPage() {
                     })()}
 
                     <div className="d-flex gap-2">
-                      {(() => { const idx = careerChapters.findIndex(c => c.id === activeChapter); return (<><button className="btn btn-outline-light" disabled={idx <= 0} onClick={() => updateActiveChapter(careerChapters[Math.max(0, idx - 1)].id)}>Previous</button><button className="btn btn-light ms-auto" disabled={idx >= careerChapters.length - 1} onClick={() => updateActiveChapter(careerChapters[Math.min(careerChapters.length - 1, idx + 1)].id)}>Next</button></>); })()}
+                      {(() => { const idx = careerChapters.findIndex(c => c.id === activeChapter); return (<><button className="btn portal-nav-btn portal-nav-btn-prev" disabled={idx <= 0} onClick={() => updateActiveChapter(careerChapters[Math.max(0, idx - 1)].id)}>Previous</button><button className="btn portal-nav-btn portal-nav-btn-next ms-auto" disabled={idx >= careerChapters.length - 1} onClick={() => updateActiveChapter(careerChapters[Math.min(careerChapters.length - 1, idx + 1)].id)}>Next</button></>); })()}
                     </div>
                   </div>
                 </div>
@@ -586,7 +585,7 @@ function PortalPage() {
                     })()}
 
                     <div className="d-flex gap-2">
-                      {(() => { const idx = moneyChapters.findIndex(c => c.id === activeChapter); return (<><button className="btn btn-outline-light" disabled={idx <= 0} onClick={() => updateActiveChapter(moneyChapters[Math.max(0, idx - 1)].id)}>Previous</button><button className="btn btn-light ms-auto" disabled={idx >= moneyChapters.length - 1} onClick={() => updateActiveChapter(moneyChapters[Math.min(moneyChapters.length - 1, idx + 1)].id)}>Next</button></>); })()}
+                      {(() => { const idx = moneyChapters.findIndex(c => c.id === activeChapter); return (<><button className="btn portal-nav-btn portal-nav-btn-prev" disabled={idx <= 0} onClick={() => updateActiveChapter(moneyChapters[Math.max(0, idx - 1)].id)}>Previous</button><button className="btn portal-nav-btn portal-nav-btn-next ms-auto" disabled={idx >= moneyChapters.length - 1} onClick={() => updateActiveChapter(moneyChapters[Math.min(moneyChapters.length - 1, idx + 1)].id)}>Next</button></>); })()}
                     </div>
                   </div>
                 </div>
@@ -668,7 +667,7 @@ function PortalPage() {
           })()
         ) : (
           <div className="portal-content-stack">
-            <div className="login-card-panel rounded-4 p-4 shadow-sm">
+            <div className={`login-card-panel rounded-4 p-4 shadow-sm ${activeVariant === 'love' ? 'love-login-panel' : activeVariant === 'career' ? 'career-login-panel' : 'money-login-panel'}`}>
               <div className="portal-panel-badge">Welcome back</div>
               <h2 className="h5">Portal Login</h2>
               <p className="small">Enter the Payment ID and the password emailed to you to return to your guided space.</p>
@@ -681,7 +680,7 @@ function PortalPage() {
                 <button className="btn portal-action-btn">Enter Portal</button>
               </form>
             </div>
-            <div className="portal-info-panel rounded-4 p-4 shadow-sm">
+            <div className={`portal-info-panel rounded-4 p-4 shadow-sm ${activeVariant === 'love' ? 'love-info-panel' : activeVariant === 'career' ? 'career-info-panel' : 'money-info-panel'}`}>
               <div className="portal-panel-badge">Need help?</div>
               <h2>We are here for you</h2>
               <p>If you just purchased, check your email for the password. The portal binds to one device when you first log in, keeping your experience personal and protected.</p>

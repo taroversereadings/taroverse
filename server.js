@@ -5,6 +5,7 @@ import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import Razorpay from 'razorpay';
+import nodemailer from 'nodemailer';
 
 dotenv.config();
 
@@ -17,6 +18,13 @@ const port = process.env.PORT || 3000;
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || '';
 const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
 const paymentsFile = path.join(__dirname, 'payments.json');
+const portalBaseUrl = process.env.PORTAL_BASE_URL || 'http://localhost:3000';
+const emailFrom = process.env.EMAIL_FROM || 'no-reply@taroverse.local';
+const emailHost = process.env.EMAIL_HOST || '';
+const emailPort = Number(process.env.EMAIL_PORT || 587);
+const emailSecure = process.env.EMAIL_SECURE === 'true';
+const emailUser = process.env.EMAIL_USER || '';
+const emailPass = process.env.EMAIL_PASS || '';
 
 app.use(express.json());
 
@@ -33,6 +41,61 @@ async function readPayments() {
 async function writePayments(payments) {
   await fs.writeFile(paymentsFile, JSON.stringify(payments, null, 2));
 }
+
+function hashValue(value) {
+  return crypto.createHash('sha256').update(String(value)).digest('hex');
+}
+
+function generatePortalPassword() {
+  return crypto.randomBytes(4).toString('hex').toUpperCase();
+}
+
+function getPortalServiceLabel(serviceId) {
+  const labels = {
+    love: 'Love Spell Manifestation',
+    career: 'Career Manifestation',
+    money: 'Money Manifestation'
+  };
+  return labels[serviceId] || 'Manifestation Portal';
+}
+
+async function sendPortalEmail({ to, paymentId, portalToken, portalPassword, serviceId }) {
+  if (!to || !emailHost || !emailUser || !emailPass) {
+    console.warn('[portal] SMTP not configured; skipping portal email.');
+    return false;
+  }
+
+  const transporter = nodemailer.createTransport({
+    host: emailHost,
+    port: emailPort,
+    secure: emailSecure,
+    auth: {
+      user: emailUser,
+      pass: emailPass
+    }
+  });
+
+  const portalUrl = `${portalBaseUrl}/portal?paymentId=${encodeURIComponent(paymentId)}&token=${encodeURIComponent(portalToken)}&video=${encodeURIComponent(serviceId)}`;
+  const info = await transporter.sendMail({
+    from: emailFrom,
+    to,
+    subject: 'Your TaroVerse manifestation portal is ready',
+    html: `
+      <div style="font-family:Arial,sans-serif;line-height:1.6;max-width:640px;margin:0 auto;">
+        <h2 style="margin-bottom:8px;">Your manifestation portal is ready</h2>
+        <p>Thank you for your purchase. Your portal access has been created successfully.</p>
+        <p><strong>Service:</strong> ${getPortalServiceLabel(serviceId)}</p>
+        <p><strong>Payment ID:</strong> ${paymentId}</p>
+        <p><strong>Password:</strong> ${portalPassword}</p>
+        <p><a href="${portalUrl}" style="display:inline-block;padding:10px 16px;background:#8b5e3c;color:#fff;text-decoration:none;border-radius:6px;">Open your portal</a></p>
+        <p>This portal is linked to one device for your privacy and security.</p>
+      </div>
+    `
+  });
+
+  return Boolean(info.messageId);
+}
+
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: 0,
   immutable: false,
@@ -74,18 +137,22 @@ app.post('/create-order', async (req, res) => {
 
 app.post('/record-payment', async (req, res) => {
   try {
-    const { paymentId, orderId, service, serviceId, duration, amount, currency, receipt } = req.body;
+    const { paymentId, orderId, service, serviceId, duration, amount, currency, receipt, email } = req.body;
 
     if (!paymentId || !orderId || !service || !amount || !currency || !serviceId) {
       return res.status(400).json({ error: 'Missing required payment data.' });
     }
 
     const isPortalService = ['love', 'career', 'money'].includes(serviceId);
+    const portalPassword = isPortalService ? generatePortalPassword() : '';
     const portalUser = isPortalService
       ? {
           serviceId,
           paymentId,
           portalToken: crypto.randomBytes(12).toString('hex'),
+          portalPasswordHash: hashValue(portalPassword),
+          email: String(email || '').trim(),
+          deviceId: null,
           createdAt: new Date().toISOString()
         }
       : null;
@@ -105,6 +172,17 @@ app.post('/record-payment', async (req, res) => {
     });
 
     await writePayments(payments);
+
+    if (portalUser && portalUser.email) {
+      await sendPortalEmail({
+        to: portalUser.email,
+        paymentId,
+        portalToken: portalUser.portalToken,
+        portalPassword,
+        serviceId
+      });
+    }
+
     res.json({ success: true, user: portalUser });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -113,7 +191,7 @@ app.post('/record-payment', async (req, res) => {
 
 app.post('/validate-portal', async (req, res) => {
   try {
-    const { paymentId, portalToken } = req.body;
+    const { paymentId, portalToken, deviceId } = req.body;
     if (!paymentId || !portalToken) {
       return res.status(400).json({ error: 'Missing portal credentials.' });
     }
@@ -122,6 +200,47 @@ app.post('/validate-portal', async (req, res) => {
     const payment = payments.find((entry) => entry.paymentId === paymentId && entry.portalUser?.portalToken === portalToken);
     if (!payment) {
       return res.status(401).json({ error: 'Portal credentials are invalid.' });
+    }
+
+    if (payment.portalUser?.deviceId && payment.portalUser.deviceId !== deviceId) {
+      return res.status(403).json({ error: 'This portal is already linked to another device.' });
+    }
+
+    if (!payment.portalUser.deviceId && deviceId) {
+      payment.portalUser.deviceId = deviceId;
+      await writePayments(payments);
+    }
+
+    res.json({ success: true, serviceId: payment.serviceId, user: payment.portalUser });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/portal-login', async (req, res) => {
+  try {
+    const { paymentId, password, deviceId } = req.body;
+    if (!paymentId || !password) {
+      return res.status(400).json({ error: 'Payment ID and password are required.' });
+    }
+
+    const payments = await readPayments();
+    const payment = payments.find((entry) => entry.paymentId === paymentId && entry.portalUser);
+    if (!payment || !payment.portalUser) {
+      return res.status(401).json({ error: 'Portal credentials are invalid.' });
+    }
+
+    if (hashValue(password) !== payment.portalUser.portalPasswordHash) {
+      return res.status(401).json({ error: 'Portal password is incorrect.' });
+    }
+
+    if (payment.portalUser.deviceId && payment.portalUser.deviceId !== deviceId) {
+      return res.status(403).json({ error: 'This portal is already linked to another device.' });
+    }
+
+    if (!payment.portalUser.deviceId && deviceId) {
+      payment.portalUser.deviceId = deviceId;
+      await writePayments(payments);
     }
 
     res.json({ success: true, serviceId: payment.serviceId, user: payment.portalUser });
