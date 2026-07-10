@@ -198,14 +198,22 @@ function PortalPage() {
   ];
 
   const careerChapters = [
-    { id: 'intro', title: 'Instructions', content: 'Welcome to the Career Manifestation portal. This section explains the practice and how to get the most from the ritual.' },
+    { id: 'intro', title: 'Instructions', content: `Welcome to the Career Manifestation portal.
+
+You are here because your energy is ready for a new chapter, one that feels aligned, steady, and supported. This practice is designed to help you reconnect with your confidence and move toward opportunities that truly suit you.
+
+Before we begin, I want to walk you through the ritual and how to use it with ease. This method combines grounded intention, visualization, affirmations, and reflection so you can feel calm as you step forward.` },
     { id: 'ritual', title: 'The Ritual', content: 'A focused career ritual: grounding, intention-setting, and visualization to open new pathways.' },
     { id: 'affirmations', title: 'Affirmations', content: 'Affirmations: I am ready for aligned opportunities. I step forward with clarity.' },
     { id: 'journaling', title: 'Journaling', content: 'Reflection prompts to integrate clarity and next steps after the session.' }
   ];
 
   const moneyChapters = [
-    { id: 'intro', title: 'Instructions', content: 'Welcome to the Abundance portal. Learn how to create a grounded money mindset and steady receiving.' },
+    { id: 'intro', title: 'Instructions', content: `Welcome to the Abundance portal.
+
+You are here because your energy is ready to soften around money and welcome ease, trust, and receiving. This practice is meant to help you reconnect with a grounded relationship with abundance and let it feel calm instead of forced.
+
+Before we begin, I want to walk you through the ritual and how to use it smoothly. This method combines breath, intention, affirmations, reflection, and gentle ritual so your mindset can feel more open and supported.` },
     { id: 'ritual', title: 'The Ritual', content: 'A calm guided ritual to open your relationship with money — gentle breathwork and intentions.' },
     { id: 'affirmations', title: 'Affirmations', content: 'Affirmations: I welcome steady abundance. I am worthy of wealth that supports my life.' },
     { id: 'journaling', title: 'Journaling', content: 'Simple prompts to notice shifts and take practical next steps after the practice.' }
@@ -449,11 +457,11 @@ function PortalPage() {
                   <div className={`portal-info-panel rounded-4 p-4 shadow-sm love-info-panel mb-3`}>
                     <div className="portal-panel-badge">Your sacred access</div>
                     <h2>Welcome back, love</h2>
-                    <p>Keep these details close for your next return to this soft, guided space.</p>
-                    <ul className="list-unstyled portal-credentials">
-                      <li><strong>Service:</strong> Love Spell Manifestation</li>
-                      <li><strong>Payment ID:</strong> {portalUser?.paymentId}</li>
-                    </ul>
+                    <p>Return to this calm, guided space whenever you need a soft reset or a fresh reminder of your intention.</p>
+                    <div className="portal-access-grid mt-3">
+                      <div className="portal-access-pill"><i className="fas fa-heart me-2" />Love Spell Manifestation</div>
+                      <div className="portal-access-pill"><i className="fas fa-receipt me-2" />Payment ID: {portalUser?.paymentId}</div>
+                    </div>
                   </div>
                 )}
 
@@ -463,8 +471,11 @@ function PortalPage() {
                   if (current.id === 'intro') {
                     return (
                       <div className="chapter-content rounded-4 p-4 mb-3">
-                        <h3 className="h5 mb-2">{current.title}</h3>
-                        <div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div>
+                        <div className="chapter-header mb-3">
+                          <span className="chapter-step">Step 1</span>
+                          <h3 className="h5 mb-0">{current.title}</h3>
+                        </div>
+                        <div className="small chapter-copy" style={{ whiteSpace: 'pre-line' }}>{current.content}</div>
                       </div>
                     );
                   }
@@ -474,8 +485,11 @@ function PortalPage() {
                     return (
                       <>
                         <div className="chapter-content rounded-4 p-4 mb-3">
-                          <h3 className="h5 mb-2">{current.title}</h3>
-                          <div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div>
+                          <div className="chapter-header mb-3">
+                            <span className="chapter-step">Step 2</span>
+                            <h3 className="h5 mb-0">{current.title}</h3>
+                          </div>
+                          <div className="small chapter-copy" style={{ whiteSpace: 'pre-line' }}>{current.content}</div>
                         </div>
                         <div className="video-frame rounded-4 overflow-hidden shadow-lg love-video mb-3" style={{ minHeight: 200, userSelect: 'none' }} onContextMenu={(e) => e.preventDefault()}>
                           <iframe
@@ -493,27 +507,40 @@ function PortalPage() {
                     );
                   }
 
-                  // affirmations: show manifest/support grid
+                  // affirmations: show affirmations only
                   if (current.id === 'affirmations') {
                     return (
                       <div className="portal-support-grid row g-3 love-extras mb-3">
-                        <div className="col-md-6">
-                          <div className="portal-mini-card p-3 rounded-3">
-                            <h4 className="h6">Affirmations</h4>
-                            <p className="small">Play these aloud or whisper them to yourself after the session.</p>
-                            <ul className="small mb-0">
-                              <li>— I deserve loving, kind relationships.</li>
-                              <li>— I attract warmth and mutual respect.</li>
+                        <div className="col-12">
+                          <div className="portal-mini-card p-3 rounded-3 h-100">
+                            <div className="mini-card-label">Affirmations</div>
+                            <h4 className="h6 mb-2">Repeat these with softness</h4>
+                            <p className="small mb-3">Choose one phrase and say it slowly after the ritual.</p>
+                            <div className="mini-card-quote">“I deserve loving, kind relationships.”</div>
+                            <ul className="small mb-0 portal-bullets mt-3">
+                              <li>I am worthy of deep, steady love.</li>
+                              <li>I welcome tenderness, trust, and mutual care.</li>
+                              <li>My heart is open to the love that is meant for me.</li>
                             </ul>
                           </div>
                         </div>
-                        <div className="col-md-6">
-                          <div className="portal-mini-card p-3 rounded-3">
-                            <h4 className="h6">Journaling Prompts</h4>
-                            <p className="small">Reflect briefly after the session.</p>
-                            <ul className="small mb-0">
-                              <li>• What felt most resonant?</li>
-                              <li>• One small action I can take this week to invite connection.</li>
+                      </div>
+                    );
+                  }
+
+                  if (current.id === 'journaling') {
+                    return (
+                      <div className="portal-support-grid row g-3 love-extras mb-3">
+                        <div className="col-12">
+                          <div className="portal-mini-card p-3 rounded-3 h-100">
+                            <div className="mini-card-label">Journaling</div>
+                            <h4 className="h6 mb-2">Reflect quietly</h4>
+                            <p className="small mb-3">Leave a few lines to help the energy settle.</p>
+                            <div className="mini-card-quote">“What kind of love do I want to feel and receive?”</div>
+                            <ul className="small mb-0 portal-bullets mt-3">
+                              <li>Where am I ready to soften and let love in?</li>
+                              <li>What would make me feel safe, seen, and cherished?</li>
+                              <li>One small action I can take this week to invite connection.</li>
                             </ul>
                           </div>
                         </div>
@@ -567,31 +594,34 @@ function PortalPage() {
                       <div className="portal-info-panel rounded-4 p-4 shadow-sm career-info-panel mb-3">
                         <div className="portal-panel-badge">Your sacred access</div>
                         <h2>Welcome back to your career practice</h2>
-                        <p>Keep these details close for your next return to this guided space.</p>
-                        <ul className="list-unstyled portal-credentials">
-                          <li><strong>Service:</strong> Career Manifestation</li>
-                          <li><strong>Payment ID:</strong> {portalUser?.paymentId}</li>
-                        </ul>
+                        <p>Come back here whenever you want a grounded reset or a fresh dose of confidence for your next step.</p>
+                        <div className="portal-access-grid mt-3">
+                          <div className="portal-access-pill"><i className="fas fa-briefcase me-2" />Career Manifestation</div>
+                          <div className="portal-access-pill"><i className="fas fa-receipt me-2" />Payment ID: {portalUser?.paymentId}</div>
+                        </div>
                       </div>
                     )}
 
                     {(() => {
                       const current = careerChapters.find(c => c.id === activeChapter) || careerChapters[0];
                       if (current.id === 'intro') {
-                        return (<div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>);
+                        return (<div className="chapter-content rounded-4 p-4 mb-3"><div className="chapter-header mb-3"><span className="chapter-step">Step 1</span><h3 className="h5 mb-0">{current.title}</h3></div><div className="small chapter-copy" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>);
                       }
                       if (current.id === 'ritual') {
                         return (<>
-                          <div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>
+                          <div className="chapter-content rounded-4 p-4 mb-3"><div className="chapter-header mb-3"><span className="chapter-step">Step 2</span><h3 className="h5 mb-0">{current.title}</h3></div><div className="small chapter-copy" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>
                           <div className="video-frame rounded-4 overflow-hidden shadow-lg career-video mb-3" style={{ minHeight: 200, userSelect: 'none' }} onContextMenu={(e) => e.preventDefault()}>
                             <iframe title={`${activeVideo.title} — ${current.id}`} width="100%" height="480" src={activeVideo.videoUrl} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen onLoad={() => setVideoPlaying(true)} />
                           </div>
                         </>);
                       }
                       if (current.id === 'affirmations') {
-                        return (<div className="portal-support-grid row g-3 career-extras mb-3"><div className="col-md-6"><div className="portal-mini-card p-3 rounded-3"><h4 className="h6">Career Intentions</h4><p className="small">Choose one intention to carry into your next step with calm confidence.</p><ul className="small mb-0"><li>— I am aligned with opportunities that suit me.</li><li>— I move forward with clarity and ease.</li></ul></div></div><div className="col-md-6"><div className="portal-mini-card p-3 rounded-3"><h4 className="h6">Reflection Prompts</h4><p className="small">Pause for a moment and notice what feels most alive.</p><ul className="small mb-0"><li>• What opportunity feels most supported right now?</li><li>• One grounded step I can take this week.</li></ul></div></div></div>);
+                        return (<div className="portal-support-grid row g-3 career-extras mb-3"><div className="col-12"><div className="portal-mini-card p-3 rounded-3 h-100"><div className="mini-card-label">Affirmations</div><h4 className="h6 mb-2">Carry these into your next step</h4><p className="small mb-3">Choose one phrase and let it guide your energy.</p><div className="mini-card-quote">“I am aligned with opportunities that suit me.”</div><ul className="small mb-0 portal-bullets mt-3"><li>I am confident in my gifts and my value.</li><li>I trust my timing and my path.</li><li>I welcome work that feels meaningful and rewarding.</li></ul></div></div></div>);
                       }
-                      return (<div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>);
+                      if (current.id === 'journaling') {
+                        return (<div className="portal-support-grid row g-3 career-extras mb-3"><div className="col-12"><div className="portal-mini-card p-3 rounded-3 h-100"><div className="mini-card-label">Journaling</div><h4 className="h6 mb-2">Write what is opening</h4><p className="small mb-3">Pause and notice what feels most alive.</p><div className="mini-card-quote">“What opportunity feels most supported right now?”</div><ul className="small mb-0 portal-bullets mt-3"><li>What kind of work feels most aligned with who I am becoming?</li><li>One grounded step I can take this week.</li><li>What would feel like a true next step for my growth?</li></ul></div></div></div>);
+                      }
+                      return (<div className="chapter-content rounded-4 p-4 mb-3"><div className="chapter-header mb-3"><span className="chapter-step">Step 3</span><h3 className="h5 mb-0">{current.title}</h3></div><div className="small chapter-copy" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>);
                     })()}
 
                     <div className="d-flex gap-2">
@@ -623,31 +653,34 @@ function PortalPage() {
                       <div className="portal-info-panel rounded-4 p-4 shadow-sm money-info-panel mb-3">
                         <div className="portal-panel-badge">💸 Abundance access</div>
                         <h2>Welcome back to abundance</h2>
-                        <p>Keep these details close for your next return to this grounded space.</p>
-                        <ul className="list-unstyled portal-credentials">
-                          <li><strong>Service:</strong> Money Manifestation</li>
-                          <li><strong>Payment ID:</strong> {portalUser?.paymentId}</li>
-                        </ul>
+                        <p>Let this space be your soft return point whenever you want to reconnect with calm, steady receiving.</p>
+                        <div className="portal-access-grid mt-3">
+                          <div className="portal-access-pill"><i className="fas fa-coins me-2" />Money Manifestation</div>
+                          <div className="portal-access-pill"><i className="fas fa-receipt me-2" />Payment ID: {portalUser?.paymentId}</div>
+                        </div>
                       </div>
                     )}
 
                     {(() => {
                       const current = moneyChapters.find(c => c.id === activeChapter) || moneyChapters[0];
                       if (current.id === 'intro') {
-                        return (<div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>);
+                        return (<div className="chapter-content rounded-4 p-4 mb-3"><div className="chapter-header mb-3"><span className="chapter-step">Step 1</span><h3 className="h5 mb-0">{current.title}</h3></div><div className="small chapter-copy" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>);
                       }
                       if (current.id === 'ritual') {
                         return (<>
-                          <div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>
+                          <div className="chapter-content rounded-4 p-4 mb-3"><div className="chapter-header mb-3"><span className="chapter-step">Step 2</span><h3 className="h5 mb-0">{current.title}</h3></div><div className="small chapter-copy" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>
                           <div className="video-frame rounded-4 overflow-hidden shadow-lg money-video mb-3" style={{ minHeight: 200, userSelect: 'none' }} onContextMenu={(e) => e.preventDefault()}>
                             <iframe title={`${activeVideo.title} — ${current.id}`} width="100%" height="480" src={activeVideo.videoUrl} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen onLoad={() => setVideoPlaying(true)} />
                           </div>
                         </>);
                       }
                       if (current.id === 'affirmations') {
-                        return (<div className="portal-support-grid row g-3 money-extras mb-3"><div className="col-md-6"><div className="portal-mini-card p-3 rounded-3"><h4 className="h6">Abundance Affirmations</h4><p className="small">Choose one phrase to carry with you as you welcome steady prosperity.</p><ul className="small mb-0"><li>— I am worthy of steady, joyful abundance.</li><li>— Money flows to me with ease and gratitude.</li></ul></div></div><div className="col-md-6"><div className="portal-mini-card p-3 rounded-3"><h4 className="h6">Wealth Reflection Prompts</h4><p className="small">Pause and notice where your relationship with money is softening.</p><ul className="small mb-0"><li>• Where do I feel most open to receiving?</li><li>• One generous action I can take this week.</li></ul></div></div></div>);
+                        return (<div className="portal-support-grid row g-3 money-extras mb-3"><div className="col-12"><div className="portal-mini-card p-3 rounded-3 h-100"><div className="mini-card-label">Affirmations</div><h4 className="h6 mb-2">Welcome abundance with ease</h4><p className="small mb-3">Choose one phrase and let it settle into your energy.</p><div className="mini-card-quote">“Money flows to me with ease and gratitude.”</div><ul className="small mb-0 portal-bullets mt-3"><li>I am worthy of steady, joyful abundance.</li><li>I welcome prosperity that feels grounded and kind.</li><li>I allow money to come to me through aligned opportunities.</li></ul></div></div></div>);
                       }
-                      return (<div className="chapter-content rounded-4 p-4 mb-3"><h3 className="h5 mb-2">{current.title}</h3><div className="small" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>);
+                      if (current.id === 'journaling') {
+                        return (<div className="portal-support-grid row g-3 money-extras mb-3"><div className="col-12"><div className="portal-mini-card p-3 rounded-3 h-100"><div className="mini-card-label">Journaling</div><h4 className="h6 mb-2">Notice what feels different</h4><p className="small mb-3">Pause and notice where your relationship with money is softening.</p><div className="mini-card-quote">“Where do I feel most open to receiving?”</div><ul className="small mb-0 portal-bullets mt-3"><li>What beliefs around money feel ready to release?</li><li>One generous action I can take this week.</li><li>What would feel like a gentle step into more flow?</li></ul></div></div></div>);
+                      }
+                      return (<div className="chapter-content rounded-4 p-4 mb-3"><div className="chapter-header mb-3"><span className="chapter-step">Step 3</span><h3 className="h5 mb-0">{current.title}</h3></div><div className="small chapter-copy" style={{ whiteSpace: 'pre-line' }}>{current.content}</div></div>);
                     })()}
 
                     <div className="d-flex gap-2">
@@ -736,8 +769,12 @@ function PortalPage() {
           <div className="portal-content-stack">
             <div className={`login-card-panel rounded-4 p-4 shadow-sm ${activeVariant === 'love' ? 'love-login-panel' : activeVariant === 'career' ? 'career-login-panel' : 'money-login-panel'}`}>
               <div className="portal-panel-badge">Welcome back</div>
-              <h2 className="h5">Portal Login</h2>
-              <p className="small">Enter the Payment ID and the password emailed to you to return to your guided space.</p>
+              <h2 className="h5">Enter your portal</h2>
+              <p className="small mb-3">Use the Payment ID and password emailed to you to return to your guided manifestation space.</p>
+              <div className="portal-login-highlight rounded-3 p-3 mb-3">
+                <i className="fas fa-lock me-2" />
+                <span>Your access is private, calm, and designed for one-device use.</span>
+              </div>
               <p className="small text-muted mb-3">Local demo access: Payment ID {demoPortalCredentials.paymentId} • Password {demoPortalCredentials.password}</p>
               {idleMessage && <div className="alert alert-warning py-2 small mb-3">{idleMessage}</div>}
               <form onSubmit={handleLogin} className="mt-3">
@@ -760,13 +797,18 @@ function PortalPage() {
                     {loginError}
                   </div>
                 )}
-                <button className="btn portal-action-btn">Enter Portal</button>
+                <button className="btn portal-action-btn w-100">Enter Portal</button>
               </form>
             </div>
             <div className={`portal-info-panel rounded-4 p-4 shadow-sm ${activeVariant === 'love' ? 'love-info-panel' : activeVariant === 'career' ? 'career-info-panel' : 'money-info-panel'}`}>
               <div className="portal-panel-badge">Need help?</div>
               <h2>We are here for you</h2>
               <p>If you just purchased, check your email for the password. The portal binds to one device when you first log in, keeping your experience personal and protected.</p>
+              <div className="portal-help-list mt-3">
+                <div><i className="fas fa-envelope me-2" />Check your email for the latest access details.</div>
+                <div><i className="fas fa-mobile-alt me-2" />Use the portal from the same device for a smoother experience.</div>
+                <div><i className="fas fa-headset me-2" />Reach out if anything feels unclear before you begin.</div>
+              </div>
               <Link to="/" className="btn btn-outline-light mt-3">Back to Home</Link>
             </div>
           </div>

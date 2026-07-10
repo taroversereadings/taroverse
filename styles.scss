@@ -776,9 +776,60 @@ img {
   color: #3b1a23;
 }
 .portal-mini-card {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(107, 18, 48, 0.06);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 250, 252, 0.88));
+  border: 1px solid rgba(107, 18, 48, 0.08);
   color: #3b1a23;
+  box-shadow: 0 12px 28px rgba(59, 26, 35, 0.06);
+}
+.portal-page.career-active .portal-mini-card {
+  background: linear-gradient(180deg, rgba(248, 251, 255, 0.96), rgba(235, 243, 255, 0.9));
+  border-color: rgba(81, 106, 163, 0.12);
+  color: #233454;
+  box-shadow: 0 12px 28px rgba(52, 80, 144, 0.08);
+}
+.portal-page.money-active .portal-mini-card {
+  background: linear-gradient(180deg, rgba(255, 251, 239, 0.96), rgba(251, 240, 204, 0.9));
+  border-color: rgba(160, 118, 29, 0.12);
+  color: #5a4214;
+  box-shadow: 0 12px 28px rgba(122, 93, 24, 0.08);
+}
+.portal-mini-card .mini-card-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(195, 151, 74, 0.14);
+  color: #8b6230;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.7rem;
+}
+.portal-page.career-active .portal-mini-card .mini-card-label {
+  background: rgba(120, 157, 232, 0.18);
+  color: #4465a4;
+}
+.portal-page.money-active .portal-mini-card .mini-card-label {
+  background: rgba(214, 176, 77, 0.2);
+  color: #8b6620;
+}
+.portal-mini-card .mini-card-quote {
+  padding: 0.7rem 0.8rem;
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(107, 18, 48, 0.06);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.portal-page.career-active .portal-mini-card .mini-card-quote {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(81, 106, 163, 0.12);
+}
+.portal-page.money-active .portal-mini-card .mini-card-quote {
+  background: rgba(255, 255, 255, 0.86);
+  border-color: rgba(160, 118, 29, 0.12);
 }
 .portal-info-panel,
 .login-card-panel {
@@ -805,6 +856,40 @@ img {
   font-family: $font-display;
   font-size: 1.5rem;
   margin-bottom: 0.7rem;
+}
+
+.portal-login-highlight {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: inherit;
+}
+
+.portal-login-highlight i {
+  color: #f2d58d;
+  margin-top: 0.12rem;
+}
+
+.portal-help-list {
+  display: grid;
+  gap: 0.65rem;
+  color: inherit;
+}
+
+.portal-help-list div {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.portal-help-list i {
+  color: #f2d58d;
+  margin-top: 0.12rem;
 }
 .portal-info-panel.love-info-panel,
 .login-card-panel.love-login-panel {
@@ -839,6 +924,50 @@ img {
 .login-card-panel.money-login-panel::before {
   background: radial-gradient(circle, rgba(255, 225, 145, 0.28), transparent 70%);
 }
+.portal-access-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.portal-access-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.chapter-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.chapter-step {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(195, 151, 74, 0.14);
+  color: #8b6230;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.chapter-copy {
+  line-height: 1.7;
+}
+
+.portal-bullets li {
+  margin-bottom: 0.35rem;
+}
+
 .portal-info-panel.love-info-panel .portal-credentials li,
 .login-card-panel.love-login-panel .portal-credentials li,
 .portal-info-panel.career-info-panel .portal-credentials li,
