@@ -79,10 +79,35 @@ const testimonials = [
 
 const sections = [
   { id: 'about', label: 'About' },
+  { id: 'how-it-works', label: 'How it works' },
   { id: 'services', label: 'Services' },
   { id: 'manifestations', label: 'Manifestations' },
   { id: 'testimonials', label: 'Testimonials' },
   { id: 'schedule', label: 'Schedule' }
+];
+
+const heroTrustItems = [
+  { icon: 'fa-shield-alt', text: 'Private & confidential' },
+  { icon: 'fa-credit-card', text: 'Secure checkout' },
+  { icon: 'fa-bolt', text: 'Instant confirmation' }
+];
+
+const howItWorksSteps = [
+  {
+    title: 'Choose your path',
+    description: 'Pick the reading that fits your question—whether you want quick clarity or a deeper session.',
+    icon: 'fa-star'
+  },
+  {
+    title: 'Book with ease',
+    description: 'Secure your slot quickly and receive clear guidance on what to expect before your session.',
+    icon: 'fa-calendar-check'
+  },
+  {
+    title: 'Feel supported',
+    description: 'Receive calm, intuitive insight and a grounded next step that helps you move forward with confidence.',
+    icon: 'fa-hands-helping'
+  }
 ];
 
 const currencyRates = {
@@ -652,11 +677,20 @@ function HomePage() {
         <div className="container position-relative hero-content">
           <p className="eyebrow">Soulful guidance • Calm clarity • Trusted readings</p>
           <h1 className="display-4 fw-bold">TaroVerse Readings</h1>
-          <p className="lead mx-auto mt-3">Discover your path with gentle tarot insight, sacred symbols, and a peaceful vibe designed to soothe your spirit.</p>
+          <p className="lead mx-auto mt-3" style={{ maxWidth: '760px' }}>Discover your path with gentle tarot insight, sacred symbols, and a peaceful experience designed to help you feel supported and clear.</p>
           <div className="hero-buttons mt-4">
-            <a href="#services" className="btn btn-light btn-lg me-3">Explore Services</a>
+            <a href="#services" className="btn btn-light btn-lg">Explore Services</a>
             <a href="#schedule" className="btn btn-outline-light btn-lg">Book a Reading</a>
           </div>
+          <div className="hero-trust-row mt-4">
+            {heroTrustItems.map((item) => (
+              <div className="hero-trust-pill" key={item.text}>
+                <i className={`fas ${item.icon}`} />
+                <span>{item.text}</span>
+              </div>
+            ))}
+          </div>
+          <p className="hero-price-note mt-3">Private sessions from ₹499 • Secure checkout • Calm support from first click</p>
           <div className="hero-image-grid d-none d-lg-flex">
             <img src={hero1Url} alt="Tarot spread" decoding="async" loading="eager" fetchPriority="high" />
             <img src={hero2Url} alt="Mystic cards" decoding="async" loading="eager" fetchPriority="high" />
@@ -745,6 +779,27 @@ function HomePage() {
           </div>
         </section>
 
+        <section className="section section-dark text-white" id="how-it-works">
+          <div className="container">
+            <div className="text-center mb-5">
+              <span className="section-label">How it works</span>
+              <h2>A calm, simple journey from first click to your reading</h2>
+            </div>
+            <div className="row g-4">
+              {howItWorksSteps.map((step, index) => (
+                <div className="col-lg-4 col-md-6" key={step.title}>
+                  <div className="how-it-works-card rounded-4 p-4 h-100 shadow">
+                    <div className="step-number">0{index + 1}</div>
+                    <div className="step-icon"><i className={`fas ${step.icon}`} /></div>
+                    <h3>{step.title}</h3>
+                    <p>{step.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className="section section-dark text-white" id="services">
           <div className="container">
             <div className="text-center mb-5">
@@ -762,7 +817,7 @@ function HomePage() {
                 .map((serviceItem) => (
                   <div className="col-md-6 col-lg-4" key={serviceItem.label}>
                     <div
-                      className="service-card rounded-4 p-4 h-100 shadow animate-zoomIn d-flex flex-column"
+                      className={`service-card rounded-4 p-4 h-100 shadow animate-zoomIn d-flex flex-column${serviceItem.id === 'deep' ? ' featured' : ''}`}
                       role="button"
                       tabIndex={0}
                       onClick={() => handleServiceCardClick(serviceItem.id)}
@@ -773,6 +828,7 @@ function HomePage() {
                         }
                       }}
                     >
+                      {serviceItem.id === 'deep' && <span className="featured-badge">Most popular</span>}
                       <img src={serviceItem.id === 'single' ? service1Url : serviceItem.id === 'three' ? service2Url : service3Url} alt={serviceItem.label} className="service-image rounded-4 mb-3" decoding="async" loading="lazy" />
                       <h3>{serviceItem.label}</h3>
                       <p>{serviceItem.id === 'single' ? 'Receive a clear yes, no, or “not yet” answer to one specific question.' : serviceItem.id === 'three' ? 'Gain clarity by exploring the past, present, and likely path ahead.' : 'A personalized tarot session to explore recurring patterns, relationships, and life purpose.'}</p>
@@ -981,6 +1037,10 @@ function HomePage() {
             )}
           </a>
         ))}
+      </div>
+
+      <div className="mobile-book-cta d-lg-none">
+        <a href="#schedule" className="btn btn-primary w-100">Book your reading</a>
       </div>
 
       <footer className="footer py-4 text-center text-muted">
