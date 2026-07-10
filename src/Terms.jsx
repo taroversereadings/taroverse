@@ -27,6 +27,34 @@ function Terms() {
                 <span className="section-label">Terms</span>
                 <h2>Booking terms made gentle and clear</h2>
                 <p className="mt-3">Please review these Terms of Service before booking a reading or purchasing any portal access. By using our website and services, you agree to these terms and to our Privacy Policy.</p>
+                <div className="policy-summary-grid mt-4">
+                  <div className="policy-summary-card">
+                    <i className="fas fa-calendar-check" />
+                    <div>
+                      <h3>Simple booking flow</h3>
+                      <p>Payment completes the purchase, unlocks your session or portal, and confirms your access.</p>
+                    </div>
+                  </div>
+                  <div className="policy-summary-card">
+                    <i className="fas fa-shield-alt" />
+                    <div>
+                      <h3>Protected access</h3>
+                      <p>Portal credentials are intended for personal use and should be kept private and secure.</p>
+                    </div>
+                  </div>
+                  <div className="policy-summary-card">
+                    <i className="fas fa-hand-holding-heart" />
+                    <div>
+                      <h3>Clear expectations</h3>
+                      <p>These terms outline what to expect from your reading, portal experience, and support process.</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="policy-help-card rounded-4 p-4 mt-4">
+                  <h3>Questions before booking?</h3>
+                  <p className="mb-2">We’re happy to help if you want clarity on refund, access, or support policies.</p>
+                  <a href="mailto:taroverse.readings@gmail.com">taroverse.readings@gmail.com</a>
+                </div>
                 <p className="mb-0 small text-muted mt-3">Last updated: 8 July 2026</p>
               </div>
 

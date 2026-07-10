@@ -27,6 +27,34 @@ function Privacy() {
                 <span className="section-label">Privacy</span>
                 <h2>Privacy built around calm, secure booking</h2>
                 <p className="mt-3">We collect and use personal information only to provide our tarot services, manage bookings, process payments, deliver portal access, and offer support. We aim to handle your information responsibly and transparently.</p>
+                <div className="policy-summary-grid mt-4">
+                  <div className="policy-summary-card">
+                    <i className="fas fa-lock" />
+                    <div>
+                      <h3>Secure handling</h3>
+                      <p>Payments are processed through trusted providers and your card details are not stored on the site.</p>
+                    </div>
+                  </div>
+                  <div className="policy-summary-card">
+                    <i className="fas fa-user-shield" />
+                    <div>
+                      <h3>Minimal data</h3>
+                      <p>We only collect what is needed to complete your booking, deliver your reading, and provide support.</p>
+                    </div>
+                  </div>
+                  <div className="policy-summary-card">
+                    <i className="fas fa-envelope-open-text" />
+                    <div>
+                      <h3>Your control</h3>
+                      <p>If you want access to, correction of, or deletion of your information, reach out to us directly.</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="policy-help-card rounded-4 p-4 mt-4">
+                  <h3>Need help with privacy questions?</h3>
+                  <p className="mb-2">We’re happy to clarify how your details are used before or after a purchase.</p>
+                  <a href="mailto:taroverse.readings@gmail.com">taroverse.readings@gmail.com</a>
+                </div>
                 <p className="mb-0 small text-muted mt-3">Last updated: 8 July 2026</p>
               </div>
 
