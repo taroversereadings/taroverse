@@ -1563,6 +1563,24 @@ img {
   text-transform: uppercase;
 }
 
+.portal-email-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(195, 151, 74, 0.24);
+  color: #fff7e8;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.portal-email-note i {
+  color: #f2d58d;
+  margin-top: 0.12rem;
+}
+
 .payment-status {
   padding: 0.8rem 1rem;
   border-radius: 0.8rem;

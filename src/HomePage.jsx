@@ -922,7 +922,10 @@ function HomePage() {
                   <div className="mb-3">
                     <label className="form-label" htmlFor="portal-email">Email for this purchase</label>
                     <input id="portal-email" type="email" className="form-control" placeholder="you@example.com" value={portalEmail} onChange={(e) => setPortalEmail(e.target.value)} />
-                    <div className="form-text">We'll use this email for receipts and portal access if the service includes a portal.</div>
+                    <div className="portal-email-note mt-2">
+                      <i className="fas fa-info-circle me-2" />
+                      We’ll use this email for receipts and portal access if the service includes a portal.
+                    </div>
                   </div>
 
                   <div className="d-flex justify-content-between mb-2">
