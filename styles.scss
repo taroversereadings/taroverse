@@ -1714,12 +1714,12 @@ img {
 @media (max-width: $breakpoint-md) {
   .hero-section {
     min-height: auto;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
+    padding-top: 2.2rem;
+    padding-bottom: 2.2rem;
   }
 
   .hero-section .hero-content {
-    padding: 2.5rem 1rem 4rem;
+    padding: 1.9rem 0.75rem 2.7rem;
   }
 
   .content-card {
@@ -1727,12 +1727,12 @@ img {
   }
 
   .section {
-    padding: 3.5rem 0;
+    padding: 2.6rem 0;
   }
 
   .section .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.9rem;
+    padding-right: 0.9rem;
   }
 
   .service-card,
@@ -1755,6 +1755,68 @@ img {
 
   .special-offer .offer-banner {
     padding: 1.4rem 1rem;
+  }
+
+  .hero-trust-row {
+    gap: 0.55rem;
+    margin-top: 1rem;
+    justify-content: center;
+  }
+
+  .hero-trust-pill {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.78rem;
+  }
+
+  .hero-price-note {
+    margin-top: 0.8rem;
+    font-size: 0.92rem;
+    padding: 0 0.6rem;
+  }
+
+  .section-label {
+    margin-bottom: 0.35rem;
+  }
+
+  .section h2 {
+    font-size: clamp(1.55rem, 4.2vw, 2.1rem);
+    margin-bottom: 0.75rem;
+  }
+
+  .how-it-works-card,
+  .service-card,
+  .manifestation-card,
+  .testimonial-card {
+    padding: 1.1rem !important;
+  }
+
+  .how-it-works-card p,
+  .service-card p,
+  .manifestation-card p,
+  .testimonial-card p {
+    margin-bottom: 0.6rem;
+  }
+
+  .divine-numbers {
+    display: none;
+  }
+
+  .testimonial-slider {
+    gap: 0.8rem;
+  }
+
+  .testimonial-card {
+    min-width: 82vw;
+    max-width: 82vw;
+  }
+
+  .mobile-book-cta {
+    bottom: 0.6rem;
+    padding: 0 0.75rem;
+  }
+
+  .mobile-book-cta .btn {
+    padding: 0.85rem 1rem;
   }
 }
 
